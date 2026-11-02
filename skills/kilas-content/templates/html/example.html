@@ -1,0 +1,131 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- An 8-slide carousel for the HTML renderer (references/html-render.md), from
+     references/examples/ai-cost-js-carousel.md. Copy it with scripts/new_html.py, replace
+     the words and images, keep one scheme per piece. Images live in img/. -->
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Biaya AI tiap framework JS</title>
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="kit.css">
+<script src="kit.js" defer></script>
+</head>
+<body data-scheme="SCHEME">
+
+<!-- 01 cover: dark photo + big number (coverDark) -->
+<section class="slide cover-dark" data-eyebrow="BENCHMARK · NOLAN LAWSON · OKT 2026">
+  <div class="duo dark bg"><img src="img/cover.jpg" alt=""></div>
+  <div class="content bottom">
+    <div class="big-number">60</div>
+    <p class="lines">kali agent AI membangun<br>aplikasi yang sama dengan<br>12 framework JavaScript.</p>
+    <p class="lede">Biaya per build berkisar $2,67 sampai $4,97, padahal skor Lighthouse-nya nyaris sama.</p>
+  </div>
+</section>
+
+<!-- 02 context: plate + headline + body + stat row -->
+<section class="slide" data-eyebrow="KONTEKS">
+  <div class="content">
+    <div class="duo light plate"><img src="img/plate.jpg" alt=""></div>
+    <p class="credit" style="margin-top:-16px">Foto: &lt;nama&gt; / Unsplash</p>
+    <h2 class="h1">Anggap saja <mark>argo taksi.</mark></h2>
+    <p class="body">Nolan Lawson memberi Opus 5.5 tujuan yang sama: aplikasi Pokédex berdata PokéAPI, plus test yang wajib lulus. Hanya framework-nya yang diganti. Argonya mencatat dolar, menit, token, dan baris kode.</p>
+    <div class="stat-row"><div class="stat">97–100</div><p>skor Performance Lighthouse di 12 framework. Accessibility: 100 semua.</p></div>
+  </div>
+</section>
+
+<!-- 03 data: consolidated table (the slide worth saving) -->
+<section class="slide" data-eyebrow="DATA · MEDIAN 5 BUILD PER FRAMEWORK">
+  <div class="content tight">
+    <h2 class="h1 s72">Argo Angular <mark>86% lebih mahal</mark> dari Hono+htmx.</h2>
+    <p class="body s28 soft" style="margin-bottom:12px">Hono+htmx $2,67 (sekitar Rp48 ribu) per build. Angular $4,97 (sekitar Rp90 ribu).</p>
+    <table class="data" data-max="4.97">
+      <thead><tr><th>#</th><th>Framework</th><th class="bar">Biaya $</th><th></th><th>Menit</th><th>Token</th><th>Baris</th><th>JS</th></tr></thead>
+      <tbody>
+        <tr class="hl strong"><td>01</td><td class="name">Hono+htmx</td><td class="bar" data-v="2.67"></td><td class="best">2,67</td><td>8,6</td><td>4,26</td><td class="best">1.370</td><td>18</td></tr>
+        <tr><td>02</td><td class="name">Astro</td><td class="bar" data-v="2.76"></td><td>2,76</td><td class="best">8,2</td><td>4,13</td><td>1.461</td><td class="best">0</td></tr>
+        <tr><td>03</td><td class="name">Nuxt</td><td class="bar" data-v="2.82"></td><td>2,82</td><td>9,0</td><td class="best">3,85</td><td>1.415</td><td>84</td></tr>
+        <tr><td>04</td><td class="name">Vanilla</td><td class="bar" data-v="2.98"></td><td>2,98</td><td>10,1</td><td>5,00</td><td>1.492</td><td>7</td></tr>
+        <tr><td>05</td><td class="name">Next.js</td><td class="bar" data-v="3.14"></td><td>3,14</td><td>10,9</td><td>4,99</td><td>1.539</td><td>142</td></tr>
+        <tr><td>06</td><td class="name">Qwik</td><td class="bar" data-v="3.27"></td><td>3,27</td><td>10,7</td><td>5,64</td><td>1.744</td><td>40</td></tr>
+        <tr><td>07</td><td class="name">TanStack Start</td><td class="bar" data-v="3.54"></td><td>3,54</td><td>10,3</td><td>7,07</td><td>1.697</td><td>118</td></tr>
+        <tr><td>08</td><td class="name">SolidStart</td><td class="bar" data-v="3.79"></td><td>3,79</td><td>11,2</td><td>7,13</td><td>1.630</td><td>40</td></tr>
+        <tr><td>09</td><td class="name">React Router</td><td class="bar" data-v="3.81"></td><td>3,81</td><td>12,5</td><td>7,58</td><td>1.564</td><td>115</td></tr>
+        <tr><td>10</td><td class="name">SvelteKit</td><td class="bar" data-v="4.28"></td><td>4,28</td><td>10,8</td><td>8,53</td><td>1.611</td><td>36</td></tr>
+        <tr><td>11</td><td class="name">Gracile+Lit</td><td class="bar" data-v="4.65"></td><td>4,65</td><td>12,1</td><td>9,04</td><td>1.717</td><td>8</td></tr>
+        <tr class="pr strong"><td>12</td><td class="name">Angular</td><td class="bar" data-v="4.97"></td><td>4,97</td><td>17,2</td><td>9,76</td><td>2.009</td><td>93</td></tr>
+      </tbody>
+    </table>
+    <p class="table-note">Biaya = harga API menurut Claude Code, bukan tagihan sebenarnya. Token dalam juta, JS dalam KiB. Stabilo = terbaik di kolomnya.</p>
+  </div>
+</section>
+
+<!-- 04 cause: image beside labelled items (splitPlate + labelledItems) -->
+<section class="slide" data-eyebrow="PENYEBAB">
+  <div class="content">
+    <h2 class="h1">Jalan baru membuat<br>agent <mark>membuka peta.</mark></h2>
+    <div class="duo light plate" style="height:290px"><img src="img/items.jpg" alt=""></div>
+    <div class="items">
+      <div><p class="label">SvelteKit · $4,28</p><p>Kemungkinan terlalu baru untuk data latih Opus 5.5. Agent membaca panduan migrasinya di setiap build.</p></div>
+      <div><p class="label">Gracile+Lit · $4,65</p><p>Agent kurang mengenalnya, lalu meng-clone repo atau membaca source di node_modules.</p></div>
+      <div><p class="label">Angular · $4,97</p><p>Tampaknya karena kodenya paling besar: 2.009 baris.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 evidence: screenshot in a browser window, with marks, and a quote -->
+<section class="slide" data-eyebrow="KOMPLIKASI">
+  <div class="content">
+    <h2 class="h1">Navigasi resmi <mark>tidak menjamin</mark> argo murah.</h2>
+    <p class="body s30">SvelteKit memakai MCP-nya di 5 dari 5 build dan tetap termahal ketiga. MCP Nuxt tidak pernah dipakai, padahal Nuxt paling hemat token.</p>
+    <figure class="artefact window" data-url="nolanlawson.com" data-marks="[[128,204],[488,564]]">
+      <div class="frame"><img src="img/shot.png" alt="Tabel pemakaian MCP dan skill per framework"></div>
+      <figcaption class="credit">Tangkapan layar: nolanlawson.com, 28 Okt 2026</figcaption>
+    </figure>
+    <blockquote class="q"><p>“the current crop of MCPs and skills may be doing more harm than good”</p><cite>Nolan Lawson · dugaannya di penutup tulisan</cite></blockquote>
+  </div>
+</section>
+
+<!-- 06 the turn: full-bleed photo (fullBleed) -->
+<section class="slide full-bleed" data-eyebrow="SISI LAIN">
+  <div class="duo dark bg"><img src="img/full.jpg" alt=""></div>
+  <div class="content bottom">
+    <h2 class="h1">Argo <mark>jalan lagi</mark><br>di setiap revisi.</h2>
+    <p class="body" style="opacity:.85">Biaya build dibayar sekali. Ukuran kode ikut menentukan token di setiap revisi berikutnya, dan JavaScript-nya dikirim ke setiap pengunjung.</p>
+    <p class="credit">Foto: &lt;nama&gt; / Unsplash</p>
+  </div>
+</section>
+
+<!-- 07 opinion: statement on the highlight ground, with a giant faint number -->
+<section class="slide statement" data-bg="highlight" data-eyebrow="CATATAN BRAND">
+  <div class="decor-index top">07</div>
+  <div class="content bottom">
+    <h2 class="h1">Sebelum pindah<br>framework, <u>minta</u><br><u>angkanya.</u></h2>
+    <p class="body" style="opacity:.85">Ini satu aplikasi kecil. Biaya Angular saja berkisar $3,19 sampai $6,82 antar-build.</p>
+    <div class="rule-mark"></div>
+    <p class="tip-line">Uji kandidatnya dengan tugas yang sama, minimal 3 build per framework, lalu bandingkan angkanya.</p>
+  </div>
+</section>
+
+<!-- 08 close: dark, the logo from brand.css, one CTA, every source and credit -->
+<section class="slide close">
+  <div class="duo dark bg"><img src="img/close.jpg" alt=""></div>
+  <div class="content">
+    <div class="logo"></div>
+    <h2 class="cta-head">Ikuti <span class="handle"></span></h2>
+    <p class="promise">Kabar teknologi seperti ini, lengkap dengan angka dan sumbernya.</p>
+    <div class="pill">IKUTI <span class="handle-up"></span></div>
+    <div class="sources">
+      <p class="label"></p>
+      <ol>
+        <li>Nolan Lawson, “The AI cost of JavaScript frameworks”, 28 Okt 2026</li>
+        <li>github.com/nolanlawson/agent-framework-benchmark dan agent-framework-benchmark-results</li>
+        <li>Kurs JISDOR Bank Indonesia, 30 Okt 2026: Rp18.138 per dolar AS</li>
+      </ol>
+      <p class="credits">Ilustrasi: AI (Antigravity) · Foto Unsplash: &lt;nama&gt; · Tangkapan layar: nolanlawson.com</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
