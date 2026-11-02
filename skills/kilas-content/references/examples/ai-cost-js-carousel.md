@@ -11,7 +11,7 @@ skill. Its facts were right and its lint passed; its choices were weaker. Its li
 appear below as the rejected drafts, so you can see exactly where the difference is.
 
 `<handle>` and `<BRAND>` stand for the brand's handle and name. Built in the brand
-pack's default preset with the layout functions in `scripts/figma-helpers.js`.
+pack's default scheme with the layout functions in `scripts/figma-helpers.js`.
 
 ## Story notes
 

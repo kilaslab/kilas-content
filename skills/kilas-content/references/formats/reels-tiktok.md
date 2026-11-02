@@ -2,7 +2,7 @@
 
 The deliverable is everything a person or a video tool needs to produce the video: a
 script, a shot-by-shot storyboard, on-screen text, an asset list with sources, a cover
-frame in Figma, and the caption. Rendering is optional: if the host has a video tool
+frame (Figma, or a separate HTML page: `html-render.md` section 4), and the caption. Rendering is optional: if the host has a video tool
 (for example Remotion skills), the storyboard is its input; otherwise the user records
 and edits.
 
@@ -62,7 +62,7 @@ sources in `specs.md`.
 
 ## 5. Cover
 
-Build a 1080×1920 cover frame in Figma in the brand's style: the hook line and one
+Build a 1080×1920 cover frame in the brand's style (Figma, or a separate HTML page): the hook line and one
 visual. The profile grid shows only the centred band **y = 240–1680** (3:4), so the
 title must sit inside it. Instagram also accepts a separate cover image (420×654
 minimum); upload the frame at full size.

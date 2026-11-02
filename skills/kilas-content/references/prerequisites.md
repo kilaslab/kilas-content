@@ -1,6 +1,7 @@
 # Prerequisites: companion skills
 
-This skill orchestrates four companion skills plus the Figma MCP. Install them once;
+This skill orchestrates four companion skills plus one renderer: the Figma MCP or the
+HTML → PNG kit. Install them once;
 after that every agent on the machine sees them through the shared hub.
 
 ## The hub
@@ -67,8 +68,15 @@ skill://figma/figma-generate-design/SKILL.md
 
 then pass `skillNames: "resource:figma-use,resource:figma-generate-design"`.
 
-If the Figma MCP is not connected, every Figma build (carousels, single posts, covers) is blocked — say so rather
-than drawing a placeholder.
+If the Figma MCP is not connected, Figma builds are blocked: say so and offer the HTML
+renderer (`html-render.md`); never draw a placeholder.
+
+## HTML renderer
+
+`scripts/render_slides.py` uses Python Playwright when it is installed (`pip install
+playwright && playwright install chromium`), otherwise Chrome, Chromium, Edge, or Brave in
+headless mode. Rendering loads the brand's fonts from Google Fonts, so it needs the
+network.
 
 ## Optional: image generation
 
@@ -88,8 +96,8 @@ The skill generates metaphor images with whatever is there, in this order
 `python3 scripts/gen_image.py detect` shows what it finds. With none of them, the skill
 uses Unsplash.
 
-Python scripts need Pillow for the contact sheet (`pip install pillow`) and `curl` for
-Unsplash.
+Python scripts need Pillow (`pip install pillow`) for `contact_sheet.py`,
+`slides_to_pdf.py`, `artefact_marks.py`, and `ref_sheets.py`, and `curl` for Unsplash.
 
 ## Optional: research tools
 
@@ -99,7 +107,8 @@ None are required; each one makes the research or the artefacts better. See
 - Web search and page fetch: built into Claude Code, OpenCode, Cursor, and Gemini-based
   CLIs. Nothing to install.
 - `ego-browser` (Ego Lite): a real Chromium the agent can drive. Needed by
-  `scripts/capture_artefact.sh`; it passes bot checks that block headless browsers.
+  `scripts/capture_artefact.sh`, `capture_profile.sh`, and `scan_site_tokens.sh`; it
+  passes bot checks that block headless browsers.
 - An MCP server or built-in tool for X, Instagram, or Threads, if the host has one.
   Use it read-only.
 - `scripts/x_post.py` needs only `curl` and Python 3.9+.

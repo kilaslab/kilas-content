@@ -21,6 +21,7 @@ command -v ego-browser >/dev/null || { echo "ego-browser not found; use the host
 url="$1"; sel="${3:-article}"; maxh="${4:-700}"
 case "$url" in http://*|https://*) ;; *) echo "url must start with http(s)://" >&2; exit 2 ;; esac
 case "$maxh" in ''|*[!0-9]*) echo "max height must be a number" >&2; exit 2 ;; esac
+maxh=$((10#$maxh))   # 0300 and 09 are decimal, not octal or a JS syntax error
 mkdir -p "$(dirname "$2")"
 out="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
 

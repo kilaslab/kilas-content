@@ -11,6 +11,7 @@ without -I if Pillow lives in user site-packages.
 """
 import argparse
 import os
+import re
 import sys
 
 from PIL import Image
@@ -24,15 +25,28 @@ def main():
     ap.add_argument("-o", "--out", required=True)
     a = ap.parse_args()
     files = []
+    natural = lambda f: [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", os.path.basename(f))]
     for p in a.inputs:
         if os.path.isdir(p):
-            files += sorted(os.path.join(p, f) for f in os.listdir(p) if f.lower().endswith(EXT))
-        else:
+            files += sorted((os.path.join(p, f) for f in os.listdir(p) if f.lower().endswith(EXT)), key=natural)
+        elif os.path.isfile(p):
             files.append(p)
+        else:
+            print(f"not found: {p}", file=sys.stderr)
+            return 2
     if not files:
         print("no images found", file=sys.stderr)
         return 2
-    pages = [Image.open(f).convert("RGB") for f in files]
+    def flat(f):  # transparent areas become white, not black
+        im = Image.open(f)
+        if im.mode in ("RGBA", "LA", "P"):
+            im = im.convert("RGBA")
+            bg = Image.new("RGB", im.size, (255, 255, 255))
+            bg.paste(im, mask=im.split()[-1])
+            return bg
+        return im.convert("RGB")
+
+    pages = [flat(f) for f in files]
     w, h = pages[0].size
     fixed = []
     for f, im in zip(files, pages):

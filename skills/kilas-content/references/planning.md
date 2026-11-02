@@ -50,7 +50,7 @@ Define each series in the brand pack:
 | Format | single post (chart) or 2-slide carousel |
 | Rubric | finding as headline → chart → source and n → CTA slide |
 | Cadence | weekly, Tuesday |
-| Template | the Figma frame or preset it uses |
+| Scheme and template | a key of the `BRAND` block's `schemes`, plus any fixed cover or data variant |
 
 Start with two or three series. Retire one that underperforms its pillar for two months
 running, or that the team dreads making.

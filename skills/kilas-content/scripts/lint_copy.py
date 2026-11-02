@@ -84,6 +84,16 @@ COVER_CAVEAT = {
 }
 # Keys that hold notes for the builder, not text the audience sees.
 META_KEYS = {"chart", "sources", "photos", "credit", "credits", "note", "image", "shot", "asset", "visual"}
+# Only these are keys (framed formats and reels); any other "Word: ..." line is copy, so
+# "Hasilnya: ..." is still checked as a colon reveal. X, Threads, LinkedIn, and long-form
+# copy has no keys at all.
+KNOWN_KEYS = {"eyebrow", "number", "headline", "body", "sub", "stat", "statlabel", "label", "quote",
+              "attribution", "tip", "tiplabel", "cta", "post", "aside", "kicker", "lede", "source",
+              "onscreen", "text", "vo", "voiceover", "voice", "index"} | META_KEYS
+NUMBERED_KEY = re.compile(r"^(item|card|stat|row|step)\d+(label)?$")
+KEYED_FORMATS = {"carousel", "single", "reels"}
+# new_item.py formats that lint as another format
+ALIASES = {"thread": "x", "document": "linkedin"}
 # Keys on the cover that do not count toward its word budget.
 COVER_FREE_KEYS = {"eyebrow", "label", "index"}
 # Keys whose text is headline text, in order.
@@ -95,7 +105,7 @@ ID_MARKERS = r"\b(yang|dan|di|untuk|ini|dengan|tidak|dari|ke|adalah|dalam)\b"
 EN_MARKERS = r"\b(the|and|of|to|is|with|that|for|in|it|this)\b"
 
 
-def sections(text: str):
+def sections(text: str, keyed: bool = True):
     text = re.sub(r"<!--.*?-->", "", text, flags=re.S)
     current, lines = None, []
     for raw in text.splitlines():
@@ -104,9 +114,15 @@ def sections(text: str):
                 yield current, lines
             current, lines = raw[3:].strip(), []
         elif current and raw.strip() and not raw.lstrip().startswith(">"):
-            key = raw.split(":", 1)[0].strip().lower() if re.match(r"^\s*[A-Za-z_0-9]+:\s", raw) else ""
-            if key not in META_KEYS:
-                lines.append((key, re.sub(r"^\s*[A-Za-z_0-9]+:\s*", "", raw).strip() if key else raw.strip()))
+            m = re.match(r"^\s*([A-Za-z_0-9]+):(\s|$)", raw) if keyed else None
+            key = m.group(1).lower() if m else ""
+            if key and key not in KNOWN_KEYS and not NUMBERED_KEY.match(key):
+                key = ""
+            if key in META_KEYS:
+                continue
+            text_ = raw[m.end():].strip() if key else raw.strip()
+            if text_:
+                lines.append((key, text_))
     if current:
         yield current, lines
 
@@ -128,10 +144,11 @@ def metaphor_terms(path: str):
     """The comma-separated words on the brief's 'Verbs:' line, or None."""
     if not path or not os.path.exists(path):
         return None
-    m = re.search(r"verbs(?:/nouns)?\s*:\s*([^\n·]+)", open(path, encoding="utf-8").read(), flags=re.I)
-    if not m or "<" in m.group(1):
+    found = re.findall(r"verbs(?:/nouns)?\s*:\s*([^\n·]+)", open(path, encoding="utf-8").read(), flags=re.I)
+    filled = [f for f in found if f.strip() and "<" not in f]  # skip the template's placeholder
+    if not filled:
         return None
-    terms = [t.strip(" .;").lower() for t in m.group(1).split(",")]
+    terms = [t.strip(" .;").lower() for t in filled[0].split(",")]
     return [t for t in terms if t]
 
 
@@ -155,19 +172,22 @@ def detect_lang(all_text: str) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("copy")
-    ap.add_argument("--format", default="carousel", choices=["carousel", "single", "x", "threads", "linkedin", "reels", "long"])
+    ap.add_argument("--format", default="carousel", choices=["carousel", "single", "x", "threads", "linkedin", "reels", "long", "thread", "document"])
     ap.add_argument("--lang", default="auto", choices=["auto", "id", "en"])
     ap.add_argument("--brand")
     ap.add_argument("--brief")
     ap.add_argument("--x-premium", action="store_true")
     a = ap.parse_args()
+    a.format = ALIASES.get(a.format, a.format)
+    if not os.path.exists(a.copy):
+        ap.error(f"{a.copy} not found")
 
-    secs = list(sections(open(a.copy, encoding="utf-8").read()))
+    secs = list(sections(open(a.copy, encoding="utf-8").read(), keyed=a.format in KEYED_FORMATS))
     all_text = " ".join(v for _, ls in secs for _, v in ls)
     lang = detect_lang(all_text) if a.lang == "auto" else a.lang
     hard = COMMON_HARD + HARD[lang]
     banned = banned_from_brand(a.brand) if a.brand else []
-    hard += [(r"\b" + re.escape(p) + r"\b", f"brand banned phrase '{p}'") for p in banned]
+    hard += [(r"(?<!\w)" + re.escape(p) + r"(?!\w)", f"brand banned phrase '{p}'") for p in banned]
     char_limit = CHARS_PER_SECTION.get(a.format)
     if a.format == "x" and a.x_premium:
         char_limit = 25000
@@ -184,6 +204,10 @@ def main() -> int:
         chars = len("\n".join(v for _, v in lines))
         total_chars += 0 if is_caption else chars
         issues = []
+        if not lines and not is_caption:
+            issues.append(("FAIL", "empty section: write it or delete it", ""))
+        elif is_cover and not any(k in HEADLINE_KEYS or not k for k, _ in lines):
+            issues.append(("FAIL", "the cover has no headline", ""))
         for key, content in lines:
             for pat, msg in hard:
                 if re.search(pat, content, flags=re.I | re.M):
@@ -202,6 +226,8 @@ def main() -> int:
             if cover_words > COVER_WORDS:
                 issues.append(("warn", f"cover has {cover_words} words, eyebrow excluded (aim for <= {COVER_WORDS})", ""))
         if is_caption:
+            if not lines and a.format in ("carousel", "single", "reels"):
+                issues.append(("FAIL", "empty caption: write it (formats/specs.md) or delete the section", ""))
             if chars > 2200:
                 issues.append(("FAIL", f"caption {chars} characters (Instagram limit 2,200)", ""))
             tags = re.findall(r"(?<!\w)#\w+", " ".join(v for _, v in lines))
@@ -238,7 +264,9 @@ def main() -> int:
         brief = a.brief or os.path.join(os.path.dirname(os.path.abspath(a.copy)), "brief.md")
         terms = metaphor_terms(brief)
         if terms is None:
-            print("metaphor: no 'Verbs:' line in brief.md, not checked")
+            shown = os.path.relpath(brief) if not os.path.relpath(brief).startswith("..") else brief
+            print(f"warn: no 'Verbs:' line in {shown}: write the metaphor family there "
+                  "(writing-craft 4), then lint again; metaphor not checked")
         elif interior:
             hits = sum(1 for h in interior if any(t in h.lower() for t in terms))
             note = f"metaphor ({', '.join(terms)}): in {hits} of {len(interior)} interior headlines"

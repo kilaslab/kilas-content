@@ -3,7 +3,7 @@
 """Set up the HTML renderer for one item: <item>/html/ with the kit, the brand's CSS, and
 a slides.html to edit.
 
-    python3 scripts/new_html.py content/items/<item> --brand <pack>/design.md [--scheme kertas] [--blank]
+    python3 scripts/new_html.py content/items/<item> --brand <pack>/design.md [--scheme <scheme>] [--blank]
     python3 scripts/new_html.py content/items/<item> --brand <pack>/design.md --refresh
 
 Copies templates/html/kit.css and kit.js, writes brand.css (scripts/brand_css.py), and
@@ -14,6 +14,7 @@ overwrites slides.html; --refresh updates only the kit and brand.css.
 import argparse
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -53,6 +54,10 @@ def main():
     ap.add_argument("--blank", action="store_true")
     ap.add_argument("--refresh", action="store_true")
     a = ap.parse_args()
+    schemes = list(parse_brand(open(a.brand, encoding="utf-8").read()).get("schemes") or {})
+    if a.scheme and a.scheme not in schemes:
+        print(f"unknown scheme '{a.scheme}'; the brand has: {', '.join(schemes)}", file=sys.stderr)
+        return 2
     d = os.path.join(a.item, "html")
     os.makedirs(os.path.join(d, "img"), exist_ok=True)
     for f in ("kit.css", "kit.js"):
@@ -87,7 +92,8 @@ def main():
     text = re.sub(r'data-scheme="[^"]*"', f'data-scheme="{scheme}"', text, count=1)
     with open(slides, "w", encoding="utf-8") as f:
         f.write(text)
-    print(f"{slides} (scheme {scheme}); put images in {os.path.join(d, 'img')}/, then: python3 {os.path.join(HERE, 'render_slides.py')} {slides}")
+    print(f"{slides} (scheme {scheme}); put images in {os.path.join(d, 'img')}/, then: "
+          f"python3 {shlex.quote(os.path.join(HERE, 'render_slides.py'))} {shlex.quote(slides)}")
     return 0
 
 

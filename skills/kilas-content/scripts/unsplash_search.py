@@ -82,15 +82,25 @@ def main() -> None:
         print(f"== {q}: {len(found)} free photos")
         for i, item in enumerate(found, 1):
             stem = re.sub(r"[^a-z0-9]+", "-", q.lower()).strip("-") + f"-{i}"
-            item["file"] = os.path.join(args.out, stem + ".jpg")
             if args.download:
+                item["file"] = os.path.join(args.out, stem + ".jpg")
                 url = f"https://images.unsplash.com/{item['id']}?w={args.width}&q=80&fm=jpg&fit=crop"
                 with open(item["file"], "wb") as fh:
                     fh.write(fetch(url))
             print(f"  {stem:28} {item['orientation']:9} {item['author'][:24]:24} {item['alt'][:70]}")
             results.append(item)
 
-    with open(os.path.join(args.out, "manifest.json"), "w") as fh:
+    # keep the credits of earlier searches in the same folder; a photo found again replaces its entry
+    path = os.path.join(args.out, "manifest.json")
+    old = []
+    if os.path.exists(path):
+        try:
+            old = json.load(open(path, encoding="utf-8"))
+        except ValueError:
+            old = []
+    ids = {r["id"] for r in results}
+    results = [r for r in old if isinstance(r, dict) and r.get("id") not in ids] + results
+    with open(path, "w", encoding="utf-8") as fh:
         json.dump(results, fh, indent=2, ensure_ascii=False)
     print(f"\n{len(results)} photos -> {os.path.join(args.out, 'manifest.json')}")
 

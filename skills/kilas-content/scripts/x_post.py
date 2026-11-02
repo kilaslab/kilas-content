@@ -26,7 +26,7 @@ URL = re.compile(r"^https?://(?:www\.|mobile\.)?(?:x|twitter)\.com/([A-Za-z0-9_]
 
 
 def curl(url: str, out: str | None = None) -> bytes:
-    cmd = ["curl", "-s", "-f", "-L", "--max-time", "30", url]
+    cmd = ["curl", "-s", "-f", "-L", "--proto", "=https", "--proto-redir", "=https", "--max-time", "30", "--", url]
     if out:
         cmd += ["-o", out]
     return subprocess.run(cmd, check=True, capture_output=True).stdout
@@ -48,7 +48,8 @@ def main() -> int:
         print(f"fxtwitter unavailable or post not public: {e}", file=sys.stderr)
         return 3
     t = data.get("tweet") or {}
-    photos = [p.get("url") for p in (t.get("media") or {}).get("photos", []) if p.get("url")]
+    # the API's answer is untrusted: only https photo URLs, and file names from the URL we validated
+    photos = [p.get("url") for p in (t.get("media") or {}).get("photos", []) if str(p.get("url") or "").startswith("https://")]
     out = {
         "url": t.get("url") or a.url,
         "author": (t.get("author") or {}).get("screen_name"),
@@ -64,7 +65,7 @@ def main() -> int:
         os.makedirs(a.download, exist_ok=True)
         saved = []
         for i, u in enumerate(photos, 1):
-            path = os.path.join(a.download, f"{out['author']}-{pid}-{i}.jpg")
+            path = os.path.join(a.download, f"{user}-{pid}-{i}.jpg")
             curl(u, path)
             saved.append(path)
         out["saved"] = saved

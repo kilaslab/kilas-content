@@ -50,7 +50,7 @@ stat1label: dibanding rekor sebelumnya, Linux 7.3
 Then:
 
 ```bash
-python3 scripts/lint_copy.py copy.md --format <carousel|x|threads|linkedin|reels|long> \
+python3 scripts/lint_copy.py copy.md --format <carousel|single|x|threads|linkedin|reels|long> \
   --brand <brand pack>/brand.md
 ```
 

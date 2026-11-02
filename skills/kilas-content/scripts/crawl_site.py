@@ -57,12 +57,28 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.meta, self.links, self.imgs, self.anchors, self.styles, self.svgs = {}, [], [], [], [], []
         self.title, self._in_title, self._in_style, self._svg_depth, self._svg = "", False, False, 0, None
+        self._svg_names = []  # original-case tag names inside an inline SVG (HTMLParser lowercases them)
+
+    @staticmethod
+    def _raw_name(start_text, tag):
+        m = re.match(r"<\s*([A-Za-z][\w:.-]*)", start_text or "")
+        return m.group(1) if m else tag
+
+    def handle_startendtag(self, tag, attrs):
+        if self._svg_depth:  # a self-closing child inside an SVG: keep it as written
+            self._svg.append(self.get_starttag_text() or "")
+            return
+        self.handle_starttag(tag, attrs)
+        if tag == "svg" and self._svg_depth:  # <svg/> with no children
+            self.handle_endtag("svg")
 
     def handle_starttag(self, tag, attrs):
         a = {k.lower(): (v or "") for k, v in attrs}
         if self._svg_depth:
             self._svg_depth += 1
-            self._svg.append(self.get_starttag_text() or "")
+            raw = self.get_starttag_text() or ""
+            self._svg_names.append(self._raw_name(raw, tag))
+            self._svg.append(raw)
             return
         if tag == "title":
             self._in_title = True
@@ -80,14 +96,18 @@ class Page(HTMLParser):
             self._in_style = True
         elif tag == "svg":
             hint = " ".join(a.get(k, "") for k in ("class", "id", "aria-label", "role")).lower()
-            self._svg_depth, self._svg = 1, [self.get_starttag_text() or "<svg>"]
+            raw = self.get_starttag_text() or "<svg>"
+            if "xmlns=" not in raw:
+                raw = re.sub(r"^<\s*svg", '<svg xmlns="http://www.w3.org/2000/svg"', raw, count=1, flags=re.I)
+            self._svg_depth, self._svg, self._svg_names = 1, [raw], ["svg"]
             self._svg_hint = hint
         if a.get("style"):
             self.styles.append(a["style"])
 
     def handle_endtag(self, tag):
         if self._svg_depth:
-            self._svg.append(f"</{tag}>")
+            name = self._svg_names.pop() if self._svg_names else tag
+            self._svg.append(f"</{name}>")
             self._svg_depth -= 1
             if self._svg_depth == 0:
                 self.svgs.append((self._svg_hint, "".join(self._svg)))
@@ -132,6 +152,9 @@ class Crawler:
         return self.rp is None or self.rp.can_fetch(UA, url)
 
     def get(self, url, limit):
+        if urllib.parse.urlsplit(url).scheme not in ("http", "https"):
+            self.notes.append(f"skipped (not http/https): {url[:80]}")
+            return None, None
         if not self.allowed(url):
             self.notes.append(f"robots.txt disallows {url}")
             return None, None
@@ -207,7 +230,7 @@ def main():
         return 3
     pages, texts = [], []
     p = Page(); p.feed(home.decode("utf-8", "replace")); pages.append((a.url, p))
-    about = [h for h in p.anchors if re.search(r"/(about|tentang|about-us|tentang-kami|company|profil)\b", h, re.I)][:2]
+    about = list(dict.fromkeys(h for h in p.anchors if re.search(r"/(about|tentang|about-us|tentang-kami|company|profil)\b", h, re.I)))[:2]
     for path in (a.extra or about):
         u = absolute(a.url, path)
         if urllib.parse.urlparse(u).netloc != urllib.parse.urlparse(a.url).netloc:

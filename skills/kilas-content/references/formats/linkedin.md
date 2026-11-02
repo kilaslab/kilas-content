@@ -20,8 +20,8 @@ whether the rest is read.
 ## 2. Document post (the carousel as a PDF)
 
 - Upload the carousel frames as one PDF: every page the same size (1080×1350), up to 300
-  pages, 100 MB. `python3 scripts/slides_to_pdf.py <png dir> out.pdf`, or Figma's PDF
-  export.
+  pages, 100 MB. `python3 scripts/slides_to_pdf.py <png dir> -o export/<slug>.pdf` (run
+  it without `-I`: it needs Pillow), or Figma's PDF export.
 - Give the document a title (shown on the cover of the viewer): the cover headline.
 - The post text above it is a short version of the text post: hook, two sentences, "the
   data is in the document", source.

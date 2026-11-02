@@ -2,7 +2,7 @@
 
 Everything brand-specific lives in a brand pack: identity, audience, language and
 voice, channels, pillars, series, cadence, CTAs, moments, long-form format, banned
-phrases, compliance, sources (`brand.md`), and colours, fonts, presets, logo
+phrases, compliance, sources (`brand.md`), and colours, fonts, schemes, logo
 (`design.md`). The rest of the skill is brand-agnostic and reads these files.
 
 ## Where the skill looks

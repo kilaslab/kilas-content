@@ -3,7 +3,8 @@
 One layout system for every frame the skill builds (carousel slides, single posts,
 Reels covers, X images, LinkedIn documents). It is written in **roles**; the brand
 pack's `design.md` maps each role to a colour and a font, and may define several
-presets. `scripts/figma-helpers.js` implements it, and `scripts/figma_bundle.py` joins
+schemes. `scripts/figma-helpers.js` (Figma) and `templates/html/kit.css` + `kit.js`
+(HTML, `html-render.md`) implement it, and `scripts/figma_bundle.py` joins
 the helpers, the brand's `BRAND` block, and your build code into one `use_figma` call
 under the tool's 50,000-character limit.
 
@@ -15,7 +16,7 @@ under the tool's 50,000-character limit.
 |---|---|
 | `ground` | light interior background |
 | `text` | text on `ground` |
-| `dark` | dark background of covers, closes, and dark presets |
+| `dark` | dark background of covers, closes, and dark schemes |
 | `onDark` | text on `dark` and on photos (usually the light ground colour) |
 | `primary` | big stats, the highlighted bar, tip cards, quote bars |
 | `surface` | photo placeholders, quote cards, chips |
@@ -63,6 +64,7 @@ grid band y=240–1680); X landscape image 1600×900 (margin 80). See `formats/s
 ## 3. Layouts
 
 Every layout is a function in `scripts/figma-helpers.js`; do not redraw them by hand.
+The HTML equivalents are classes in the slide kit (`html-render.md` section 2).
 Which one to use for which slide, and how to vary them between pieces, is in
 `design-variety.md`; `scripts/figma-gallery.js` shows them all in the brand's design.
 
@@ -106,7 +108,7 @@ More layout patterns from other accounts, with when to use each, in
   `highlight`, rest `rule`. Readers commit when they can see the length.
 - **Duotone photos**: every stock or generated photo is greyscaled and toned between
   two brand colours, so photos from many sources read as one series
-  (`figma-mechanics.md`). Screenshots stay in colour.
+  (`figma-mechanics.md`, or the `.duo` classes in HTML). Screenshots stay in colour.
 - **Honest chart**: bars from zero, the previous record as a dashed line, the record bar
   in `primary` with its label on the highlighter.
 
@@ -126,7 +128,7 @@ A brand pack may replace or add moves (a motif, a texture); it says so in `desig
 
 ## 6. No design pack yet
 
-If the brand has no `design.md`, derive a first preset (`brand-onboarding.md`
-section 3): take colours and fonts from the brand's site CSS or logo, map them to the
+If the brand has no `design.md`, run the setup-content skill, which derives the schemes
+(`brand-onboarding.md` section 3): take colours and fonts from the brand's site CSS or logo, map them to the
 roles above, check contrast, and write `design.md` before building. Show the owner one
 cover before building a whole set.

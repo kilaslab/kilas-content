@@ -20,7 +20,9 @@ This skill ships with the **kilas-content** skill (same repository). Load that s
 - `content/setup.md` exists: tell the user setup was done on its date, show its summary,
   and ask only what they want to change (a new brand, a new renderer, fresh assets, the
   image generator).
-- `content/brand/brand.md` exists but no `setup.md`: keep the pack, run steps 3–6.
+- A brand pack exists (`content/brand/`, or the skill's `brands/<name>/`) but no
+  `setup.md`: keep it. Ask only step 1 questions 3, 4, and 8 (assets, renderer,
+  images); run step 2 if allowed, step 3 only to fill gaps, then steps 4–6.
 - Take stock of tools (`<skill>/references/research-tools.md` section 1): page fetch,
   web search, a real browser (`ego-browser`, the host's browser), the Figma MCP, Python
   Playwright or a Chrome binary (`python3 <skill>/scripts/render_slides.py --help`
@@ -53,7 +55,8 @@ recommended option when you can infer one:
    sales) and how many pieces a week the team can really finish.
 7. **Limits**: words or claims never to use, things that need approval or disclosure.
 8. **Images**: whether to generate illustrations for metaphor slides automatically
-   (recommend yes when you have your own image tool or agy: it is part of their plan).
+   (recommend yes when you have your own image tool or agy: usually covered by their
+   subscription).
    If a paid key was found (OpenAI, Gemini, xAI), ask whether the skill may use it and
    which one first; it costs money per image. Say they can change this any time just
    by asking ("pakai Gemini", "jangan yang berbayar").
@@ -96,7 +99,7 @@ Follow `<skill>/references/brand-onboarding.md` (sections 3–4) with what you c
   pages, channels and handles from the links, pillars and series (proposed), cadence
   from capacity, CTAs that point somewhere that works today.
 - `content/brand/design.md` from `<skill>/brands/_template/design.md`:
-  - **Colours**: the most-used non-neutral colours from `assets.md` (and the computed
+  - **Colours**: the most-used non-neutral colours from `content/brand/assets/site/assets.md` (and the computed
     tokens), mapped to the roles in `<skill>/references/design-system.md`. Check
     contrast; pick a highlight that is not the text colour.
   - **Schemes**: the brand's default scheme from its own colours, plus a black-and-white

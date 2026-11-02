@@ -4,7 +4,7 @@ A piece of content is only as good as what you found before writing. Hosts diffe
 OpenCode, Cursor, omp, and agy each give an agent a different set of tools. Take stock
 first, use every research tool you have, and say plainly what you could not check.
 
-## 1. Take stock (before step 1 of SKILL.md)
+## 1. Take stock (step 2 of SKILL.md)
 
 Match by what the tool does, not its exact name. Names below are examples.
 
@@ -16,13 +16,15 @@ Match by what the tool does, not its exact name. Names below are examples.
 | Headless browser | `playwright-cli` | simple public pages; Cloudflare-protected sites (phoronix.com) return "Just a moment...", HTTP 403 |
 | Social media | an MCP server or built-in tool that reads X, Instagram, Threads, LinkedIn, YouTube, Reddit (in Cursor, any X/Grok integration it offers) | a named person's own words, original media, reactions, metrics |
 | X without login | `scripts/x_post.py <post url>` (public fxtwitter API, tested) | text, date, metrics, and full-size photos of one public post |
+| Frames | the Figma MCP (`use_figma`, `upload_assets`), or Python Playwright / Chrome for the HTML renderer | building and checking frames, per `content/setup.md` |
+| Images | your own image tool (Grok Bot's Grok Imagine, Codex, ChatGPT, Antigravity), `python3 scripts/gen_image.py detect` (agy, OpenAI, Gemini, xAI keys) | metaphor images (`image-sourcing.md`) |
 
 How to look:
 
 - Read your own tool list. MCP tools usually carry the server name (`mcp__<server>__...`).
 - In hosts with a tool catalog search (Code Mode `search(...)`), search for `twitter`,
   `x.com`, `instagram`, `threads`, `social`, `reddit`, `browser`.
-- Check CLIs: `command -v ego-browser agent-browser playwright-cli`.
+- Check CLIs: `command -v ego-browser agent-browser playwright-cli agy`.
 
 Write the result at the top of `copy.md` as a note, for example:
 

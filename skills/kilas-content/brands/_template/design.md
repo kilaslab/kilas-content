@@ -1,9 +1,11 @@
 # <Brand> design pack
 
-Map the brand's colours and fonts to the roles in `references/design-system.md`. One
-preset is enough to start; add a second only for a clearly different mood.
+Map the brand's colours and fonts to the roles in `references/design-system.md`, then
+fill the `BRAND` block below: it is what both renderers read (`scripts/figma_bundle.py`
+for Figma, `scripts/brand_css.py` for HTML → PNG). Start with the brand's default scheme
+plus a black-and-white, a dark, and a loud-accent scheme (setup-content step 3).
 
-## Preset A: <name>
+## Default scheme: <name> (roles for reference)
 
 ### Roles
 
@@ -18,6 +20,7 @@ preset is enough to start; add a second only for a clearly different mood.
 | `muted` | | |
 | `mutedDark` | | |
 | `rule` | | |
+| `onDark` | | |
 
 | Role | Font |
 |---|---|
@@ -37,9 +40,7 @@ Each needs `onDark` (light text on dark grounds) and a duotone pair. Give each s
 own scheme; one-off pieces rotate (`references/design-variety.md` section 2b). Check text
 on ground and muted on ground at 4.5:1, big numbers on ground at 3:1.
 
-Duotone pair for photos: highlight `#______` over shadow `#______`.
-
-### BRAND block for `scripts/figma-helpers.js`
+### BRAND block (read by `figma_bundle.py` and `brand_css.py`)
 
 ```js
 const BRAND = {
@@ -74,5 +75,6 @@ const BRAND = {
 
 | | |
 |---|---|
-| Figma file for social content | |
+| Renderer | Figma file `<key>` (one new page per piece), or HTML → PNG |
+| Gallery | Figma pages `<names>`, or `content/setup-gallery/*.jpg` |
 | Site source or brand guide | |

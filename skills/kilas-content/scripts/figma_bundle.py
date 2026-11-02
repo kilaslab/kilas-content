@@ -57,7 +57,8 @@ def shake(helpers: str, build: str):
     """Drop layout functions the build does not use. Returns (code, dropped names)."""
     blocks, lines = functions(helpers), helpers.splitlines()
     body = {n: "\n".join(lines[a:b + 1]) for n, (a, b) in blocks.items()}
-    calls = lambda text: {n for n in LAYOUTS if re.search(r"\b" + n + r"\(", text)}
+    # any mention counts (a call, `{ dark: coverDark }`, `pick[k](...)` via a map), not only `name(`
+    calls = lambda text: {n for n in LAYOUTS if re.search(r"\b" + n + r"\b", text)}
     keep, todo = set(), calls(build)
     while todo:
         n = todo.pop()
@@ -108,6 +109,8 @@ def main() -> int:
     if a.n:
         helpers = re.sub(r"^const N = \d+;", f"const N = {a.n};", helpers, count=1, flags=re.M)
     if a.scheme:
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", a.scheme):
+            ap.error("--scheme must be a key of BRAND.schemes (letters, digits, - and _)")
         helpers = re.sub(r"^const SCHEME = .*$", f"const SCHEME = '{a.scheme}';", helpers, count=1, flags=re.M)
     if a.keep_page:
         helpers = re.sub(r"^const REBUILD = true;", "const REBUILD = false;", helpers, count=1, flags=re.M)
@@ -129,7 +132,8 @@ def main() -> int:
         r = subprocess.run(["node", "-e", "const AF=Object.getPrototypeOf(async function(){}).constructor;new AF(require('fs').readFileSync(process.argv[1],'utf8'))", f.name], capture_output=True, text=True)
         os.unlink(f.name)
         if r.returncode:
-            problems.append("does not parse: " + (r.stderr.strip().splitlines() or ["?"])[-1])
+            err = [l for l in r.stderr.splitlines() if "Error" in l] or r.stderr.strip().splitlines() or ["?"]
+            problems.append("does not parse: " + err[0].strip())
     with open(a.out, "w", encoding="utf-8") as f:
         f.write(code)
     print(f"{a.out}: {len(code)} characters (limit {LIMIT})" + (f"; unused layouts dropped: {', '.join(dropped)}" if dropped else ""))

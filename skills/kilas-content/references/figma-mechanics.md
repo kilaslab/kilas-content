@@ -35,7 +35,7 @@ carousel. Write your slides in a file and bundle:
 
 ```bash
 python3 scripts/figma_bundle.py --brand <pack>/design.md --page "Carousel — <item>" \
-  build.js -o bundle.js --tail "return { media, issues: layoutCheck() };"
+  --scheme <scheme> --n <frames> build.js -o bundle.js --tail "return { media, issues: layoutCheck() };"
 ```
 
 It inlines the brand's `BRAND` block, sets the page name, strips comment lines, checks

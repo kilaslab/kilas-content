@@ -130,11 +130,14 @@ npx skills add @@REPO@@ --skill {name} --skill setup-content -g -a claude-code  
 ```
 
 Or by hand: copy `skills/{name}/` and `skills/setup-content/` side by side into your
-agent's skills folder (`~/.claude/skills/`, `~/.agents/skills/`, ...).
+agent's skills folder (`~/.claude/skills/`, `~/.agents/skills/`, `~/.grok/skills/` for Grok
+Build and Grok Bot, ...).
 
 Needs Python 3.9+. Optional, detected at run time: the Figma MCP (Figma frames), Python
 Playwright or Chrome/Chromium (HTML → PNG frames), web search and fetch, a real browser
-for profile capture, and image-generation tools. Companion skills (`copywriting`,
+for profile capture, and image generation: the agent's own image tool (Grok Bot's Grok
+Imagine, Codex, ChatGPT, Antigravity), the Antigravity CLI `agy`, or an OpenAI, Gemini,
+or xAI key the owner allows at setup. Companion skills (`copywriting`,
 `social`, `humanizer`, `bahasa-indonesia`) are listed in
 `skills/{name}/references/prerequisites.md`.
 
@@ -160,9 +163,9 @@ PY
 
 leaks=0
 for w in "${words[@]}"; do
-  if grep -rIil -- "$w" "$dest" >/dev/null 2>&1; then
+  if grep -rIilF -- "$w" "$dest" >/dev/null 2>&1; then
     echo "private word '$w' found in:" >&2
-    grep -rIil -- "$w" "$dest" | sed "s#^$dest/#  #" >&2
+    grep -rIilF -- "$w" "$dest" | sed "s#^$dest/#  #" >&2
     leaks=1
   fi
 done

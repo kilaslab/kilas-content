@@ -89,8 +89,10 @@ python3 scripts/contact_sheet.py content/items/<item>/photos -o content/items/<i
 ### When it happens
 
 Generate **without asking** when a metaphor slide (cover, context, the turn, the close
-background) has no fitting photo of the brand's own and the Unsplash contact sheet has
-nothing specific to the story. Evidence slides never get a generated image. The owner
+background) has no fitting photo of the brand's own and the picture it needs is the
+story's metaphor made specific (an Indonesian canal floodgate, not "a dam"). Unsplash
+stays the choice for real things where any good example will do, and the fallback when
+no generator is available or the owner turned generation off. Evidence slides never get a generated image. The owner
 can change this at any time ("pakai Gemini", "jangan pakai yang berbayar", "tanpa gambar
 AI"): follow it for the piece, and when they say it should stick, update the Images
 line in `content/setup.md`.
@@ -99,13 +101,13 @@ line in `content/setup.md`.
 
 1. **The agent's own image tool**, when it has one: `generate_image` in Grok Bot (Grok
    Imagine), and in Grok Build when its tools include image generation; image generation
-   in Codex and ChatGPT; `generate_image` in Antigravity; a Gemini CLI image extension. It is part of the user's plan: use it
-   directly. Get the exact prompts from `python3 scripts/gen_image.py prompt <ratio>
+   in Codex and ChatGPT; `generate_image` in Antigravity; a Gemini CLI image extension. It usually comes with the host's subscription
+   (`content/setup.md` says if not): use it directly. Get the exact prompts from `python3 scripts/gen_image.py prompt <ratio>
    "<style>" "<subject>" ...`, generate one image per prompt, save each file in
    `content/items/<item>/gen/`, then record it so the credit is kept:
    `python3 scripts/gen_image.py record content/items/<item>/gen <file> --label "Grok Imagine"`.
-2. **`agy`** (Antigravity CLI), when installed and signed in. Also part of the user's
-   plan; `gen_image.py make` uses it first.
+2. **`agy`** (Antigravity CLI), when installed and signed in. Usually covered by the
+   user's Google plan; `gen_image.py make` uses it first.
 3. **A paid image API**, only when `content/setup.md` says the owner allowed it (asked
    once at setup): OpenAI (`OPENAI_API_KEY`, gpt-image-2), Gemini (`GEMINI_API_KEY`,
    gemini-3.1-flash-image), xAI Grok Imagine (`XAI_API_KEY`, grok-imagine-image-2.0).

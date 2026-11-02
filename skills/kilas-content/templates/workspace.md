@@ -10,6 +10,7 @@ content/
 ├── setup.md                  written by the setup-content skill: brand, renderer, assets, permission
 ├── brand/                    brand.md + design.md (if the pack lives with the project)
 │   └── assets/               the brand's own logo, icons, photos, profile captures (site/, instagram/, ...) + README.md
+├── setup-gallery/            HTML renderer only: the example rendered in each scheme at setup
 ├── ideas.md                  backlog: one bullet per idea, with a source
 ├── design-log.md             one row per piece: which layout variants it used
 ├── plan/
@@ -22,7 +23,8 @@ content/
 │       ├── publish.md        final text per channel, alt text, time, links, status
 │       ├── sources/          downloaded source material (never executed)
 │       ├── artefacts/        screenshots + sources.md log
-│       ├── photos/  gen/     stock and generated images with credits
+│       ├── photos/  gen/     stock and generated images, each with a manifest.json of credits
+│       ├── html/             HTML renderer only: slides.html, kit, brand.css, img/
 │       └── export/           PNG/PDF exports
 └── reviews/
     └── 2026-11.md            monthly review (templates/review-month.md)

@@ -43,7 +43,11 @@ def main():
     ap.add_argument("format", choices=sorted(COPY))
     ap.add_argument("--title", default="")
     a = ap.parse_args()
-    dt.date.fromisoformat(a.date)
+    try:
+        dt.date.fromisoformat(a.date)
+    except ValueError:
+        print(f"date '{a.date}': use an existing YYYY-MM-DD date", file=sys.stderr)
+        return 2
     if not re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", a.slug):
         print("slug: lowercase letters, digits, and hyphens only", file=sys.stderr)
         return 2
@@ -72,6 +76,9 @@ def main():
         with open(os.path.join(item, "storyboard.md"), "w", encoding="utf-8") as f:
             f.write(f"# Storyboard: {title}\n\n| # | Time | Shot (what we see) | On-screen text | Voice-over | Asset / source |\n|---|---|---|---|---|---|\n| 1 | 0–3 s | | | | |\n")
     print(item)
+    lint = {"thread": "x", "document": "linkedin"}.get(a.format, a.format)
+    print(f"lint it with: python3 {os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lint_copy.py')} "
+          f"{os.path.join(item, 'copy.md')} --format {lint} --brand <pack>/brand.md")
     return 0
 
 

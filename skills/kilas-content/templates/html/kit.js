@@ -12,8 +12,12 @@
   const q = new URLSearchParams(location.search);
   if (q.get('scheme')) document.body.dataset.scheme = q.get('scheme');
   const rootCss = getComputedStyle(document.body);
+  const pageIssues = [];
   const v = n => { const s = rootCss.getPropertyValue(n).trim(); try { return JSON.parse(s); } catch (e) { return s.replace(/^["']|["']$/g, ''); } };
   const B = { site: v('--brand-site'), handle: v('--brand-handle'), swipe: v('--brand-swipe') || '→', end: v('--brand-end'), sources: v('--brand-sources'), letter: v('--brand-logo-letter'), wordmark: v('--brand-wordmark'), logo: v('--brand-logo-image'), logoDark: v('--brand-logo-image-dark') };
+  const known = (v('--brand-schemes') || '').split(/\s+/).filter(Boolean);
+  const asked = document.body.dataset.scheme;
+  if (asked && known.length && !known.includes(asked)) pageIssues.push({ issue: 'unknown scheme "' + asked + '" (the brand has: ' + known.join(', ') + '); the default was used' });
   const slides = [...document.querySelectorAll('section.slide')];
   const N = +(document.body.dataset.total || slides.length);
   const pad = n => String(n).padStart(2, '0');
@@ -136,7 +140,20 @@
     document.querySelectorAll('.columns').forEach(c => {
       (c._hl || []).forEach(i => { const bar = c.children[i]; if (!bar) return; const lab = el('div', 'val', fmt(c._vals[i], c._sep)); lab.style.left = (bar.offsetLeft + bar.offsetWidth / 2) + 'px'; lab.style.bottom = (c._vals[i] / c._max * 100) + '%'; lab.style.transform = 'translate(-50%, -12px)'; c.append(lab); });
     });
-    const issues = check();
+    const issues = pageIssues.concat(check());
+    // fonts: a family that did not load renders in the fallback; compare widths against it
+    const ctx = document.createElement('canvas').getContext('2d'), probe = 'Hamburgefontsiv 0123 WMQ';
+    (v('--brand-fonts') || '').split('|').filter(Boolean).forEach(fam => {
+      const same = ['monospace', 'serif'].every(g => { ctx.font = '40px ' + g; const a = ctx.measureText(probe).width; ctx.font = '40px "' + fam + '", ' + g; return ctx.measureText(probe).width === a; });
+      if (same) issues.push({ issue: 'font "' + fam + '" did not load (no network, or not on Google Fonts): slides use the fallback; name a substitute in design.md' });
+    });
+    // images that did not load show as empty plates
+    document.querySelectorAll('section.slide img').forEach(im => {
+      const s = im.closest('section.slide');
+      if (s.style.display === 'none' || (im.complete && im.naturalWidth)) return;
+      issues.push({ slide: pad(slides.indexOf(s) + 1), issue: 'image missing: ' + (im.getAttribute('src') || '(no src)') });
+      im.style.visibility = 'hidden';
+    });
     window.__issues = issues;
     const pre = el('pre'); pre.id = 'kit-issues'; pre.hidden = true; pre.textContent = JSON.stringify(issues); document.body.append(pre);
     document.documentElement.dataset.ready = '1';

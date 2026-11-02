@@ -32,6 +32,7 @@ AGY="${AGY_BIN:-$(command -v agy || true)}"
 
 mkdir -p "$1"
 out="$(cd "$1" && pwd)"
+marker="$(mktemp)"; trap 'rm -f "$marker"' EXIT   # only files newer than this run count
 ratio="$2"; style="$3"; shift 3
 model="${AGY_MODEL:-gemini-3.8-flash-low}"
 
@@ -71,12 +72,15 @@ missing=0
 for p in "${paths[@]}"; do
   if [ ! -s "$p" ]; then
     # trap 2: look for it in agy's scratch dir
-    alt="$(find "$HOME/.gemini/antigravity-cli/scratch" -name "$(basename "$p")" -newer "$0" 2>/dev/null | head -1 || true)"
+    alt="$(find "$HOME/.gemini/antigravity-cli/scratch" -name "$(basename "$p")" -newer "$marker" 2>/dev/null | head -1 || true)"
     if [ -n "$alt" ]; then cp "$alt" "$p"; echo "recovered from scratch: $alt" >&2; fi
   fi
   if [ -s "$p" ]; then
-    dims="$(sips -g pixelWidth -g pixelHeight "$p" 2>/dev/null | awk '/pixel/{printf "%s ", $2}')"
-    echo "$p  ${dims}"
+    dims=""
+    if command -v sips >/dev/null 2>&1; then   # macOS only; the size is informative
+      dims="$(sips -g pixelWidth -g pixelHeight "$p" 2>/dev/null | awk '/pixel/{printf "%s ", $2}' || true)"
+    fi
+    printf '%s\t%s\n' "$p" "$dims"   # tab-separated: paths may contain spaces
   else
     echo "MISSING $p" >&2; missing=1
   fi

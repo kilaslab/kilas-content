@@ -20,6 +20,12 @@ drafts that lost and why; imitate the moves, not the sentences.
 
 ## Start here, every run
 
+Paths to `scripts/`, `references/`, `templates/`, and `brands/` are inside this skill's
+folder; `content/` is in the project you work in. Run commands from the project root
+with the skill's path, for example `python3 <skill>/scripts/new_item.py content ...`
+(`<skill>` is the folder this file is in). Scripts that use Pillow (`contact_sheet.py`,
+`slides_to_pdf.py`, `artefact_marks.py`, `ref_sheets.py`) run without `python3 -I`.
+
 0. **Setup check.** Read `content/setup.md` in the project. If it does not exist, this
    is the first run: run the **setup-content** skill (installed alongside; in this repository at
    `../setup-content/SKILL.md`; invoke it, or follow it by hand) before anything else. It
@@ -33,10 +39,10 @@ drafts that lost and why; imitate the moves, not the sentences.
 2. **Take stock of tools** and use every one that helps (`references/research-tools.md`):
    web search, page fetch, a real browser (`ego-browser`), social-media MCPs or built-in
    X access, Figma MCP, and image generation: your own image tool if you have one (Grok
-   Bot's Grok Imagine, Codex, ChatGPT, Antigravity), then `python3 scripts/gen_image.py
+   Bot's Grok Imagine, Codex, ChatGPT, Antigravity), then `python3 <skill>/scripts/gen_image.py
    detect` (agy, OpenAI, Gemini, xAI keys). Note what is missing.
 3. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
-   `reviews/`, `ideas.md`. Create it the first time.
+   `reviews/`, `ideas.md`, `design-log.md`. Create it the first time.
 4. **Pick the mode** below.
 
 | The user wants | Mode |
@@ -54,13 +60,13 @@ drafts that lost and why; imitate the moves, not the sentences.
 2. Write `content/plan/YYYY-MM.md` from `templates/plan-month.md`: pillars at their
    shares, series on their cadence, about a quarter of slots reactive, each strong item
    cut into 3–5 formats on different days.
-3. `python3 scripts/check_plan.py content/plan/YYYY-MM.md --brand <pack>/brand.md` until
+3. `python3 <skill>/scripts/check_plan.py content/plan/YYYY-MM.md --brand <pack>/brand.md` until
    no FAIL; explain any warning you keep in the plan's notes.
 4. Report: the month in three lines, what is proposed and needs a yes, the gaps.
 
 ## Create
 
-1. **Item folder**: `python3 scripts/new_item.py content <date> <slug> <format>`.
+1. **Item folder**: `python3 <skill>/scripts/new_item.py content <date> <slug> <format>`.
 2. **Research** (`research-tools.md`): primary source, one link deep, corrections since
    publication, named people's own words, the local angle, a second source per number.
 3. **Story** in `brief.md` (`writing-craft.md` sections 1–4): five questions, the turn,
@@ -68,12 +74,15 @@ drafts that lost and why; imitate the moves, not the sentences.
    `copy-playbook.md`), the slide or post worth saving, five hooks in at least three
    shapes put through the gates and the duels, one metaphor family with its `Verbs:`
    line.
-4. **Copy** in `copy.md` for the format (`references/formats/<format>.md`), a `>` source
+4. **Copy** in `copy.md` for the format (`references/formats/`: `carousel.md`,
+   `single-post.md`, `x.md`, `threads.md`, `linkedin.md`, `reels-tiktok.md`,
+   `long-form.md`), a `>` source
    note under every number, name, and quote. Every headline passes "lalu kenapa?" and
    the metaphor is in at least three of them; caveats go where `writing-craft.md` 7b
    puts them; the action passes "who, with what, when". Then
-   `python3 scripts/lint_copy.py copy.md --format <format> --brand <pack>/brand.md`
-   must exit 0. Read its warnings and its headline-only read; write that read into
+   `python3 <skill>/scripts/lint_copy.py <item>/copy.md --format <format> --brand <pack>/brand.md`
+   must exit 0 (`new_item.py` prints the right `--format`: `thread` lints as `x`,
+   `document` as `linkedin`). Read its warnings and its headline-only read; write that read into
    `brief.md`, and read the copy aloud once.
 5. **Images** (`image-sourcing.md`): real artefacts on evidence frames; for metaphor
    frames the brand's own photos, then a generated image made automatically when
@@ -85,17 +94,22 @@ drafts that lost and why; imitate the moves, not the sentences.
    slide by the slide's job and by what `content/design-log.md` says was used recently,
    so no two pieces look alike. Write them in the "Design" table of `brief.md`, with one
    headline mark style and one slide that breaks the pattern. The brand pack's gallery
-   pages and `refs/` show the options.
-7. **Build** with the renderer in `content/setup.md` (`design-system.md`):
+   pages (Figma) or `content/setup-gallery/*.jpg` (HTML), and `refs/` when the pack has
+   them, show the options.
+7. **Build** with the renderer in `content/setup.md` (`design-system.md`); when it says
+   both, follow its rule for which pieces go where, else ask:
    - **Figma** (`figma-mechanics.md`): the layout functions in
      `scripts/figma-helpers.js`, bundled with the pack's `BRAND` block by
-     `scripts/figma_bundle.py --scheme <scheme>` (the tool takes 50,000 characters), on
+     `scripts/figma_bundle.py --brand <pack>/design.md --page "<name>" --scheme <scheme>
+     --n <frames>` (the tool takes 50,000 characters), on
      a new page of the brand's Figma file; never touch other pages. Upload images, then
      tone them in a second call with the scheme's pairs (`duotone(id, 'light' | 'dark')`).
    - **HTML → PNG** (`html-render.md`): `scripts/new_html.py` sets up the item's
      `html/` folder with the kit and the brand's CSS; write `slides.html` with the
-     kit's layouts; `scripts/render_slides.py` renders one PNG per slide.
-   Reels: `storyboard.md` + a 1080×1920 cover frame (Figma).
+     kit's layouts, with the chosen photos and generated images copied into `html/img/`;
+     `scripts/render_slides.py` renders one PNG per slide.
+   Reels: `storyboard.md` + a 1080×1920 cover frame (Figma, or a separate HTML page as
+   `html-render.md` section 4 says).
 8. **Verify cheaply**: the layout check first (`layoutCheck()` in Figma, the issues
    `render_slides.py` prints in HTML) and fix what it reports; then look at the cover,
    the data frame, and what changed (screenshots one at a time in Figma; the PNGs in
@@ -116,7 +130,8 @@ whole on its own, and links back. The carousel frames double as the LinkedIn doc
 
 ## Review
 
-`templates/review-month.md`: numbers only from the platform or the owner, dated;
+Write `content/reviews/YYYY-MM.md` from `templates/review-month.md`: numbers only from
+the platform or the owner, dated;
 compare each piece with the brand's own median for its format; decide keep, fix, or stop
 per series; carry the decisions into next month's plan. No numbers shared: list what to
 collect, and stop.
@@ -162,8 +177,8 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
       previous piece in `content/design-log.md`; one slide breaks the pattern.
 - [ ] One scheme applied; the brand's own photos used where they fit; photos toned;
       screenshots in colour, unaltered, credited, marked with highlighter marks.
-- [ ] `layoutCheck()` clean (or each note explained); cover and data frame seen (or the
-      gap reported).
+- [ ] Layout check clean (`layoutCheck()` in Figma, `render_slides.py` in HTML) or each
+      note explained; cover and data frame seen (or the gap reported).
 - [ ] Close: one CTA, all sources and credits; generated images labelled as illustrations.
 - [ ] `publish.md` complete and a row added to `content/design-log.md`; nothing
       posted, liked, or followed without explicit consent.

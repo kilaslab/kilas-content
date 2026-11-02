@@ -71,7 +71,9 @@ function useScheme(name) {
   const sc = all[key]; if (!sc) throw new Error('unknown scheme: ' + key);
   for (const k in sc) if (k !== 'duotone') C[k] = hex(sc[k]);
   if (!sc.onDark) C.onDark = C.ground;
-  DUO = sc.duotone || null; SCHEME_NAME = key; return key;
+  const d = sc.duotone || {}; // same fallback pairs as brand_css.py, so both renderers agree
+  DUO = { light: d.light || [sc.surface, sc.primary], dark: d.dark || [sc.mutedDark, sc.dark] };
+  SCHEME_NAME = key; return key;
 }
 useScheme();
 
@@ -404,7 +406,7 @@ function barChart(s, y, o) {
 // o: { values: [..], h = 420, highlight: [indices] (default the last), ref: { value, label }, first, last, fmt }
 function columnChart(s, y, o) {
   const h = o.h || 420, gut = 78, x0 = M + gut, w = CW - gut, n = o.values.length;
-  const raw = Math.max(...o.values, o.ref ? o.ref.value : 0) * 1.05, p10 = Math.pow(10, Math.floor(Math.log10(raw)));
+  const raw = Math.max(...o.values, o.ref ? o.ref.value : 0) * 1.05 || 1, p10 = Math.pow(10, Math.floor(Math.log10(raw)));
   const max = o.max || [1, 2, 2.5, 5, 10].map(m => m * p10).find(v => v >= raw);
   const fmt = o.fmt || (v => String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
   for (const f of [0, 0.5, 1]) { const gy = y + h - h * f; R(s, 'grid', x0, gy, w, 1, C.rule); T(s, fmt(max * f), F.label, 16, C.muted, M, gy - 10, { w: gut - 12, align: 'RIGHT', name: 'axis' }); }

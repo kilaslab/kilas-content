@@ -2,27 +2,27 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Install the companion skills this content skill depends on.
 # They land in ~/.agents/skills (the shared hub) and are symlinked into every
-# agent the `skills` CLI knows (Claude, Cursor, OpenCode, omp, Antigravity/agy, ...).
+# agent the `skills` CLI knows (Claude, Cursor, OpenCode, omp, Antigravity/agy, Grok, ...).
 #
 # Usage: scripts/install-companions.sh [--project]
-#   --project  install to ./.agents/skills (travels with this repo) instead of -g
+#   --project  install into the current project (the skills CLI's default) instead of -g
 set -euo pipefail
 
-SCOPE="-g"
-[ "${1:-}" = "--project" ] && SCOPE="-p"
+scope=(-g); where="global"
+[ "${1:-}" = "--project" ] && { scope=(); where="project"; }
 
 install() { # <repo-url> <skill>
   echo "== $2"
-  npx -y skills@latest add "$1" --skill "$2" --agent '*' "$SCOPE" -y
+  npx -y skills@latest add "$1" --skill "$2" --agent '*' ${scope[@]+"${scope[@]}"} -y
 }
 
-install https://github.com/coreyhaines31/marketingskills --skill copywriting
-install https://github.com/coreyhaines31/marketingskills --skill social
-install https://github.com/blader/humanizer                --skill humanizer
-install https://github.com/ajipurn/bahasa-indonesia-skill  --skill bahasa-indonesia
+install https://github.com/coreyhaines31/marketingskills copywriting
+install https://github.com/coreyhaines31/marketingskills social
+install https://github.com/blader/humanizer                humanizer
+install https://github.com/ajipurn/bahasa-indonesia-skill  bahasa-indonesia
 
 echo
-echo "Installed into ${SCOPE} scope. Verify:"
+echo "Installed into the ${where} scope. Verify:"
 echo "  ls ~/.agents/skills | grep -E 'copywriting|social|humanizer|bahasa-indonesia'"
 echo
 echo "Not installed here (ships with the Figma MCP server):"

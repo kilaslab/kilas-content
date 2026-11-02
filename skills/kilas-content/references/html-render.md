@@ -15,7 +15,8 @@ It creates `content/items/<item>/html/` with `kit.css`, `kit.js`, `brand.css` (f
 pack's `BRAND` block, with every contrast decision per scheme precomputed), the brand's
 logo files when `logo.image` is set, and `slides.html` copied from
 `templates/html/example.html`, an 8-slide carousel showing the layouts. Edit
-`slides.html`; put images in `html/img/`. `--blank` starts from one slide; `--refresh`
+`slides.html`; copy the photos and generated images you chose from `../photos/` and
+`../gen/` into `html/img/` (credits stay in their manifests). `--blank` starts from one slide; `--refresh`
 updates the kit and `brand.css` without touching `slides.html`.
 
 ## 2. Write the slides
@@ -66,7 +67,7 @@ Type classes: `.h1` (84; `.s64`, `.s72`, `.s96`, `.s110`, `.s120`), `.lines`, `.
 ```bash
 python3 scripts/render_slides.py content/items/<item>/html/slides.html -o content/items/<item>/export
 python3 scripts/render_slides.py .../slides.html -o .../export-2x --scale 2
-python3 scripts/render_slides.py .../slides.html -o /tmp/try --scheme kertas   # try another scheme
+python3 scripts/render_slides.py .../slides.html -o /tmp/try --scheme <scheme>   # try another scheme
 ```
 
 It uses Python Playwright when installed, otherwise Chrome/Chromium headless, and prints

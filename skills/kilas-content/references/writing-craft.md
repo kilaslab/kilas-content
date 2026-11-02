@@ -240,10 +240,10 @@ The right column names who wins, who pays, or what follows.
 
 **Write the headline-only read into `brief.md`** before building. `lint_copy.py` prints
 it too; read it once as a stranger would. If it does not tell the story, or the
-metaphor vanishes after slide 2, fix the headlines before touching Figma.
+metaphor vanishes after slide 2, fix the headlines before building frames.
 
-Then mark the one or two words that carry the claim (in Figma they get the
-highlighter): *pintu air*, *3.404 commit*, *tanpa henti*, *di-revert*, *membendungnya*,
+Then mark the one or two words that carry the claim (they get the headline
+mark): *pintu air*, *3.404 commit*, *tanpa henti*, *di-revert*, *membendungnya*,
 *Waktu reviewer*. If you cannot pick the words, the headline has no claim yet.
 
 Headlines end with a period. They are statements.

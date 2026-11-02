@@ -9,7 +9,7 @@
     python3 scripts/gen_image.py record content/items/<item>/gen <file> --label "Codex" [--subject "..."]
 
 Providers:
-  agy      Antigravity CLI (scripts/agy_image.sh); included in the user's Google plan
+  agy      Antigravity CLI (scripts/agy_image.sh); usually covered by the user's Google plan
   openai   OpenAI Images API, needs OPENAI_API_KEY; paid per image (default model gpt-image-2)
   gemini   Gemini API native image models, needs GEMINI_API_KEY or GOOGLE_API_KEY; paid per
            image (default model gemini-3.1-flash-image)
@@ -97,7 +97,10 @@ def sniff(data, default=".png"):
 
 
 def prompt_for(style, subject, ratio):
-    return f"{style.strip().rstrip('.')}. {subject.strip().rstrip('.')}. Aspect ratio {ratio}. {NEGATIVE}"
+    parts = [x.strip().rstrip(".") for x in (style, subject) if x and x.strip()]
+    if ratio:
+        parts.append(f"Aspect ratio {ratio}")
+    return ". ".join(parts + [NEGATIVE])
 
 
 def post_json(url, body, headers, timeout=240):
@@ -125,11 +128,16 @@ def first_image(d):
     if item.get("b64_json"):
         data = base64.b64decode(item["b64_json"])
     elif item.get("url"):
+        if not str(item["url"]).startswith("https://"):
+            raise RuntimeError("the response's image URL is not https; not fetched")
         with urllib.request.urlopen(item["url"], timeout=120) as r:
-            data = r.read()
+            data = r.read(40 * 1024 * 1024)
     else:
         raise RuntimeError("no image in the response")
-    return data, sniff(data, ".jpg")
+    ext = sniff(data, "")
+    if not ext:
+        raise RuntimeError("the response is not a PNG, JPEG, or WebP image")
+    return data, ext
 
 
 def gen_xai(prompt, ratio, model, hires):
@@ -154,7 +162,10 @@ def gen_gemini(prompt, ratio, model, hires):
             if inline and inline.get("data"):
                 mime = inline.get("mimeType") or inline.get("mime_type") or "image/png"
                 data = base64.b64decode(inline["data"])
-                return data, sniff(data, {"image/jpeg": ".jpg", "image/webp": ".webp"}.get(mime, ".png"))
+                ext = sniff(data, "")
+                if not ext:
+                    raise RuntimeError(f"the response is not a PNG, JPEG, or WebP image ({mime})")
+                return data, ext
     reason = (d.get("promptFeedback") or {}).get("blockReason") or ((d.get("candidates") or [{}])[0].get("finishReason"))
     raise RuntimeError(f"no image in the response ({reason or 'unknown reason'})")
 
@@ -184,7 +195,7 @@ def run_agy(outdir, ratio, style, subjects):
     r = subprocess.run([os.path.join(HERE, "agy_image.sh"), outdir, agy_ratio, style] + subjects,
                        capture_output=True, text=True)
     sys.stderr.write(r.stderr[-2000:])
-    files = [ln.split()[0] for ln in r.stdout.splitlines() if ln.strip() and not ln.startswith("MISSING")]
+    files = [ln.split("\t")[0] for ln in r.stdout.splitlines() if ln.strip() and not ln.startswith("MISSING")]
     model = os.environ.get("AGY_MODEL", "gemini-3.8-flash-low") + " + generate_image"
     entries, ok = [], 0
     for i, subject in enumerate(subjects):
@@ -257,6 +268,9 @@ def main():
             print(f"{i}. {prompt_for(a.style, s, a.ratio)}")
         return 0
     if a.cmd == "record":
+        if not os.path.isfile(a.file):
+            print(f"{a.file} not found", file=sys.stderr)
+            return 2
         os.makedirs(a.outdir, exist_ok=True)
         dst = os.path.join(a.outdir, os.path.basename(a.file))
         if os.path.abspath(a.file) != os.path.abspath(dst):
@@ -301,7 +315,10 @@ def main():
         if provider == "agy":
             entries, ok = run_agy(outdir, a.ratio, a.style, todo)
         else:
-            entries, ok = run_api(provider, outdir, a.ratio, a.style, todo, a.model or found[provider]["model"], a.hires)
+            # --model belongs to the provider asked for, not to the ones auto mode falls through to
+            mine = a.provider == provider or (a.provider == "auto" and a.prefer == provider)
+            model = a.model if (a.model and mine) else found[provider]["model"]
+            entries, ok = run_api(provider, outdir, a.ratio, a.style, todo, model, a.hires)
         if entries:
             append_manifest(outdir, entries)
             used.append(provider)

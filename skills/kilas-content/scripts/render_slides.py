@@ -3,7 +3,7 @@
 """Render slides.html (templates/html kit) to one PNG per slide, and report layout issues.
 
     python3 scripts/render_slides.py content/items/<item>/html/slides.html -o content/items/<item>/export
-    python3 scripts/render_slides.py slides.html -o out --scale 2 --scheme kertas
+    python3 scripts/render_slides.py slides.html -o out --scale 2 --scheme <scheme>
     python3 scripts/render_slides.py slides.html -o out --issues-only
 
 Uses Python Playwright when it is installed (pip install playwright; playwright install
@@ -63,7 +63,7 @@ def with_playwright(src, out, scale, scheme, issues_only):
                 pg.locator("section.slide").nth(i).screenshot(path=f)
                 files.append(f)
         b.close()
-    return issues, files
+    return issues, files, n
 
 
 def with_chrome(chrome, src, out, scale, scheme, issues_only):
@@ -84,7 +84,7 @@ def with_chrome(chrome, src, out, scale, scheme, issues_only):
                                        url_for(src, only=i + 1, scheme=scheme)], capture_output=True, timeout=120)
                 if os.path.exists(f):
                     files.append(f)
-        return issues, files
+        return issues, files, n
     finally:
         shutil.rmtree(prof, ignore_errors=True)
 
@@ -101,6 +101,9 @@ def main():
     a = ap.parse_args()
     out = a.out or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(a.html))), "export")
     os.makedirs(out, exist_ok=True)
+    if not a.issues_only:  # a shorter render must not leave the old 09.png, 10.png behind
+        for old in glob.glob(os.path.join(out, "[0-9][0-9].png")):
+            os.remove(old)
     use_pw = a.browser == "playwright"
     if a.browser == "auto":
         try:
@@ -109,15 +112,17 @@ def main():
         except ImportError:
             use_pw = False
     if use_pw:
-        issues, files = with_playwright(a.html, out, a.scale, a.scheme, a.issues_only)
+        issues, files, n = with_playwright(a.html, out, a.scale, a.scheme, a.issues_only)
         engine = "playwright"
     else:
         chrome = find_chrome(a.chrome)
         if not chrome:
             print("no browser: install Playwright (pip install playwright && playwright install chromium) or Chrome, or pass --chrome", file=sys.stderr)
             return 3
-        issues, files = with_chrome(chrome, a.html, out, a.scale, a.scheme, a.issues_only)
+        issues, files, n = with_chrome(chrome, a.html, out, a.scale, a.scheme, a.issues_only)
         engine = os.path.basename(chrome)
+    if not a.issues_only and len(files) != n:
+        issues.append({"issue": f"{n - len(files)} of {n} slides were not rendered"})
     print(f"{engine}: {len(files)} PNG in {out}" + (f" (scheme {a.scheme})" if a.scheme else ""))
     for i in issues:
         print("issue:", json.dumps(i, ensure_ascii=False))

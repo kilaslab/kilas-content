@@ -21,11 +21,14 @@ npx skills add kilaslab/kilas-content --skill kilas-content --skill setup-conten
 ```
 
 Or by hand: copy `skills/kilas-content/` and `skills/setup-content/` side by side into your
-agent's skills folder (`~/.claude/skills/`, `~/.agents/skills/`, ...).
+agent's skills folder (`~/.claude/skills/`, `~/.agents/skills/`, `~/.grok/skills/` for Grok
+Build and Grok Bot, ...).
 
 Needs Python 3.9+. Optional, detected at run time: the Figma MCP (Figma frames), Python
 Playwright or Chrome/Chromium (HTML → PNG frames), web search and fetch, a real browser
-for profile capture, and image-generation tools. Companion skills (`copywriting`,
+for profile capture, and image generation: the agent's own image tool (Grok Bot's Grok
+Imagine, Codex, ChatGPT, Antigravity), the Antigravity CLI `agy`, or an OpenAI, Gemini,
+or xAI key the owner allows at setup. Companion skills (`copywriting`,
 `social`, `humanizer`, `bahasa-indonesia`) are listed in
 `skills/kilas-content/references/prerequisites.md`.
 

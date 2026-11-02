@@ -25,7 +25,9 @@ writes the brand pack and `content/setup.md`.
 Put this folder in `~/.agents/skills/` (or symlink it there) and link it into each
 agent's skills directory; see `references/prerequisites.md` for the hub layout and the
 companion skills (`copywriting`, `social`, `humanizer`, `bahasa-indonesia`), installed
-with `scripts/install-companions.sh`.
+with `scripts/install-companions.sh`. Link `setup-content/` into the same skills
+directories as its own skill: a `SKILL.md` nested inside another skill is not
+discovered. Grok Build and Grok Bot read `~/.grok/skills/`.
 
 Optional tools make it better and are detected at run time: web search and fetch,
 `ego-browser`, social-media MCPs, the Figma MCP (for Figma frames), Python Playwright or
@@ -43,13 +45,13 @@ OpenAI, Gemini, or xAI key the owner allows (`scripts/gen_image.py`).
 >
 > review konten bulan lalu, apa yang harus diubah
 
-A new brand starts with onboarding: the skill reads the brand's site and posts, asks up
-to eight questions, and writes the brand pack.
+A new brand starts with the setup-content skill: it reads the brand's site and posts,
+asks up to eight questions, and writes the brand pack and `content/setup.md`.
 
 ## Layout
 
 ```
-SKILL.md                          modes (plan, create, repurpose, review, onboard), workflow, quality gate
+SKILL.md                          modes (plan, create, repurpose, review, setup), workflow, quality gate
 brands/
   README.md                       what a brand pack is and where the skill looks
   _template/                      brand.md + design.md to copy for a new brand
@@ -109,7 +111,7 @@ under the GPL and ship their source.
 ## Export a brand-free copy
 
 ```bash
-scripts/export_oss.sh <dest-dir> <skill-name>
+scripts/export_oss.sh [--holder "Name"] [--repo owner/repo] <dest-dir> <skill-name>
 ```
 
 Copies the skill without private brand packs, rewrites the front matter, and fails if a

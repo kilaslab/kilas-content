@@ -2,7 +2,8 @@
 
 One set of 1080×1350 frames serves four platforms: an Instagram carousel, a LinkedIn
 document (the same frames as a PDF), a Threads carousel, and a TikTok photo post. Build
-once in Figma, export per platform (section 6).
+once with the renderer in `content/setup.md` (Figma or HTML → PNG), export per platform
+(section 6).
 
 ## 1. Length
 
@@ -116,7 +117,8 @@ cue. A sponsor's ad is never the close; sponsored pieces are labelled from the c
       "who, with what, when".
 - [ ] Layouts chosen in `brief.md` (`design-variety.md`): the cover and headline mark
       differ from the previous piece; one slide breaks the pattern.
-- [ ] `layoutCheck()` returned no issues (or each one is explained).
+- [ ] `layoutCheck()` (Figma) or `render_slides.py` (HTML) reported no issues, or each
+      one is explained.
 - [ ] Headline-only read tells the story.
 - [ ] One slide worth saving, and you can name it.
 - [ ] Cover works as a thumbnail in a 3:4 grid tile (nothing important in the outer

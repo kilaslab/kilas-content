@@ -17,6 +17,7 @@ read, never changed.
 """
 import argparse
 import json
+import os
 import sys
 
 from PIL import Image
@@ -50,8 +51,14 @@ def main():
     ap.add_argument("--gap", type=int, default=9, help="blank columns that separate two words")
     a = ap.parse_args()
 
+    if not os.path.isfile(a.image):
+        ap.error(f"{a.image} not found")
     im = Image.open(a.image).convert("RGB")
     w, h = im.size
+    if a.mode == "rows" and not 0 <= a.x < w:
+        ap.error(f"--x {a.x} is outside the image (width {w})")
+    if a.mode == "lines" and not 0 <= a.x0 < (a.x1 or w) <= w:
+        ap.error(f"need 0 <= x0 < x1 <= {w}")
     grey = im.convert("L")
     out = {"image": a.image, "size": [w, h], "mode": a.mode}
 
@@ -72,6 +79,8 @@ def main():
         if len(a.y) != 2:
             ap.error("words needs Y0 Y1")
         y0, y1 = a.y
+        if not 0 <= y0 <= y1 < h:
+            ap.error(f"need 0 <= Y0 <= Y1 < {h}")
         flags = [min(grey.getpixel((x, y)) for y in range(y0, y1 + 1)) < a.ink for x in range(w)]
         out["line"] = [y0, y1]
         out["words"] = [[b[0], b[1]] for b in bands(flags, max_gap=a.gap - 1)]

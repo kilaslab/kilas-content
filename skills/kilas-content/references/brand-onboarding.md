@@ -27,10 +27,10 @@ Collect what you can without the owner, so the interview only asks what is missi
 
 ## 2. Interview
 
-One round, at most eight questions, with the host's question tool (the list is in
-`../setup-content/SKILL.md` step 1): goal, reader, channels, capacity, language and
-address, words never used, approvals, who answers comments. Offer a recommended option
-from what you read.
+One round, at most eight questions, with the host's question tool;
+`../setup-content/SKILL.md` step 1 is the list. Fill the reader, the channels, and who
+answers comments from what you read, and mark them `(proposed)`. Offer a recommended
+option for every question from what you read.
 
 ## 3. Draft the pack
 

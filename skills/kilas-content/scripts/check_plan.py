@@ -34,7 +34,7 @@ FORMATS = {
     "document": "document", "linkedin-doc": "document", "threads": "threads", "long": "long",
     "blog": "long", "notes": "long", "newsletter": "long", "article": "long",
 }
-EMPTY = {"", "-", "—"}
+EMPTY = {"", "-", "–", "—"}
 
 
 def tables(text):
@@ -113,7 +113,8 @@ def main():
                 fails.append(f"row {n}: {d} is outside {month}")
             per_day[d] += 1
         except ValueError:
-            fails.append(f"row {n}: date '{d}' is not YYYY-MM-DD")
+            shape = re.fullmatch(r"\d{4}-\d{2}-\d{2}", d or "")
+            fails.append(f"row {n}: date '{d}' " + ("does not exist" if shape else "is not YYYY-MM-DD"))
         st = get(r, "status").lower()
         per_status[st] += 1
         if st not in STATUSES:

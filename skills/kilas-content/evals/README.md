@@ -52,8 +52,8 @@ proposed items flagged for the owner.
 > bikin carousel dari artikel ini <url>, taruh di Figma
 
 Good: primary source found; brief with five questions and the turn; hook workshop;
-`lint_copy.py --format carousel` exits 0; frames in the pack's preset on a new page;
-overflow check clean; `publish.md` with caption, ≤ 5 hashtags, alt text.
+`lint_copy.py --format carousel` exits 0; frames in one of the pack's schemes (a new
+Figma page, or `html/slides.html` rendered to `export/`); layout check clean; `publish.md` with caption, ≤ 5 hashtags, alt text.
 
 ## 4 — Repurpose one source
 
@@ -78,7 +78,8 @@ into the next plan's inputs. Without data: a list of what to collect, nothing in
 Good: each `brief.md` has a "Design" table; the second piece's scheme (unless a series
 fixes it), cover variant, and headline mark differ from the first's (read from
 `content/design-log.md`); each carousel has one
-slide that breaks the pattern; `layoutCheck()` returns no fill or size issues.
+slide that breaks the pattern; `layoutCheck()` (or `render_slides.py`) returns no fill
+or size issues.
 
 ## Fast objective checks
 

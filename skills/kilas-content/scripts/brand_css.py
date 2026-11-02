@@ -45,10 +45,23 @@ def parse_brand(text):
     if not m:
         raise SystemExit("no 'const BRAND = { ... };' block found")
     js = "\n".join(strip_comment(l) for l in m.group(1).splitlines())
-    js = re.sub(r"'((?:[^'\\]|\\.)*)'", lambda x: json.dumps(x.group(1)), js)
-    js = re.sub(r"([{,]\s*)([A-Za-z_]\w*)\s*:", r'\1"\2":', js)
+    # set every string literal aside first, so a ':' or a quote inside one cannot be taken
+    # for a key or a delimiter; then quote the bare keys and put the strings back as JSON
+    strings = []
+
+    def keep(mt):
+        body = mt.group(0)[1:-1]
+        strings.append(re.sub(r"\\(.)", lambda e: {"n": "\n", "t": "\t"}.get(e.group(1), e.group(1)), body))
+        return f"\x00{len(strings) - 1}\x00"
+
+    js = re.sub(r"'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\"|`(?:[^`\\]|\\.)*`", keep, js)
+    js = re.sub(r"([{,]\s*)([A-Za-z_$][\w$]*)\s*:", r'\1"\2":', js)
     js = re.sub(r",(\s*[}\]])", r"\1", js)
-    b = json.loads(js)
+    js = re.sub(r"\x00(\d+)\x00", lambda mt: json.dumps(strings[int(mt.group(1))]), js)
+    try:
+        b = json.loads(js)
+    except ValueError as e:
+        raise SystemExit(f"the BRAND block could not be read ({e}); keep it to plain keys, strings, numbers, arrays, and objects")
     if "schemes" not in b:
         b["schemes"] = {"base": b.get("colors", {})}
         b["scheme"] = "base"
@@ -56,7 +69,11 @@ def parse_brand(text):
 
 
 def rgb(h):
-    h = h.lstrip("#")
+    h = h.strip().lstrip("#")
+    if len(h) in (3, 4):  # #FD4 -> #FFDD44 (a 4th digit is alpha, ignored)
+        h = "".join(c * 2 for c in h[:3])
+    if not re.fullmatch(r"[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?", h):
+        raise SystemExit(f"not a hex colour: #{h}")
     return tuple(int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
 
 
@@ -165,13 +182,15 @@ def main():
                       ("body", "body"), ("bodyMedium", "body-medium"), ("bodyBold", "body-bold"), ("label", "label"), ("arrow", "arrow")):
         f = fonts.get(role) or fonts.get("body") or {"family": "system-ui", "style": "Regular"}
         fam, w, it = font_parts(f)
-        root[f"--f-{var}"] = f"'{fam}'"
+        generic = "ui-monospace, monospace" if role == "label" else "system-ui, sans-serif"
+        root[f"--f-{var}"] = f"'{fam}', {generic}"  # a fallback, so a missing font is not Times
         root[f"--w-{var}"] = str(w)
     logo = b.get("logo") or {}
     for k, v in (("site", b.get("site", "")), ("handle", b.get("handle", "")), ("swipe", b.get("swipe", "→")),
                  ("end", b.get("end", "")), ("sources", b.get("sourcesLabel", "SUMBER")),
                  ("logo-letter", logo.get("letter", "")), ("wordmark", logo.get("wordmark", "")),
-                 ("schemes", " ".join(b["schemes"])), ("scheme", b.get("scheme") or next(iter(b["schemes"])))):
+                 ("schemes", " ".join(b["schemes"])), ("scheme", b.get("scheme") or next(iter(b["schemes"]))),
+                 ("fonts", "|".join(need))):
         root[f"--brand-{k}"] = json.dumps(v, ensure_ascii=False)
     default = b.get("scheme") or next(iter(b["schemes"]))
     lines.append(":root {\n" + "\n".join(f"  {k}: {v};" for k, v in root.items()) + "\n}")
