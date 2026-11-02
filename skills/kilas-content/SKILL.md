@@ -32,7 +32,9 @@ drafts that lost and why; imitate the moves, not the sentences.
    depends on it.
 2. **Take stock of tools** and use every one that helps (`references/research-tools.md`):
    web search, page fetch, a real browser (`ego-browser`), social-media MCPs or built-in
-   X access, Figma MCP, `agy` for generated images. Note what is missing.
+   X access, Figma MCP, and image generation: your own image tool if you have one (Grok
+   Bot's Grok Imagine, Codex, ChatGPT, Antigravity), then `python3 scripts/gen_image.py
+   detect` (agy, OpenAI, Gemini, xAI keys). Note what is missing.
 3. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
    `reviews/`, `ideas.md`. Create it the first time.
 4. **Pick the mode** below.
@@ -73,8 +75,11 @@ drafts that lost and why; imitate the moves, not the sentences.
    `python3 scripts/lint_copy.py copy.md --format <format> --brand <pack>/brand.md`
    must exit 0. Read its warnings and its headline-only read; write that read into
    `brief.md`, and read the copy aloud once.
-5. **Images** (`image-sourcing.md`): real artefacts on evidence frames, Unsplash or
-   generated images for metaphor, one visual thread, credits kept.
+5. **Images** (`image-sourcing.md`): real artefacts on evidence frames; for metaphor
+   frames the brand's own photos, then a generated image made automatically when
+   nothing fits (your own image tool first, then `agy`, then a paid API only if
+   `content/setup.md` allows it), then Unsplash; one visual thread, credits kept from
+   the manifest. The owner can switch the image tool or stop generating at any time.
 6. **Choose the scheme and the layouts** (`design-variety.md`): the series' colour
    scheme, or for a one-off piece one the previous pieces did not use; then a variant per
    slide by the slide's job and by what `content/design-log.md` says was used recently,
@@ -182,7 +187,7 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
 | `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example) |
-| `scripts/` | `lint_copy.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `agy_image.sh`, `contact_sheet.py`, `export_oss.sh` |
+| `scripts/` | `lint_copy.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `contact_sheet.py`, `export_oss.sh` |
 
 ## When not to use this
 

@@ -15,6 +15,7 @@ install covers all of them:
 ~/.cursor/skills/<skill>           → …
 ~/.config/opencode/skills/<skill>  → …
 ~/.gemini/skills/<skill>           → …        (Antigravity CLI / agy)
+~/.grok/skills/<skill>             → …        (Grok Build CLI and Grok Bot)
 ~/.omp/…                           (omp reads ~/.agents/skills directly)
 ```
 
@@ -69,13 +70,23 @@ then pass `skillNames: "resource:figma-use,resource:figma-generate-design"`.
 If the Figma MCP is not connected, every Figma build (carousels, single posts, covers) is blocked — say so rather
 than drawing a placeholder.
 
-## Optional: Antigravity CLI for generated images
+## Optional: image generation
 
-If `agy` is installed and signed in (`command -v agy && agy models`), the skill can
-generate metaphor images next to Unsplash with `scripts/agy_image.sh`. Nothing to
-install for the skill itself; install Antigravity from https://antigravity.google and
-sign in once. In Claude Code, allow `Bash(agy:*)` if the command classifier blocks it.
-Without `agy` the skill uses Unsplash only. See `image-sourcing.md`.
+The skill generates metaphor images with whatever is there, in this order
+(`image-sourcing.md`):
+
+1. The agent's own image tool: Grok Bot (Grok Imagine), Codex, ChatGPT, Antigravity,
+   and Grok Build when its tools include image generation. Nothing to install.
+2. The Antigravity CLI `agy`: install from https://antigravity.google and sign in once
+   (`command -v agy && agy models`). In Claude Code, allow `Bash(agy:*)` if the command
+   classifier blocks it.
+3. A paid image API, used only after the owner allows it at setup: `OPENAI_API_KEY`
+   (OpenAI), `GEMINI_API_KEY` or `GOOGLE_API_KEY` (Gemini), `XAI_API_KEY` (Grok
+   Imagine). Optional model overrides: `OPENAI_IMAGE_MODEL`, `GEMINI_IMAGE_MODEL`,
+   `XAI_IMAGE_MODEL`.
+
+`python3 scripts/gen_image.py detect` shows what it finds. With none of them, the skill
+uses Unsplash.
 
 Python scripts need Pillow for the contact sheet (`pip install pillow`) and `curl` for
 Unsplash.

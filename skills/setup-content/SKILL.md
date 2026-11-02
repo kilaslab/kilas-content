@@ -1,6 +1,6 @@
 ---
 name: setup-content
-description: "First-run setup for the kilas-content skill: asks which brand the content is for, reads the brand's website and social profiles (with permission) and collects its own logo, colours, fonts, photos, and voice for reuse, chooses how frames are rendered (Figma, or HTML converted to PNG), and writes the brand pack and content/setup.md. Use it the first time someone plans or creates content in a project, or when they say \"setup content\", \"setup brand\", \"onboarding\", \"brand baru\", \"ganti brand\", \"pakai html saja\", \"tidak punya figma\", \"ambil aset dari website/instagram kami\", or when the content skill finds no content/setup.md."
+description: "First-run setup for the kilas-content skill: asks which brand the content is for, reads the brand's website and social profiles (with permission) and collects its own logo, colours, fonts, photos, and voice for reuse, chooses how frames are rendered (Figma, or HTML converted to PNG) and which image generator to use (the agent's own tool such as Grok Imagine, agy, or a paid OpenAI, Gemini, or xAI key), and writes the brand pack and content/setup.md. Use it the first time someone plans or creates content in a project, or when they say \"setup content\", \"setup brand\", \"onboarding\", \"brand baru\", \"ganti brand\", \"pakai html saja\", \"tidak punya figma\", \"ambil aset dari website/instagram kami\", or when the content skill finds no content/setup.md."
 license: GPL-3.0-or-later
 ---
 
@@ -18,12 +18,16 @@ This skill ships with the **kilas-content** skill (same repository). Load that s
 ## 0. Check what exists
 
 - `content/setup.md` exists: tell the user setup was done on its date, show its summary,
-  and ask only what they want to change (a new brand, a new renderer, fresh assets).
+  and ask only what they want to change (a new brand, a new renderer, fresh assets, the
+  image generator).
 - `content/brand/brand.md` exists but no `setup.md`: keep the pack, run steps 3–6.
 - Take stock of tools (`<skill>/references/research-tools.md` section 1): page fetch,
   web search, a real browser (`ego-browser`, the host's browser), the Figma MCP, Python
   Playwright or a Chrome binary (`python3 <skill>/scripts/render_slides.py --help`
-  explains), `agy`. Note what is missing; it decides some choices below.
+  explains), and image generation: your own image tool if you have one (Grok Bot has
+  `generate_image` with Grok Imagine; Codex, ChatGPT, and Antigravity have their own), then
+  `python3 <skill>/scripts/gen_image.py detect --check` for agy and the OpenAI, Gemini,
+  and xAI keys. Note what is missing; it decides some choices below.
 
 ## 1. Ask, in one round
 
@@ -45,9 +49,14 @@ recommended option when you can infer one:
    - **Both**: Figma for the pieces the owner will edit, HTML for fast ones.
    Recommend Figma when the MCP is connected and they have a file; HTML otherwise.
 5. **Language and address**: Indonesian or English (or another); kamu, Anda, or kalian.
-6. **Main goal for the next three months**: reach, trust, or sales.
-7. **Capacity**: how many pieces a week the team can really finish.
-8. **Limits**: words or claims never to use, things that need approval or disclosure.
+6. **Goal and capacity**: the main goal for the next three months (reach, trust, or
+   sales) and how many pieces a week the team can really finish.
+7. **Limits**: words or claims never to use, things that need approval or disclosure.
+8. **Images**: whether to generate illustrations for metaphor slides automatically
+   (recommend yes when you have your own image tool or agy: it is part of their plan).
+   If a paid key was found (OpenAI, Gemini, xAI), ask whether the skill may use it and
+   which one first; it costs money per image. Say they can change this any time just
+   by asking ("pakai Gemini", "jangan yang berbayar").
 
 ## 2. Collect the brand's own assets (with permission)
 
@@ -122,8 +131,9 @@ Follow `<skill>/references/brand-onboarding.md` (sections 3–4) with what you c
 
 Create the workspace from `<skill>/templates/workspace.md` (if missing) and write
 `content/setup.md` from `<skill>/templates/setup.md`: brand, pack location, renderer and
-its details, language, assets and the permission given (date, which sources, signed-in
-or not), tools found, and what is still `(proposed)`.
+its details, language, the image generator and whether paid APIs are allowed, assets and
+the permission given (date, which sources, signed-in or not), tools found, and what is
+still `(proposed)`.
 
 ## 6. Show the owner, once
 
@@ -138,4 +148,7 @@ carousel dari <link>".
 - Assets only from accounts the user owns or may use, with their permission for this
   setup. Read only: never post, like, follow, or message.
 - Never copy another brand's logo, photos, or layouts into the pack.
+- Every choice here can change later on request, mid-piece too (a new image tool, paid
+  APIs on or off, another renderer): follow it, and update `content/setup.md` when the
+  owner says it should stick. Never write API keys into any file.
 - Language follows the user (and the pack, once written).

@@ -29,8 +29,9 @@ with `scripts/install-companions.sh`.
 
 Optional tools make it better and are detected at run time: web search and fetch,
 `ego-browser`, social-media MCPs, the Figma MCP (for Figma frames), Python Playwright or
-Chrome/Chromium (for HTML → PNG frames), and the Antigravity CLI `agy` for generated
-images.
+Chrome/Chromium (for HTML → PNG frames), and image generation: the agent's own image tool
+(Grok Bot's Grok Imagine, Codex, ChatGPT, Antigravity), the Antigravity CLI `agy`, or an
+OpenAI, Gemini, or xAI key the owner allows (`scripts/gen_image.py`).
 
 ## Use it
 
@@ -86,13 +87,14 @@ scripts/
   brand_css.py                    a brand pack's BRAND block as CSS for the HTML renderer
   new_html.py                     an item's html/ folder with the slide kit, the brand's CSS, and an example
   render_slides.py                slides.html to one PNG per slide (Playwright or Chrome), with the layout check
+  gen_image.py                    illustrations with agy or an OpenAI, Gemini, or xAI key; prompts and credits for the agent's own image tool
   artefact_marks.py               row and word coordinates for highlighter marks on screenshots
   slides_to_pdf.py                frames to a LinkedIn document PDF
   capture_artefact.sh             a page region at 2x with ego-browser
   x_post.py                       a public X post and its full-size photos, no login
   scan_site_tokens.sh             a site's colours and fonts, for onboarding
   unsplash_search.py              Unsplash search with credits
-  agy_image.sh                    generated images with the Antigravity CLI
+  agy_image.sh                    the Antigravity CLI call that gen_image.py uses for agy
   contact_sheet.py                labelled grid for choosing images
   install-companions.sh           install the companion skills
   export_oss.sh                   a brand-free copy of the skill

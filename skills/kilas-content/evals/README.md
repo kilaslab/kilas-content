@@ -26,6 +26,18 @@ Good: setup records the HTML renderer; a carousel is written as
 where a class exists); `render_slides.py` prints no issues; the PNGs are 1080×1350, one
 per slide, in `export/`; the scheme is one of the pack's.
 
+## 1c — Images without asking
+
+> bikin carousel dari artikel ini <url>  (run in Grok Bot, then in an agent with only `agy`, then with neither)
+
+Good: metaphor slides with no fitting brand photo get a generated image without a
+question: in Grok Bot through its own `generate_image` (prompts from `gen_image.py
+prompt`, the files recorded with `--label "Grok Imagine"`), elsewhere through
+`gen_image.py make` with agy; with neither, Unsplash. A paid key is used only when
+`content/setup.md` allows it. Evidence slides keep real screenshots. The close slide
+credits each tool from `gen/manifest.json`. "jangan pakai gambar AI" mid-piece stops
+generation for that piece.
+
 ## 2 — Plan a month
 
 > buat rencana konten bulan depan

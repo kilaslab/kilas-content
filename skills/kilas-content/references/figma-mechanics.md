@@ -78,8 +78,8 @@ The Plugin API cannot fetch a URL. Photos must exist as local bytes first.
      Upload it the same way, but skip the duotone pass so its text stays readable.
    - Unsplash: `python3 scripts/unsplash_search.py "<query>" ... --out <dir> --download`
      writes the photos plus `manifest.json` with photographer names for the credits.
-   - Generated (only if `agy`, the Antigravity CLI, is installed and signed in):
-     `scripts/agy_image.sh`.
+   - Generated: your own image tool, or `scripts/gen_image.py make` (agy, or a paid API
+     the owner allowed); order and rules in `image-sourcing.md`.
 2. **Look at them.** `python3 scripts/contact_sheet.py <dir>` builds a labelled grid.
    Choose from the sheet. (Run it without `-I`: Pillow lives in user site-packages.)
 3. **Create the target rects** in the build call, named `IMG-1 … IMG-n`, filled with

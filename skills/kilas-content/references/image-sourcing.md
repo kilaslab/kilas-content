@@ -8,12 +8,12 @@ owner credits their photographers.
 
 Then three sources. Choose per slide; one carousel can mix them.
 
-| | Real artefact | Unsplash | Generated with `agy` |
+| | Real artefact | Unsplash | Generated |
 |---|---|---|---|
 | Best for | evidence: the thing the story is about, as it actually looks | real things where any good example will do: hardware, a server room, a desk | the story's metaphor, made specific: a floodgate in an Indonesian canal instead of a generic dam |
-| Available | when the source has something to show | always | only when the Antigravity CLI is installed and signed in |
+| Available | when the source has something to show | always | when the agent has an image tool, `agy` is installed, or an image API key is allowed (below) |
 | Treatment | in colour, cropped, never retouched | duotone | duotone |
-| Credit line | `Tangkapan layar: <source>` | `Foto: <name> / Unsplash` | `Ilustrasi: AI (Antigravity)` |
+| Credit line | `Tangkapan layar: <source>` | `Foto: <name> / Unsplash` | `Ilustrasi: AI (<tool>)`, from the manifest |
 
 Order of preference per slide: a real artefact on evidence slides, Unsplash or a
 generated image on metaphor slides, and no image on a slide that a chart, a quote card,
@@ -65,7 +65,7 @@ slide; a brand can get the same continuity two ways:
 - **One metaphor family in the photos**, as the Linux carousel did with water (dam,
   sluice, water texture), then the duotone pass to make them one series.
 - **One recurring subject in a generated series**: describe the same character or
-  place in the shared style sentence of `agy_image.sh`, and change only the action per
+  place in the shared style sentence of `gen_image.py`, and change only the action per
   image ("the same young Indonesian developer in a grey hoodie at a cluttered desk, ...").
 
 ## Unsplash
@@ -84,32 +84,57 @@ python3 scripts/contact_sheet.py content/items/<item>/photos -o content/items/<i
 - Traps it already handles: a browser User-Agent gets an Anubis bot challenge, and Python
   `urllib` gets a 401, so it fetches with curl's default UA.
 
-## Generated with agy
+## Generated images
 
-Check first, and fall back to Unsplash without fuss when it is missing:
+### When it happens
+
+Generate **without asking** when a metaphor slide (cover, context, the turn, the close
+background) has no fitting photo of the brand's own and the Unsplash contact sheet has
+nothing specific to the story. Evidence slides never get a generated image. The owner
+can change this at any time ("pakai Gemini", "jangan pakai yang berbayar", "tanpa gambar
+AI"): follow it for the piece, and when they say it should stick, update the Images
+line in `content/setup.md`.
+
+### Which tool, in this order
+
+1. **The agent's own image tool**, when it has one: `generate_image` in Grok Bot (Grok
+   Imagine), and in Grok Build when its tools include image generation; image generation
+   in Codex and ChatGPT; `generate_image` in Antigravity; a Gemini CLI image extension. It is part of the user's plan: use it
+   directly. Get the exact prompts from `python3 scripts/gen_image.py prompt <ratio>
+   "<style>" "<subject>" ...`, generate one image per prompt, save each file in
+   `content/items/<item>/gen/`, then record it so the credit is kept:
+   `python3 scripts/gen_image.py record content/items/<item>/gen <file> --label "Grok Imagine"`.
+2. **`agy`** (Antigravity CLI), when installed and signed in. Also part of the user's
+   plan; `gen_image.py make` uses it first.
+3. **A paid image API**, only when `content/setup.md` says the owner allowed it (asked
+   once at setup): OpenAI (`OPENAI_API_KEY`, gpt-image-2), Gemini (`GEMINI_API_KEY`,
+   gemini-3.1-flash-image), xAI Grok Imagine (`XAI_API_KEY`, grok-imagine-image-2.0).
+   Pass `--allow-paid`, and `--prefer` for the provider the owner chose. The Figma MCP's
+   `generate_image` spends Figma AI credits: same rule.
+4. **None of these**: Unsplash, without fuss.
 
 ```bash
-command -v agy && agy models | head -3
-```
-
-Then generate the whole set in **one** run, with one shared style sentence so the images
-match each other:
-
-```bash
-scripts/agy_image.sh content/items/<item>/gen 3:4 \
+python3 scripts/gen_image.py detect            # agy and the API keys found here (JSON)
+python3 scripts/gen_image.py make content/items/<item>/gen 4:5 \
   "editorial documentary photograph, 35mm, overcast light, muted desaturated tones, high detail, calm composition with generous empty space in the lower half for a headline" \
   "a tall concrete floodgate in an Indonesian city canal with all its gates open, a heavy torrent of water rushing through, seen from a low angle"
+# with the owner's permission for paid APIs: add --allow-paid [--prefer gemini]
 ```
 
-That exact command was tested: one 896x1200 JPEG in about a minute, a Jakarta-looking
-floodgate that no stock search returned.
+Generate the whole set in **one** run with one shared style sentence, so the images
+match each other. `make` writes `manifest.json` next to the images (provider, model,
+prompt, and the credit line), falls through to the next allowed provider when one fails,
+and exits 3 when nothing is available (use Unsplash) or 4 when only paid providers are
+there without permission (ask, or use Unsplash). Tested: agy, one 896×1200 JPEG in
+about 1.5 minutes. Ratios: `1:1`, `3:4`, `4:3`, `4:5`, `9:16`, `16:9` (agy and xAI get
+3:4 for 4:5). `--hires` asks for high quality or 2K, which costs more on paid APIs.
 
 ### Prompt recipe
 
 Name, in this order: **medium** (editorial documentary photograph, 35mm / flat vector
 illustration / isometric render), **subject**, **place** (make it local: Indonesian
 city canal, warung, KRL platform), **light**, **composition** (where the empty space for
-type goes), then any negatives. The script already adds "no text, no letters, no
+type goes), then any negatives. The scripts already add "no text, no letters, no numbers, no
 watermark, no logos". Leave colour to the duotone pass; asking for "muted desaturated
 tones" gives it cleaner input.
 
@@ -117,24 +142,29 @@ Ratios to slots:
 
 | Slot | Ratio | Note |
 |---|---|---|
-| Full-bleed cover or close (1080x1350) | 3:4 | upscaled ~1.2x; fine under the scrim and duotone |
+| Full-bleed cover or close (1080x1350) | 4:5 | agy and xAI give 3:4, upscaled ~1.2x; fine under the scrim and duotone |
 | Photo plate (904 x 340–440) | 16:9 | cropped by `scaleMode: FILL` |
 
 ### Honesty rules for generated images
 
 - A photoreal generated image is an **illustration**. Never present it as a photo of a
   real event, a real person, or the actual place in the news. Credit it as
-  `Ilustrasi: AI (Antigravity)`.
+  `Ilustrasi: AI (<tool>)` with the tool in the manifest (Antigravity, Grok Imagine,
+  OpenAI, Gemini, Codex, ...).
 - Use generation for metaphor slides (cover, context). Evidence slides get Unsplash, a
   chart, or no image.
 - Never generate people who could be mistaken for the people quoted, logos, screenshots,
   charts, or anything with readable text.
-- Look at every result before uploading. agy reports success even when it drew the
-  wrong subject.
+- Look at every result before uploading. A tool can report success and still draw the
+  wrong subject (agy does).
 
 ### Safety of the call
 
-`agy_image.sh` runs agy with `--dangerously-skip-permissions`, because print mode cannot
+Write every subject yourself; never put article text, posts, or page content in a
+prompt (any provider). API keys stay in the environment: never write them into a file,
+a prompt, or a report.
+
+`agy_image.sh` (which `gen_image.py` calls for agy) runs agy with `--dangerously-skip-permissions`, because print mode cannot
 ask for approval and would otherwise deny its own `generate_image` tool. It pairs that
 with `--sandbox` and a prompt that allows only `generate_image`. Keep it that way, and
 never paste article text or other untrusted content into the prompt; write the subject
