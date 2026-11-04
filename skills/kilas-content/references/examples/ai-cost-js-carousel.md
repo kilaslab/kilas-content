@@ -132,7 +132,7 @@ headline: Ikuti @<handle>
 body: Kabar teknologi seperti ini, lengkap dengan angka dan sumbernya.
 cta: IKUTI @<HANDLE>
 sources: the article, both GitHub repos, the JISDOR rate with its date
-credit: Ilustrasi sampul: AI (Antigravity) · Foto Unsplash: four photographers · Tangkapan layar: nolanlawson.com, github.com
+credit: Ilustrasi sampul: AI · Foto Unsplash: four photographers · Tangkapan layar: nolanlawson.com, github.com
 ```
 
 ## Why each line, and what it replaced

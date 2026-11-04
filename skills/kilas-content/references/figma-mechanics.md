@@ -165,6 +165,23 @@ URL route above until it is.
 - A palette swap is a safe mechanical pass: walk `page.findAll(() => true)`, replace any
   `SOLID` paint whose colour matches the old accent.
 
+## Lessons from the weight-space carousel (4 Nov 2026)
+
+- **A rebuild wipes the uploaded images.** `REBUILD` clears the page, so the `IMG-*`
+  nodes are new. Re-reserve upload URLs for the new node ids, POST the same local files
+  again (keep the cropped files in `gen/` or `photos/`), and re-run the duotone. It takes
+  two calls and is still faster than patching text across many slides.
+- **Text-only revisions that change line breaks are rebuilds.** A new headline moves the
+  underline or highlighter, and new body lengths move everything under them; patching
+  `characters` alone leaves marks in the wrong place.
+- **Table headers collide** when four value columns sit beside a bar column: mono 18 with
+  4% tracking fits about 8 characters per column ("TERPOTONG" ran into "PERINTAH").
+  `table()` now drops a header that does not fit to 16 px with no tracking; still prefer
+  short headers.
+- **coverType with line height 100**: the underline under line 1 touched line 2.
+  `coverType()` now lifts its underlines by 6% of the type size.
+- **steps() with short texts** ends above y = 945; use `gap` 56–64.
+
 ## Errors
 
 On a `use_figma` failure, obey `safeToRetryWithoutCanvasRead`. Mid-build failures leave

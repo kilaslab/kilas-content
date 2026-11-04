@@ -13,7 +13,7 @@ Then three sources. Choose per slide; one carousel can mix them.
 | Best for | evidence: the thing the story is about, as it actually looks | real things where any good example will do: hardware, a server room, a desk | the story's metaphor, made specific: a floodgate in an Indonesian canal instead of a generic dam |
 | Available | when the source has something to show | always | when the agent has an image tool, `agy` is installed, or an image API key is allowed (below) |
 | Treatment | in colour, cropped, never retouched | duotone | duotone |
-| Credit line | `Tangkapan layar: <source>` | `Foto: <name> / Unsplash` | `Ilustrasi: AI (<tool>)`, from the manifest |
+| Credit line | `Tangkapan layar: <source>` | `Foto: <name> / Unsplash` | `Ilustrasi AI` (the tool stays in the manifest) |
 
 Order of preference per slide: a real artefact on evidence slides, Unsplash or a
 generated image on metaphor slides, and no image on a slide that a chart, a quote card,
@@ -83,6 +83,9 @@ python3 scripts/contact_sheet.py content/items/<item>/photos -o content/items/<i
 - It writes `manifest.json` with photographer names. Put them on the close slide.
 - Traps it already handles: a browser User-Agent gets an Anubis bot challenge, and Python
   `urllib` gets a 401, so it fetches with curl's default UA.
+- If the search page itself fails (curl exit 56, seen on 4 Nov 2026), do not retry in a
+  loop: generate the metaphor images as `content/setup.md` allows and note the gap in
+  `brief.md`.
 
 ## Generated images
 
@@ -151,8 +154,9 @@ Ratios to slots:
 
 - A photoreal generated image is an **illustration**. Never present it as a photo of a
   real event, a real person, or the actual place in the news. Credit it as
-  `Ilustrasi: AI (<tool>)` with the tool in the manifest (Antigravity, Grok Imagine,
-  OpenAI, Gemini, Codex, ...).
+  `Ilustrasi AI`. Do not name the tool (Antigravity, Grok Imagine, OpenAI, Gemini,
+  Codex) on the slide or in the caption; the manifest keeps it for the record (owner's
+  decision, 4 Nov 2026).
 - Use generation for metaphor slides (cover, context). Evidence slides get Unsplash, a
   chart, or no image.
 - Never generate people who could be mistaken for the people quoted, logos, screenshots,

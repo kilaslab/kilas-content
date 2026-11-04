@@ -46,7 +46,7 @@ HARD = {
         (r"^(hasilnya|jawabannya|intinya|kuncinya|faktanya|masalahnya|bagian terbaiknya|plot twist-?nya)\s*[:?]", "colon reveal / self-answered question"),
         (r"\b(di era (digital|modern|serba)|mari kita|tanpa basa-basi|wajib tahu|menjadi tonggak|momen penting|lanskap)\b", "stock phrase"),
         (r"\b(setuju\?|gimana menurutmu\?|tag temanmu|baca (lagi|ulang) kalimat|let that sink in)", "engagement bait"),
-        (r"\d,\d{3}\b", "English thousands separator: Indonesian uses 19.671"),
+        (r"(?<![\d,])[1-9]\d{0,2},\d{3}\b", "English thousands separator: Indonesian uses 19.671"),
     ],
     "en": [
         (r"\b(it's not|it is not|this isn't|this is not)\b[^.?!]*[,;]\s*(it's|it is|this is)\b", "contrast reveal 'it's not X, it's Y': state Y directly"),

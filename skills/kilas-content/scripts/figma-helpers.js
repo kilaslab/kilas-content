@@ -205,7 +205,7 @@ function slide(i, name, dark, w, h) {
 }
 
 // Photo plate (rounded, inset) with a credit line under it. Name it IMG-<n>.
-// credit is the full line: 'Foto: Name / Unsplash', 'Ilustrasi: AI (...)'.
+// credit is the full line: 'Foto: Name / Unsplash', 'Ilustrasi AI'.
 // Crop the photo locally first if its subject is not in the middle: FILL crops the centre.
 function plate(s, name, y, h, credit) {
   const r = R(s, name, M, y, CW, h, C.surface, null, 20);
@@ -302,7 +302,10 @@ function coverType(s, o) {
   header(s, o.eyebrow, 1, bgKey);
   const from = s.children.length;
   if (o.kicker) T(s, o.kicker, F.label, 26, ink, M, 0, { ls: 6, op: 0.7, name: 'kicker' });
-  const h = headline(s, o.lines, M, o.kicker ? 60 : 0, { size: o.size || 120, lh: 100, ls: -3, color: ink, bg });
+  const marks = s.children.length, size = o.size || 120;
+  const h = headline(s, o.lines, M, o.kicker ? 60 : 0, { size, lh: 100, ls: -3, color: ink, bg });
+  // at line height 100 an underline touches the next line's capitals: lift it a little
+  s.children.slice(marks).forEach(n => { if (n.name === 'underline') n.y = Math.round(n.y - size * 0.06); });
   if (o.body) body(s, o.body, h.bottom + 40, { color: ink, op: 0.85, w: 860 });
   anchorBottom(s, from, 1150, 170);
   if (o.decor) decor(s, o.decor, { bg, text: o.decorText });
@@ -352,7 +355,9 @@ function table(s, y, o) {
   const nameX = M + 44, barX = nameX + nameW + 8, start = hasBar ? barX + barW + 12 : nameX + nameW + 8, lightInk = lum(C.text) > 0.4;
   const nv = o.rows[0].values.length, colW = (M + CW - start) / nv;
   const RE = []; for (let j = 0; j < nv; j++) RE.push(Math.round(start + (j + 1) * colW));
-  const hdr = (str, x, w, align) => T(s, str, F.label, 18, C.muted, x, y, { w, align, ls: 4, name: 'th-' + str });
+  // a header wider than its column (TERPOTONG, PERINTAH beside each other) drops to 16 px, no tracking
+  const hdr = (str, x, w, align) => { const fits = measure(s, str, F.label, 18, 4) <= w - 8;
+    return T(s, str, F.label, fits ? 18 : 16, C.muted, x, y + (fits ? 0 : 1), { w, align, ls: fits ? 4 : 0, name: 'th-' + str }); };
   hdr('#', M, 36, 'LEFT'); hdr(o.head.name, nameX, nameW, 'LEFT');
   o.head.values.forEach((h, j) => { if (j === 0 && hasBar) hdr(h, barX, barW + colW, 'LEFT'); else hdr(h, RE[j] - colW, colW, 'RIGHT'); });
   R(s, 'th-rule', M, y + 34, CW, 2, C.text);

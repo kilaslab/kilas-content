@@ -13,9 +13,10 @@ any brand. Frames are built in Figma or written as HTML and rendered to PNG, whi
 the brand chose at setup.
 
 **The words decide whether anyone stops.** Most effort goes into research and writing,
-before Figma or a camera. Read `references/writing-craft.md` and the two worked examples
-before writing anything: `references/examples/linux-7.4-carousel.md` (a news record) and
-`references/examples/ai-cost-js-carousel.md` (someone else's experiment). Each lists the
+before Figma or a camera. Read `references/writing-craft.md` and the three worked examples
+before writing anything: `references/examples/linux-7.4-carousel.md` (a news record),
+`references/examples/ai-cost-js-carousel.md` (someone else's experiment), and
+`references/examples/weight-space-carousel.md` (a research paper made plain). Each lists the
 drafts that lost and why; imitate the moves, not the sentences.
 
 ## Start here, every run
@@ -83,7 +84,11 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    `python3 <skill>/scripts/lint_copy.py <item>/copy.md --format <format> --brand <pack>/brand.md`
    must exit 0 (`new_item.py` prints the right `--format`: `thread` lints as `x`,
    `document` as `linkedin`). Read its warnings and its headline-only read; write that read into
-   `brief.md`, and read the copy aloud once.
+   `brief.md`, and read the copy aloud once. Then the **reader pass**, as someone who has
+   never seen the source: every key phrase describes what happens, not a term or a
+   label for it (`writing-craft.md` 10b); each body opens with a sentence that links to
+   the slide before, and no slide changes the subject (section 2); every metaphor
+   headline still makes sense without slide 2 (section 4).
 5. **Images** (`image-sourcing.md`): real artefacts on evidence frames; for metaphor
    frames the brand's own photos, then a generated image made automatically when
    nothing fits (your own image tool first, then `agy`, then a paid API only if
@@ -148,7 +153,13 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 - **Headlines are claims with a consequence**: each passes "lalu kenapa?". Topic words go
   in the eyebrow. Mark the one or two words that carry the claim.
 - **One metaphor family**, said once, then carried in the verbs of at least three
-  headlines.
+  headlines, and only where the subject is still the same; a metaphor headline must read
+  literally to someone who skipped slide 2.
+- **Plain words**: describe what happens ("mengulang kalimat sampai kuotanya habis"),
+  not the paper's term (thinking loop) or a label that sounds vivid ("macet berputar").
+  Jargon goes to `>` notes or a table note.
+- **One thread**: every slide answers the previous one and opens with a bridge
+  sentence; a true but off-topic finding goes to the caption or its own post.
 - **A turn late in the story**; **one frame or post worth saving**.
 - **Bring it home**: the audience's own price, date, place, company, or action.
 - **Numbers compare fairly**, charts start at zero, **hedges are copied** from the
@@ -170,6 +181,8 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
       and works alone.
 - [ ] Headline-only read written in `brief.md` and tells the story; the metaphor is in
       at least three headlines; one piece worth saving, named.
+- [ ] Reader pass done: plain words, bridge sentences, no detour, metaphor headlines
+      read literally (owner feedback on the weight-space carousel, 4 Nov 2026).
 - [ ] The action passes "who, with what, when".
 - [ ] `lint_copy.py` exits 0 for the format; every number, name, and quote has a note.
 - [ ] Platform limits respected (`formats/specs.md`): hashtags, characters, safe zones.
@@ -191,7 +204,7 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `brands/README.md`, `brands/<brand>/brand.md`, `design.md` | every run |
 | `../setup-content/SKILL.md`, `references/brand-onboarding.md` | first run (no `content/setup.md`), a new brand, a new renderer |
 | `references/planning.md` | planning, repurposing, reviewing |
-| `references/writing-craft.md`, `references/examples/*.md` (two worked carousels with rejected drafts) | before writing anything |
+| `references/writing-craft.md`, `references/examples/*.md` (three worked carousels with rejected drafts) | before writing anything |
 | `references/copy-playbook.md` | frameworks, copy.md format, CTA, caption |
 | `references/language/id.md`, `en.md` | the brand's language |
 | `references/formats/*.md` | the format being made; `specs.md` for limits |

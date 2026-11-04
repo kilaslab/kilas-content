@@ -25,6 +25,13 @@ installed, it goes deeper.
   with the relation between them: "Rentang run-nya saling tindih. React Router sempat
   US$2,82. Hono+htmx sempat US$3,19." becomes "Hasilnya acak: build React Router yang
   termurah ($2,82) masih lebih murah dari build Hono+htmx yang termahal ($3,19)."
+- **Describe the behaviour, not a label for it.** "macet berputar" made the owner ask
+  what it meant; "mengulang kalimat sampai kuotanya habis" did not. Research jargon
+  (forward pass, gradient, MLP layer, PPO, benchmark names) goes to `>` notes or a small
+  table note; the slide says what happens (`writing-craft.md` 10b).
+- **Plain Indonesian over half-translated terms.** "nilai ujian matematika" over "skor
+  MATH-500", "dilatih ulang" over "training", "putaran uji" over "forward pass",
+  "terpotong" over "hit token limit".
 
 
 ## Numbers
