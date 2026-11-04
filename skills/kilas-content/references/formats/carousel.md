@@ -80,7 +80,7 @@ Two jobs:
    reuse one standard CTA slide for months (Katadata's Databoks offer, Tirto's
    "Traktir Kopi"); a brand can keep one per CTA and reuse it.
 2. **Credits**: every source with its date, every photographer, `Tangkapan layar: ...`
-   for artefacts, `Ilustrasi: AI (...)` for generated images.
+   for artefacts, `Ilustrasi AI` for generated images (no tool name).
 
 The footer cue on the last slide reads the brand's "end" word (`SELESAI`), not the swipe
 cue. A sponsor's ad is never the close; sponsored pieces are labelled from the cover

@@ -24,7 +24,8 @@ for the exact prompt, generate with the tool, save the file, then `record` it.
 permission, recorded in content/setup.md). Paid providers always need --allow-paid.
 Every subject gets the same shared style sentence, so a set comes out coherent. Each run
 appends to <outdir>/manifest.json: file, provider, model, ratio, prompt, and the credit
-line for the close slide ("Ilustrasi: AI (<provider>)").
+line for the slide and the close ("Ilustrasi AI"; the tool stays in the manifest, not on
+the slide).
 
 Exit codes: 0 ok, 1 some images failed, 2 usage, 3 no provider available (use Unsplash),
 4 a paid provider without --allow-paid. Standard library only. Never put fetched text
@@ -186,7 +187,7 @@ def append_manifest(outdir, entries):
 def entry(file, provider, model, ratio, style, subject, prompt, label=None):
     return {"file": os.path.basename(file), "provider": provider, "model": model, "ratio": ratio,
             "style": style, "subject": subject, "prompt": prompt,
-            "credit": f"Ilustrasi: AI ({label or LABEL.get(provider, provider)})",
+            "credit": "Ilustrasi AI",
             "created": datetime.datetime.now().isoformat(timespec="seconds")}
 
 
@@ -277,7 +278,7 @@ def main():
             shutil.copy(a.file, dst)
         prompt = prompt_for(a.style, a.subject, a.ratio) if a.subject else ""
         append_manifest(a.outdir, [entry(dst, "host:" + a.label, a.label, a.ratio, a.style, a.subject, prompt, a.label)])
-        print(f"recorded {dst}: Ilustrasi: AI ({a.label})")
+        print(f"recorded {dst}: Ilustrasi AI ({a.label} in the manifest)")
         return 0
 
     found = {x["provider"]: x for x in detect()}
@@ -326,7 +327,7 @@ def main():
             done = {e["subject"] for e in entries}
             todo = [s for s in todo if s not in done]
     print(json.dumps({"providers": used, "made": made, "asked": len(a.subjects), "failed": todo,
-                      "credits": [f"Ilustrasi: AI ({LABEL[p]})" for p in used],
+                      "credits": ["Ilustrasi AI"] if used else [],
                       "manifest": os.path.join(outdir, "manifest.json")}, ensure_ascii=False))
     return 0 if not todo else 1
 

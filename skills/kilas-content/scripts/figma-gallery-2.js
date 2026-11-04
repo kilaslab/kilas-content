@@ -62,7 +62,7 @@ const SAMPLE_SERIES = [7620,10730,9460,9859,10069,9161,11084,11738,10942,12715,1
 
 // ---- close ----
 { const s = cell('Close · dark', true, 2);
-  closeSlide(s, { promise: 'Kabar teknologi seperti ini, lengkap dengan angka dan sumbernya.', cta: 'IKUTI ' + BRAND.handle.toUpperCase(), sources: ['Nolan Lawson, “The AI cost of JavaScript frameworks”, 28 Okt 2026', 'github.com/nolanlawson/agent-framework-benchmark', 'Kurs JISDOR Bank Indonesia, 30 Okt 2026'], credits: 'Ilustrasi: AI (Antigravity) · Foto Unsplash: <nama> · Tangkapan layar: nolanlawson.com' }); }
+  closeSlide(s, { promise: 'Kabar teknologi seperti ini, lengkap dengan angka dan sumbernya.', cta: 'IKUTI ' + BRAND.handle.toUpperCase(), sources: ['Nolan Lawson, “The AI cost of JavaScript frameworks”, 28 Okt 2026', 'github.com/nolanlawson/agent-framework-benchmark', 'Kurs JISDOR Bank Indonesia, 30 Okt 2026'], credits: 'Ilustrasi AI · Foto Unsplash: <nama> · Tangkapan layar: nolanlawson.com' }); }
 { const s = cell('Close · light', false, 1);
   closeSlide(s, { variant: 'light', promise: 'Kabar teknologi seperti ini, lengkap dengan angka dan sumbernya.', cta: 'IKUTI ' + BRAND.handle.toUpperCase(), sources: ['Nolan Lawson, “The AI cost of JavaScript frameworks”, 28 Okt 2026', 'github.com/nolanlawson/agent-framework-benchmark'], credits: 'Foto Unsplash: <nama> · Tangkapan layar: nolanlawson.com' }); }
 

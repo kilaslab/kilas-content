@@ -62,6 +62,16 @@ Rules for the ladder:
 - Put the turn late (slide 5 or 6 of 8). Too early and there is nothing left to swipe for.
 - One slide per rung. If a rung needs two slides, the second one is usually a detail
   that belongs in the caption.
+- **No detours.** Every slide answers the question the previous slide raised. A finding
+  that is true and interesting but changes the subject ("the model also wrote game
+  networks from scratch" in the middle of a story about fixing one model) breaks the
+  thread; the reader feels the carousel "loncat-loncat". Cut it to the caption or a
+  separate post, even when it is the source's flashiest result.
+- **Open each body with a bridge.** The first sentence of every interior body links back:
+  "Setelah terbukti bisa membaca, Astra diberi tugas yang lebih berat…", "Lompatan
+  sebesar itu berasal dari…", "Peneliti lalu mencoba cara yang sama pada…", "Jadi, …".
+  Read only the first sentence of each body in order; it should tell the story as well
+  as the headlines do.
 
 **Pick the ladder for the kind of story.** The one above is the news ladder. Two more
 held up in the data:
@@ -207,6 +217,15 @@ How to carry it:
   same thing.
 - Never mix families. Pintu air plus "bom waktu" plus "tsunami" reads as filler.
 - Drop it on data and quote slides; facts carry those on their own.
+- **Each metaphor headline must still read literally.** Read it as someone who skipped
+  slide 2. If it only makes sense once the reader remembers the metaphor, write the plain
+  claim. In the weight-space carousel "Bedah serupa gagal membuat Gemma lebih pintar"
+  (a different model) and "Rontgen dulu sebelum mengganti model kecilmu" (the reader's
+  action) both read as forced; "Dicoba pada model lain, hasilnya nyaris tidak berubah"
+  and "Cek pengulangannya dulu sebelum mengganti model" replaced them. The family fits
+  the slides that are about the same subject (here: reading and fixing one model);
+  once the subject or the speaker changes, drop it. Three headlines is the floor, not a
+  target.
 
 Write down: the mechanism's shape, the candidates, the pick, and the verbs it gives you.
 
@@ -345,6 +364,37 @@ Do not promise a frequency or a format you cannot verify ("tiap hari", "eksklusi
   Indonesian.
 - "Kamu" only where you speak to the reader directly (the tip). The rest is report voice.
 
+## 10b. Plain-language pass: can the reader picture it?
+
+A research story arrives full of the paper's vocabulary. The audience knows git, APIs,
+and model names; it does not know forward pass, gradient, MLP layer, PPO, or what
+MATH-500 measures. After the copy is written, read every headline and body line and ask
+one question: **can a reader who has never seen this term say what literally happens?**
+If not, describe the observable behaviour and move the term to a `>` note or to the
+small note under a table.
+
+A vivid phrase can still fail. "Model ini macet berputar" sounds concrete and the owner
+could not tell what it meant. "Model ini mengulang kalimat sampai kuotanya habis" names
+what a reader would see in the output. Prefer the behaviour over a label for it.
+
+Replacements that worked (the weight-space carousel, 4 Nov 2026; full example in
+`examples/weight-space-carousel.md`):
+
+| Paper term | On the slide |
+|---|---|
+| forward pass (budget of 10/25/50) | putaran uji (10, 25, atau 50 kali) |
+| no gradients, no training | dilarang melatih ulang model |
+| one direction in the MLPs of layers 15 and 19, subtracted from 64 output columns | satu pola kecil di dalam model; pola itu dihapus |
+| thinking loop, hit the 32,768-token limit | mengulang kalimat yang sama sampai kuota panjang jawaban habis ("kuota" is the owner's word; "jatah" read as odd) |
+| MATH-500 / GSM8K / IFEval | matematika / hitungan / ikut perintah, with the names in the table note |
+| PPO, 100M steps | model yang dilatih dengan cara biasa selama 100 juta langkah |
+| skor (benchmark) | nilai (ujian) |
+| network, weights written from scratch | model, isi model ditulis langsung |
+
+Keep the exact numbers and the source's hedges; only the words around them change. A
+term the audience does say daily (token, bobot once explained, model card if the action
+needs it) can stay.
+
 ## 11. Before building
 
 1. Headline-only test (section 5), written in `brief.md`; the metaphor is in at least
@@ -356,5 +406,7 @@ Do not promise a frequency or a format you cannot verify ("tiap hari", "eksklusi
 5. `python3 scripts/lint_copy.py copy.md --format <format> --brand <pack>/brand.md` exits
    0. Read its warnings yourself; the cover, caveat, metaphor, and staccato warnings are
    the ones that most often mark a weak draft.
-6. Read the whole thing aloud once. Rewrite any sentence you stumble on, and join
+6. Plain-language pass (section 10b): every term a stranger cannot picture is replaced
+   by what happens, or moved to a note.
+7. Read the whole thing aloud once. Rewrite any sentence you stumble on, and join
    sentences that sound like a list of notes.

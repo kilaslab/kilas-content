@@ -41,7 +41,7 @@ ROW_KEYS.forEach((key, r) => {
   { const s = at(4, '07 Catatan', false);
     statement(s, { idx: 7, eyebrow: 'CATATAN BRAND', lines: [[['Sebelum pindah', false]], [['framework, ', false], ['minta', 'underline']], [['angkanya.', 'underline']]], body: 'Ini satu aplikasi kecil. Biaya Angular saja berkisar $3,19 sampai $6,82 antar-build.', tip: 'Uji kandidatnya dengan tugas yang sama, minimal 3 build per framework.', decor: 'bigIndex' }); }
   { const s = at(5, '08 Ikuti', true);
-    closeSlide(s, { promise: 'Kabar teknologi seperti ini, lengkap dengan angka dan sumbernya.', cta: 'IKUTI ' + BRAND.handle.toUpperCase(), sources: ['Nolan Lawson, “The AI cost of JavaScript frameworks”, 28 Okt 2026', 'github.com/nolanlawson/agent-framework-benchmark'], credits: 'Ilustrasi: AI (Antigravity) · Foto Unsplash: <nama> · Tangkapan layar: nolanlawson.com' }); }
+    closeSlide(s, { promise: 'Kabar teknologi seperti ini, lengkap dengan angka dan sumbernya.', cta: 'IKUTI ' + BRAND.handle.toUpperCase(), sources: ['Nolan Lawson, “The AI cost of JavaScript frameworks”, 28 Okt 2026', 'github.com/nolanlawson/agent-framework-benchmark'], credits: 'Ilustrasi AI · Foto Unsplash: <nama> · Tangkapan layar: nolanlawson.com' }); }
   GALLERY_SCHEMES.rows.push(key);
 });
 
