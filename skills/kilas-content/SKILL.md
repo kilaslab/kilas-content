@@ -41,7 +41,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    web search, page fetch, a real browser (`ego-browser`), social-media MCPs or built-in
    X access, Figma MCP, and image generation: your own image tool if you have one (Grok
    Bot's Grok Imagine, Codex, ChatGPT, Antigravity), then `python3 <skill>/scripts/gen_image.py
-   detect` (agy, OpenAI, Gemini, xAI keys). Note what is missing.
+   detect` (agy, OpenAI, Gemini, xAI keys); and a **brainstorm partner** for copy and
+   flow, `bash <skill>/scripts/brainstorm.sh detect` (Codex CLI first;
+   `references/brainstorm-partner.md`). Note what is missing.
 3. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
    `reviews/`, `ideas.md`, `design-log.md`. Create it the first time.
 4. **Pick the mode** below.
@@ -74,7 +76,8 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    the ladder (berita, uji coba, daftar referensi, or a rubric from
    `copy-playbook.md`), the slide or post worth saving, five hooks in at least three
    shapes put through the gates and the duels, one metaphor family with its `Verbs:`
-   line.
+   line. Ask the brainstorm partner for five hooks in shapes you did not try and duel
+   them against yours (`brainstorm-partner.md` section 1).
 4. **Copy** in `copy.md` for the format (`references/formats/`: `carousel.md`,
    `single-post.md`, `x.md`, `threads.md`, `linkedin.md`, `reels-tiktok.md`,
    `long-form.md`), a `>` source
@@ -89,6 +92,12 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    label for it (`writing-craft.md` 10b); each body opens with a sentence that links to
    the slide before, and no slide changes the subject (section 2); every metaphor
    headline still makes sense without slide 2 (section 4).
+   Then the **partner round** (`brainstorm-partner.md` section 3), before any frame is
+   built: send the copy, the layout limits, and what each frame shows to the partner
+   (Codex by default) for a read by a beginner and a skeptical senior, flow breaks, and
+   two options per frame. You pick per frame and write why under "Brainstorm" in
+   `brief.md`, then lint again. A self-review missed copy that read as translated in
+   the pay-to-win carousel (owner, 7 Nov 2026); a second model hears it.
 5. **Images** (`image-sourcing.md`): real artefacts on evidence frames; for metaphor
    frames the brand's own photos, then a generated image made automatically when
    nothing fits (your own image tool first, then `agy`, then a paid API only if
@@ -183,6 +192,8 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
       at least three headlines; one piece worth saving, named.
 - [ ] Reader pass done: plain words, bridge sentences, no detour, metaphor headlines
       read literally (owner feedback on the weight-space carousel, 4 Nov 2026).
+- [ ] Partner round done before building (or the missing partner reported); each frame's
+      pick and reason written under "Brainstorm" in `brief.md`.
 - [ ] The action passes "who, with what, when".
 - [ ] `lint_copy.py` exits 0 for the format; every number, name, and quote has a note.
 - [ ] Platform limits respected (`formats/specs.md`): hashtags, characters, safe zones.
@@ -205,6 +216,7 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `../setup-content/SKILL.md`, `references/brand-onboarding.md` | first run (no `content/setup.md`), a new brand, a new renderer |
 | `references/planning.md` | planning, repurposing, reviewing |
 | `references/writing-craft.md`, `references/examples/*.md` (three worked carousels with rejected drafts) | before writing anything |
+| `references/brainstorm-partner.md`, `templates/brainstorm-brief.md` | the hook workshop and the partner round after the first copy; whenever the owner says the copy reads badly |
 | `references/copy-playbook.md` | frameworks, copy.md format, CTA, caption |
 | `references/language/id.md`, `en.md` | the brand's language |
 | `references/formats/*.md` | the format being made; `specs.md` for limits |
@@ -215,7 +227,7 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
 | `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example) |
-| `scripts/` | `lint_copy.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `contact_sheet.py`, `export_oss.sh` |
+| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `contact_sheet.py`, `export_oss.sh` |
 
 ## When not to use this
 

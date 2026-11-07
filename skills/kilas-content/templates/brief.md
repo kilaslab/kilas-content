@@ -70,6 +70,14 @@ interior headlines; each headline passes "lalu kenapa?">
 
 <the action> · who: <the reader> · with what: <access they have today> · when: <this week>
 
+## Brainstorm
+
+Partner: <codex (model) | none> · rounds: <n> · files: `codex/`
+
+| Frame | Partner flagged | Taken (mine, theirs, merged) | Why |
+|---|---|---|---|
+|  |  |  |  |
+
 ## Design
 
 Scheme: <one of the brand pack's schemes; the series' own, or not the previous piece's>.
