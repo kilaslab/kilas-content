@@ -31,7 +31,8 @@ Codex", "minta Codex juga").
 Run research while you write something else. A narrow question takes 1–3 minutes; a broad one
 (several competitors × several questions, with browsing) ran 25+ minutes on 2026-11-09. Ask one
 competitor or one question per call and run calls in parallel; the script stops Codex after
-`CODEX_TIMEOUT` seconds (default 600, exit 5). One or two calls
+`CODEX_TIMEOUT` seconds (default 600, exit 5) and warns when a research request holds more than
+two numbered questions (five per call hit the limit twice on 2026-11-09, with nothing saved). One or two calls
 per item is usually enough; do not ask Codex for what you can settle in one search.
 
 ## 3. How

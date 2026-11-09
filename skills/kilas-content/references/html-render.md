@@ -91,8 +91,12 @@ y = 270–1430 (`formats/reels-tiktok.md`).
 ## Gotchas found in use (2026-11-09)
 
 - Your own classes collide with the kit's: `.pill` (84 px tall), `.steps` (adds its own
-  numbers), `.close`, `.statement`. Prefix custom classes (`.tag`, `.mysteps`) or check
-  `kit.css` before naming one.
+  numbers), `.close`, `.statement`, `.stat` (84 px display type), `.cards` (column grid),
+  `.plate` (400 px tall), `.bars`, `.credit`. `render_slides.py` now lists every class your
+  `<style>` shares with `kit.css`; rename those (`.my-stat`) before judging the render.
+- A generated illustration with a white or grey studio ground shows as a box on a cream or
+  coloured slide, and `mix-blend-mode` does not hide a gradient. Frame it as a card
+  (radius, border, `object-fit: cover`) or place it on a white slide.
 - With `data-no-chrome` and your own footer, `render_slides.py` still flags text below
   y=1200 (the kit's footer zone). That flag is expected for the footer itself; anything else
   down there is a real issue.
