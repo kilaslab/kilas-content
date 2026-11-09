@@ -28,5 +28,8 @@ the profile and record the link.
 - A link in the text (a source such as `tencent.com`) turns into a preview card that takes
   the media button's place, one card per link. Close each card (× on the card) before
   attaching the slides, then count the attached images.
+- ego-browser selectors are CSS plus `:has-text()`; `:text("Add to thread")` is rejected.
+  Mark the leaf element whose text is "Add to thread" with a `data-*` attribute in
+  `page.evaluate()` and click that; mark the newest `[contenteditable=true]` the same way.
 - Instagram's file input is hidden: wait for the file chooser and click "Select from
   computer" (in ego-browser `page.waitForFileChooser()` then `chooser.setFiles(paths)`).
