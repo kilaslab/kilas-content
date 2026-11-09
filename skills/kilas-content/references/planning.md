@@ -71,6 +71,21 @@ running, or that the team dreads making.
 - **One piece, several formats.** A strong item usually becomes 3–5 pieces (section 6).
   Count them as separate rows in the calendar.
 
+## 4b. Product brands: show the product working
+
+Lessons from a product brand's first month (2026-11): the owner rejected tips
+any seller already knows and approved pieces that show the product doing one real thing.
+
+- Give roughly half the slots to the product at work, one capability per piece, so no two
+  demos repeat (answer from the catalog, upload a file, CRM, settings, follow-up, channels).
+- A tip earns a slot only when it ends in the product ("put your shipping cutoff in the
+  bot's data") or teaches something the reader cannot already do.
+- Give the month one storyline (meet the product → the product during the big moment →
+  how to start) instead of independent pieces.
+- Demo carousels follow the "Demo Walkthrough" ladder: outcome on the cover, the problem,
+  the steps listed before the detail, one real screenshot per step cropped to the action,
+  the result. Mock-ups read as vaporware next to the real UI.
+
 ## 5. Moments
 
 Keep a moments list per year in the brand pack, and check the coming month's when

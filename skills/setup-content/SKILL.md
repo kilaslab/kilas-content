@@ -29,7 +29,9 @@ This skill ships with the **kilas-content** skill (same repository). Load that s
   explains), and image generation: your own image tool if you have one (Grok Bot has
   `generate_image` with Grok Imagine; Codex, ChatGPT, and Antigravity have their own), then
   `python3 <skill>/scripts/gen_image.py detect --check` for agy and the OpenAI, Gemini,
-  and xAI keys. Note what is missing; it decides some choices below.
+  and xAI keys; and the Codex CLI (`command -v codex && codex login status`), a second
+  agent for brainstorming, copy, and research (`<skill>/references/codex-collab.md`).
+  Note what is missing; it decides some choices below.
 
 ## 1. Ask, in one round
 
@@ -60,6 +62,8 @@ recommended option when you can infer one:
    If a paid key was found (OpenAI, Gemini, xAI), ask whether the skill may use it and
    which one first; it costs money per image. Say they can change this any time just
    by asking ("pakai Gemini", "jangan yang berbayar").
+   When Codex is signed in, it is used by default for brainstorming, copy, and research
+   while it has quota; record `Codex: yes` in `setup.md` unless the owner says no.
 
 ## 2. Collect the brand's own assets (with permission)
 
@@ -132,7 +136,9 @@ Follow `<skill>/references/brand-onboarding.md` (sections 3–4) with what you c
 
 ## 5. Write content/setup.md and the workspace
 
-Create the workspace from `<skill>/templates/workspace.md` (if missing) and write
+Create the workspace from `<skill>/templates/workspace.md` (if missing, including an
+empty `content/lessons.md` via `python3 <skill>/scripts/lessons.py rules content`, which
+reports it missing until the first `lessons.py add`) and write
 `content/setup.md` from `<skill>/templates/setup.md`: brand, pack location, renderer and
 its details, language, the image generator and whether paid APIs are allowed, assets and
 the permission given (date, which sources, signed-in or not), tools found, and what is

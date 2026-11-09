@@ -15,6 +15,7 @@ Match by what the tool does, not its exact name. Names below are examples.
 | Real browser | `ego-browser` CLI, Claude in Chrome, the built-in browser pane, `agent-browser` | pages that block bots, screenshots of artefacts, pages that need the user's login |
 | Headless browser | `playwright-cli` | simple public pages; Cloudflare-protected sites (phoronix.com) return "Just a moment...", HTTP 403 |
 | Social media | an MCP server or built-in tool that reads X, Instagram, Threads, LinkedIn, YouTube, Reddit (in Cursor, any X/Grok integration it offers) | a named person's own words, original media, reactions, metrics |
+| Paid data catalog | Tapinall MCP (`catalog_search`, `catalog_get`, `call`) or the `tapinall` CLI; see section 1b | Instagram, TikTok, YouTube, Reddit, LinkedIn profiles and posts, search APIs (Exa, Tavily, Firecrawl), SEO data, when free tools fall short |
 | X without login | `scripts/x_post.py <post url>` (public fxtwitter API, tested) | text, date, metrics, and full-size photos of one public post |
 | Frames | the Figma MCP (`use_figma`, `upload_assets`), or Python Playwright / Chrome for the HTML renderer | building and checking frames, per `content/setup.md` |
 | Images | your own image tool (Grok Bot's Grok Imagine, Codex, ChatGPT, Antigravity), `python3 scripts/gen_image.py detect` (agy, OpenAI, Gemini, xAI keys) | metaphor images (`image-sourcing.md`) |
@@ -34,6 +35,31 @@ Write the result at the top of `copy.md` as a note, for example:
 
 With no web tools at all, build from what the user gave you, and say in the report
 which numbers you could not cross-check.
+
+## 1b. Tapinall: paid data, priced per call
+
+Tapinall (tapinall.com) is one account and one prepaid balance for 3,200+ data tools.
+Every call costs money (fractions of a cent to ~$0.30), so:
+
+- Use it only when free tools (web search, fetch, `ego-browser`, `x_post.py`) cannot get
+  the data: a competitor's or creator's recent posts and metrics, TikTok or Instagram
+  search, Reddit threads, structured SEO data.
+- Search first, then read the price: `catalog_search` (or `tapinall catalog search
+  "<task>"`) lists each tool with its price; `catalog_get <id>` shows the input. Prefer
+  a tool marked free, then the cheapest; cached results cost 25%.
+- Catalog prices are a floor ("from $…"): a routed `tap.*` tool can bill a dearer
+  provider (instagram.search.users listed $0.0047, billed $0.0422 on 2026-11-09). Run one
+  call, read the charge it prints, then decide on the rest.
+- Check the balance (`tapinall balance`) before a batch. Ask the owner before any single
+  call over $0.05 or a batch over $0.25, and never loop calls.
+- Record each call in the item's `sources/tapinall.md`: tool id, input, price, date.
+- The data is a lead like any other: open the original post or page before a number or
+  quote goes on a slide.
+
+Setup: `curl -fsSL https://tapinall.com/install.sh | sh` (on macOS `/bin/sh` the 0.1.5
+installer fails on `$f…`; run a copy with `${f}`), then
+`tapinall login --api-base https://tapinall.com` (0.1.5 defaults to a placeholder host),
+then `tapinall mcp install --host claude` and `--host codex`.
 
 ## 2. What to look for, in this order
 

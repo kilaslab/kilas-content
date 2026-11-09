@@ -134,3 +134,6 @@ ln -s ~/.agents/skills/copywriting ~/.cursor/skills/copywriting
 npx skills@latest update          # all of them
 npx skills@latest update social   # one
 ```
+
+Project copies: a project may keep its own copy in `.agents/skills/<name>` with a symlink in
+`.claude/skills/<name>` so Claude and Codex both load it (tested with humanizer and social, 2026-11).
