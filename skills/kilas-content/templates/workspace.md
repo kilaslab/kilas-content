@@ -13,6 +13,7 @@ content/
 ├── setup-gallery/            HTML renderer only: the example rendered in each scheme at setup
 ├── ideas.md                  backlog: one bullet per idea, with a source
 ├── design-log.md             one row per piece: which layout variants it used
+├── lessons.md                owner feedback, review findings, mistakes → rules (scripts/lessons.py)
 ├── plan/
 │   └── 2026-11.md            month plan (templates/plan-month.md)
 ├── items/

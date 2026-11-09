@@ -87,3 +87,30 @@ The kit is built for 1080×1350 frames (header, footer, and checks assume that h
 For a 1080×1920 Reels cover, use the Figma renderer, or write a separate page without
 the kit and screenshot it with your browser tool; keep text inside x = 100–880,
 y = 270–1430 (`formats/reels-tiktok.md`).
+
+## Gotchas found in use (2026-11-09)
+
+- Your own classes collide with the kit's: `.pill` (84 px tall), `.steps` (adds its own
+  numbers), `.close`, `.statement`, `.stat` (84 px display type), `.cards` (column grid),
+  `.plate` (400 px tall), `.bars`, `.credit`. `render_slides.py` now lists every class your
+  `<style>` shares with `kit.css`; rename those (`.my-stat`) before judging the render.
+- A generated illustration with a white or grey studio ground shows as a box on a cream or
+  coloured slide, and `mix-blend-mode` does not hide a gradient. Frame it as a card
+  (radius, border, `object-fit: cover`) or place it on a white slide.
+- With `data-no-chrome` and your own footer, `render_slides.py` still flags text below
+  y=1200 (the kit's footer zone). That flag is expected for the footer itself; anything else
+  down there is a real issue.
+- Keep one scale across a carousel (owner feedback): pill 22 px, headline
+  92–104 px at line-height ≥1.02 in two lines, the same gap pill → headline → sub, one size
+  and place for the mascot, and screenshots cropped so their text reads at ≥18 px. Look at
+  every slide at full size and the contact sheet at thumbnail size before showing anyone.
+- A screenshot narrower than the frame cannot be zoomed without cutting text; rebuild the
+  relevant UI piece in HTML with the product's exact labels instead.
+
+## Owner preview
+
+`scripts/make_preview.py <item> --brand <pack>/design.md` builds `<item>/preview/index.html`:
+an Instagram post mock (swipe, dots, caption with "more"), the slide strip, the Threads text
+with a copy button, and the "Cek sebelum posting" list from `publish.md`. Serve the folder
+(`python3 -m http.server -d <item>/preview 8765`) to view it; with `--artifact` it drops the
+doctype so a Claude Artifact can wrap it (publish `index.html` with the `slides/*.png` files).

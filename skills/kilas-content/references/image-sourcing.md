@@ -6,6 +6,13 @@ profiles), use those photos for covers, plates, and closes before searching stoc
 are on-brand and already the owner's. Tone them like any photo; credit them only if the
 owner credits their photographers.
 
+**A small asset set is not the main visual of every post.** When the brand has only a few
+assets (one mascot in three poses, a few UI screenshots), reusing them post after post makes
+the grid look the same and reads as no effort (owner feedback, Mitrachat, 2026-11-09, given
+more than once). Give each piece a main visual made for it (agy, or Codex's image
+generation); the mascot is optional, and the owned assets are small extras, never the same
+one on two posts in a row.
+
 Then three sources. Choose per slide; one carousel can mix them.
 
 | | Real artefact | Unsplash | Generated |

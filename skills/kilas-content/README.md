@@ -35,6 +35,13 @@ Chrome/Chromium (for HTML → PNG frames), and image generation: the agent's own
 (Grok Bot's Grok Imagine, Codex, ChatGPT, Antigravity), the Antigravity CLI `agy`, or an
 OpenAI, Gemini, or xAI key the owner allows (`scripts/gen_image.py`).
 
+## Self-improvement
+
+Every run starts with `scripts/lessons.py rules content` and every draft must pass
+`scripts/lessons.py check`. Owner feedback, review findings you act on, and your own
+mistakes go into `content/lessons.md` with `lessons.py add`, then move to their home (brand
+pack, design pack, or this skill). See `references/self-improvement.md`.
+
 ## Use it
 
 > rencana konten bulan November buat brand ini
@@ -70,14 +77,21 @@ references/
   design-references.md            layout patterns from Indonesian media and creator accounts
   figma-mechanics.md              session, pages, upload, duotone, cheap verification
   image-sourcing.md               artefacts, Unsplash, generated images, honesty rules
-  research-tools.md               web search, browsers, social tools, image rights
+  research-tools.md               web search, browsers, social tools, paid data (Tapinall), image rights
+  codex-collab.md                 asking the Codex CLI for research, ideas, copy, or a review
+  self-improvement.md             the lessons loop: read, check, capture, promote, retire
+  publishing.md                   posting through a signed-in browser, only on the owner's go
   patterns-from-data.md           what scraped X and Instagram posts taught, and what they did not
   prerequisites.md                companion skills and optional tools
 templates/                        workspace, setup, plan-month, brief, publish, review-month, ideas, design-log
   html/                           slide kit (kit.css, kit.js) and an 8-slide example for the HTML renderer
+  preview/                        the owner preview: Instagram post mock + Threads thread view
 scripts/
   lint_copy.py                    AI tells, language slips, platform limits, brand banned phrases
   check_plan.py                   a month plan against the brand pack
+  lessons.py                      rules / check / add: owner feedback and mistakes as enforced rules
+  ask_codex.sh                    Codex CLI as a second agent (read-only, time-limited)
+  make_preview.py                 Instagram + Threads preview from an item folder
   new_item.py                     an item folder from the templates
   figma-helpers.js                layouts for use_figma: 5 covers, 7 data views, interiors, evidence frames, opinion, close, accents; colour schemes; layoutCheck
   figma_bundle.py                 helpers + BRAND + your build, unused layouts dropped, under use_figma's 50,000-character limit

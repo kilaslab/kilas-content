@@ -26,3 +26,15 @@ caption. A post is up to 500 characters, with one topic tag.
 - [ ] ≤ 500 characters per post; `lint_copy.py --format threads` passes.
 - [ ] One topic tag.
 - [ ] Source in the post or the first reply.
+
+## What drew replies (Indonesian Threads, 2026-11-09)
+
+From 45 posts read for a seller brand: the posts with the most replies asked the community a
+question ("Modal 100 juta usaha apa yg cocok ya.. Bolehkah teman2 berbagi") or told a short
+first-person story with a number; a founder's complaint ("capek balesin satu satu") drew the
+most relevant replies. Lower case, short lines, no numbered list, no CTA in the first post.
+Write the first post as a conversation opener and bring the product in the second post of
+the thread, in one or two plain sentences, with the example written out and the images
+attached (`media: slides`). A thread is complete on its own: never send the reader to
+Instagram, the bio, or a link for the main point (owner feedback, 2026-11-09). Record it in `publish.md` as `post:` and `reply:`
+lines so `make_preview.py` shows it as a thread.
