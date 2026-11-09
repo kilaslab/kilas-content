@@ -41,9 +41,15 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    web search, page fetch, a real browser (`ego-browser`), social-media MCPs or built-in
    X access, Figma MCP, and image generation: your own image tool if you have one (Grok
    Bot's Grok Imagine, Codex, ChatGPT, Antigravity), then `python3 <skill>/scripts/gen_image.py
-   detect` (agy, OpenAI, Gemini, xAI keys). Note what is missing.
+   detect` (agy, OpenAI, Gemini, xAI keys); and a second agent: the Codex CLI
+   (`command -v codex && codex login status`) for brainstorming, copy, and research
+   (`references/codex-collab.md`), unless `content/setup.md` says no; and Tapinall
+   (paid data per call, `research-tools.md` 1b) when its MCP or CLI is signed in.
+   Note what is missing.
 3. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
-   `reviews/`, `ideas.md`, `design-log.md`. Create it the first time.
+   `reviews/`, `ideas.md`, `design-log.md`, `lessons.md`. Create it the first time.
+3b. **Read the lessons**: `python3 <skill>/scripts/lessons.py rules content`. Every active
+   rule binds like the brand pack (`references/self-improvement.md`).
 4. **Pick the mode** below.
 
 | The user wants | Mode |
@@ -57,7 +63,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
 ## Plan
 
 1. Read the inputs (`references/planning.md` section 1): brand pack, last review,
-   `ideas.md`, the month's moments (verify dates), capacity, the owner's goal.
+   `ideas.md`, the month's moments (verify dates), capacity, the owner's goal. With
+   Codex available, ask it for angles once (`scripts/ask_codex.sh brainstorm`,
+   `codex-collab.md`) and merge the good ones into `ideas.md`.
 2. Write `content/plan/YYYY-MM.md` from `templates/plan-month.md`: pillars at their
    shares, series on their cadence, about a quarter of slots reactive, each strong item
    cut into 3–5 formats on different days.
@@ -70,20 +78,31 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
 1. **Item folder**: `python3 <skill>/scripts/new_item.py content <date> <slug> <format>`.
 2. **Research** (`research-tools.md`): primary source, one link deep, corrections since
    publication, named people's own words, the local angle, a second source per number.
+   With Codex available, send it the open questions in parallel
+   (`scripts/ask_codex.sh research`) and check every link it returns yourself.
 3. **Story** in `brief.md` (`writing-craft.md` sections 1–4): five questions, the turn,
    the ladder (berita, uji coba, daftar referensi, or a rubric from
    `copy-playbook.md`), the slide or post worth saving, five hooks in at least three
    shapes put through the gates and the duels, one metaphor family with its `Verbs:`
-   line.
+   line. With Codex available, add its hooks to the workshop
+   (`scripts/ask_codex.sh brainstorm`); they face the same gates and duels.
 4. **Copy** in `copy.md` for the format (`references/formats/`: `carousel.md`,
    `single-post.md`, `x.md`, `threads.md`, `linkedin.md`, `reels-tiktok.md`,
    `long-form.md`), a `>` source
    note under every number, name, and quote. Every headline passes "lalu kenapa?" and
    the metaphor is in at least three of them; caveats go where `writing-craft.md` 7b
-   puts them; the action passes "who, with what, when". Then
+   puts them; the action passes "who, with what, when". With Codex available, ask it
+   for alternatives to the weak lines (`copy`) or a strict read (`review`); take lines,
+   never a whole draft. Then
    `python3 <skill>/scripts/lint_copy.py <item>/copy.md --format <format> --brand <pack>/brand.md`
+   and `python3 <skill>/scripts/lessons.py check content <item>/copy.md` (and on `publish.md`
+   once written)
    must exit 0 (`new_item.py` prints the right `--format`: `thread` lints as `x`,
-   `document` as `linkedin`). Read its warnings and its headline-only read; write that read into
+   `document` as `linkedin`). Then a **humanizer pass** on the caption, the Threads/X text,
+   and the slide lines (the `humanizer` skill when installed: mark the tells, draft, check no
+   fact was added or lost, final), plus the **social** skill's "No AI Tells" list (caption
+   hook different from slide 1, no self-answered questions, no em dashes, no broetry).
+   Read its warnings and its headline-only read; write that read into
    `brief.md`, and read the copy aloud once. Then the **reader pass**, as someone who has
    never seen the source: every key phrase describes what happens, not a term or a
    label for it (`writing-craft.md` 10b); each body opens with a sentence that links to
@@ -120,11 +139,22 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    the data frame, and what changed (screenshots one at a time in Figma; the PNGs in
    HTML). If the user stops screenshots, stop and say which frames went unchecked.
 9. **Publish sheet**: `publish.md` with the text per channel, hashtags within limits,
-   alt text, time, links, credits; add a row to `content/design-log.md`. Publishing is
+   alt text, time, links, credits; add a row to `content/design-log.md`.
+   Before the preview, run the **social** skill's carousel Production Checklist
+   (`social/references/carousel-frameworks.md`: slide 1 stands alone, one idea per slide,
+   one template, real claims, legible at thumbnail size, one CTA, caption is its own hook).
+   Then build the owner's **preview** (an Instagram post mock with the slides, caption,
+   Threads text, and checklist): `python3 <skill>/scripts/make_preview.py <item> --brand
+   <pack>/design.md` (add `--artifact` to publish it as a Claude Artifact), open it, check it
+   at desktop and phone width, and send the owner the preview, not loose PNGs. Publishing is
    the owner's step unless they explicitly ask you to post a specific piece through a
    connected tool; confirm first.
-10. **Report**: where it is, the direction in two lines, the layouts chosen, what was and
-    was not verified, which research tools you had and lacked, and the caption.
+10. **Capture lessons**: owner feedback, review findings you acted on, and your own
+    mistakes go into `content/lessons.md` the moment they appear (`lessons.py add`), then
+    to their home (`references/self-improvement.md`).
+11. **Report**: where it is, the direction in two lines, the layouts chosen, what was and
+    was not verified, which research tools you had and lacked (Codex: which steps,
+    or why not), and the caption.
 
 ## Repurpose
 
@@ -196,6 +226,8 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 - [ ] `publish.md` complete and a row added to `content/design-log.md`; nothing
       posted, liked, or followed without explicit consent.
 - [ ] Plans pass `check_plan.py`.
+- [ ] Active lessons read; `lessons.py check` exits 0; every new feedback captured as a lesson.
+- [ ] Humanizer pass and social "No AI Tells" done on caption, Threads, and slides; social carousel checklist passed.
 
 ## File map
 
@@ -212,10 +244,13 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `references/figma-mechanics.md` | before the first `use_figma`; upload, duotone, screenshots |
 | `references/html-render.md`, `templates/html/` | the HTML → PNG renderer: setup, class reference, render, check |
 | `references/image-sourcing.md`, `research-tools.md` | research and images |
+| `references/self-improvement.md` | every run (read lessons), and whenever feedback or a mistake appears |
+| `references/publishing.md` | only when the owner explicitly says to post a piece: Instagram and Threads web steps |
+| `references/codex-collab.md` | asking Codex for ideas, alternative copy, research, or a review |
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
-| `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example) |
-| `scripts/` | `lint_copy.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `contact_sheet.py`, `export_oss.sh` |
+| `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example); `preview/` (owner preview) |
+| `scripts/` | `lint_copy.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
 
 ## When not to use this
 

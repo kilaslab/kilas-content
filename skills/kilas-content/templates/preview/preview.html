@@ -1,0 +1,196 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: status banner → Instagram post mock (header, swipeable carousel, dots, caption) beside
+   the slide strip, the Threads text, and the owner checklist. Filled by scripts/make_preview.py. */
+:root {
+  --bg: #F3F6F5; --card: #FFFFFF; --ink: #111827; --muted: #5B6470; --rule: #E2E8E6; --accent: __ACCENT__;
+  --warn-bg: #FFF4D6; --warn-ink: #7A5200; --dot: #C9D1CF; --frame: __FRAME__;
+  --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1513; --card: #141F1C; --ink: #E8F0EE; --muted: #9AABA6; --rule: #253430; --accent: __ACCENT_DARK__;
+  --warn-bg: #3A2F12; --warn-ink: #F5D88A; --dot: #3A4A46; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1513; --card: #141F1C; --ink: #E8F0EE; --muted: #9AABA6; --rule: #253430; --accent: __ACCENT_DARK__;
+  --warn-bg: #3A2F12; --warn-ink: #F5D88A; --dot: #3A4A46; color-scheme: dark }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+.banner { background: var(--warn-bg); color: var(--warn-ink); border-radius: 10px; padding: 12px 16px; font-weight: 500; overflow-wrap: anywhere; }
+.banner b { font-family: var(--mono); letter-spacing: .04em; }
+.cols { display: grid; grid-template-columns: minmax(0, 470px) minmax(0, 1fr); gap: 24px; align-items: start; }
+.cols > * { min-width: 0; }
+.post { background: var(--card); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.ph { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+.av { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; flex: none; overflow: hidden; }
+.av img { width: 100%; height: 100%; object-fit: cover; }
+.ph b { font-size: 14px; } .ph .st { color: var(--muted); font-size: 12px; margin-left: auto; }
+.car { position: relative; aspect-ratio: __RATIO__; background: var(--frame); overflow: hidden; max-width: 100%; }
+.track { display: flex; height: 100%; transition: transform .3s ease; }
+.track img { width: 100%; height: 100%; flex: none; object-fit: cover; display: block; }
+.nav { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.9); color: #111; font-size: 18px; cursor: pointer; display: grid; place-items: center; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+.nav:disabled { opacity: 0; pointer-events: none; }
+.prev { left: 10px; } .next { right: 10px; }
+.count { position: absolute; top: 12px; right: 12px; background: rgba(17,24,39,.7); color: #fff; font-size: 12px; border-radius: 999px; padding: 2px 9px; font-variant-numeric: tabular-nums; }
+.dots { display: flex; justify-content: center; gap: 5px; padding: 10px 0 4px; }
+.dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--dot); }
+.dots i.on { background: var(--accent); }
+.cap { padding: 6px 14px 16px; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cap b { margin-right: 4px; }
+.cap .more { color: var(--muted); cursor: pointer; border: 0; background: none; font: inherit; padding: 0; }
+.cap .tags { color: #2563EB; }
+.side { display: grid; gap: 20px; }
+.card { background: var(--card); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+.card .lbl { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.thread { white-space: pre-wrap; font-size: 14px; overflow-wrap: anywhere; }
+.card ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
+.copy { justify-self: start; font: 500 13px var(--body); color: var(--ink); background: transparent; border: 1px solid var(--rule); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.copy:focus-visible, .nav:focus-visible, .thumbs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.thumbs { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; }
+.thumbs button { padding: 0; border: 2px solid transparent; border-radius: 6px; overflow: hidden; cursor: pointer; background: none; }
+.thumbs button[aria-current="true"] { border-color: var(--accent); }
+.thumbs img { display: block; width: 100%; height: auto; }
+
+.tabs { display: inline-flex; gap: 4px; background: var(--card); border: 1px solid var(--rule); border-radius: 999px; padding: 4px; justify-self: start; }
+.tabs button { font: 600 14px var(--body); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 8px 18px; cursor: pointer; }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--card); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.th-feed { background: var(--card); border: 1px solid var(--rule); border-radius: 16px; padding: 18px 18px 6px; max-width: 560px; }
+.tp { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; }
+.rail { display: flex; flex-direction: column; align-items: center; }
+.rail .av { width: 40px; height: 40px; }
+.rail .line { flex: 1; width: 2px; background: var(--rule); margin: 6px 0 2px; min-height: 16px; border-radius: 2px; }
+.tp-body { padding-bottom: 16px; min-width: 0; }
+.tp-head { display: flex; gap: 6px; align-items: baseline; font-size: 15px; }
+.tp-head b { font-weight: 700; } .tp-head span { color: var(--muted); font-size: 14px; }
+.tp-text { margin-top: 2px; font-size: 15px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tp-media { display: flex; gap: 8px; overflow-x: auto; margin-top: 10px; }
+.tp-media img { height: 220px; width: auto; border-radius: 10px; border: 1px solid var(--rule); }
+.tp-act { display: flex; gap: 18px; margin-top: 10px; color: var(--ink); }
+.tp-act svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 820px) { .cols { grid-template-columns: minmax(0, 1fr); } .post { max-width: 470px; } }
+@media (prefers-reduced-motion: reduce) { .track { transition: none; } }
+</style>
+
+<div class="wrap">
+  <div class="banner" id="banner"></div>
+  <div class="tabs" role="group" aria-label="Mode tampilan">
+    <button id="tab-ig" data-view="ig" aria-pressed="true">Instagram</button>
+    <button id="tab-th" data-view="th" aria-pressed="false">Threads</button>
+  </div>
+  <section id="view-th" hidden>
+    <div class="cols">
+      <div class="th-feed" id="th-feed" aria-label="Threads preview"></div>
+      <div class="side">
+        <div class="card"><span class="lbl" id="lbl-thread2"></span><button class="copy" id="copy-thread2"></button></div>
+        <div class="card" id="check-card2"><span class="lbl" id="lbl-check2"></span><ul id="checks2"></ul></div>
+      </div>
+    </div>
+  </section>
+  <section id="view-ig">
+  <div class="cols">
+    <article class="post" aria-label="Instagram post preview">
+      <div class="ph"><span class="av" id="avatar"></span><b id="handle"></b><span class="st" id="status"></span></div>
+      <div class="car">
+        <div class="track" id="track"></div>
+        <span class="count" id="count"></span>
+        <button class="nav prev" id="prev" aria-label="Previous slide">‹</button>
+        <button class="nav next" id="next" aria-label="Next slide">›</button>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div class="cap" id="cap"></div>
+    </article>
+    <div class="side">
+      <div class="card"><span class="lbl" id="lbl-slides"></span><div class="thumbs" id="thumbs"></div></div>
+      <div class="card" id="thread-card"><span class="lbl" id="lbl-thread"></span><div class="thread" id="thread"></div><button class="copy" id="copy-thread"></button></div>
+      <div class="card" id="check-card"><span class="lbl" id="lbl-check"></span><ul id="checks"></ul></div>
+    </div>
+  </div>
+  </section>
+</div>
+
+<script>
+const D = __DATA__;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]));
+const N = D.slides.length;
+let i = 0, open = false;
+document.getElementById("banner").innerHTML = `<b>${esc(D.state)}</b> · ${esc(D.banner)}`;
+document.getElementById("avatar").innerHTML = D.avatar ? `<img src="${D.avatar}" alt="">` : "";
+document.getElementById("handle").textContent = D.handle;
+document.getElementById("status").textContent = D.statusShort;
+document.getElementById("lbl-slides").textContent = D.labels.slides;
+document.getElementById("track").innerHTML = D.slides.map((s, k) => `<img src="${s}" alt="${esc(D.alts[k] || "")}">`).join("");
+const th = document.getElementById("thumbs"); th.style.setProperty("--n", Math.min(N, 10));
+th.innerHTML = D.slides.map((s, k) => `<button id="t${k}" data-k="${k}" aria-label="${k + 1}"><img src="${s}" alt=""></button>`).join("");
+const THREAD_TEXT = D.thread.map(t => t.text).join("\n\n— — —\n\n");
+const ICONS = ['<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  '<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/>',
+  '<path d="M7 7h11l-3-3M17 17H6l3 3"/>', '<path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/>'];
+if (D.thread.length) {
+  document.getElementById("lbl-thread").textContent = D.labels.thread;
+  document.getElementById("thread").textContent = THREAD_TEXT;
+  document.getElementById("copy-thread").textContent = D.labels.copy;
+  document.getElementById("lbl-thread2").textContent = D.labels.thread + " · " + D.thread.length + " post";
+  document.getElementById("copy-thread2").textContent = D.labels.copy;
+  const av = D.avatar ? `<span class="av"><img src="${D.avatar}" alt=""></span>` : `<span class="av"></span>`;
+  document.getElementById("th-feed").innerHTML = D.thread.map((t, k) => `<div class="tp">
+    <div class="rail">${av}${k < D.thread.length - 1 ? '<span class="line"></span>' : ""}</div>
+    <div class="tp-body"><div class="tp-head"><b>${esc(D.handle)}</b><span>${esc(D.statusShort)}</span></div>
+      <div class="tp-text">${esc(t.text)}</div>
+      ${t.media ? `<div class="tp-media">${D.slides.map(s => `<img src="${s}" alt="">`).join("")}</div>` : ""}
+      <div class="tp-act" aria-hidden="true">${ICONS.map(i => `<svg viewBox="0 0 24 24">${i}</svg>`).join("")}</div></div></div>`).join("");
+} else { document.getElementById("thread-card").hidden = true; document.getElementById("tab-th").hidden = true; }
+if (D.checks.length) {
+  const li = D.checks.map(c => `<li>${esc(c)}</li>`).join("");
+  document.getElementById("lbl-check").textContent = D.labels.checks;
+  document.getElementById("checks").innerHTML = li;
+  document.getElementById("lbl-check2").textContent = D.labels.checks;
+  document.getElementById("checks2").innerHTML = li;
+} else { document.getElementById("check-card").hidden = true; document.getElementById("check-card2").hidden = true; }
+function view(v) {
+  document.getElementById("view-ig").hidden = v !== "ig";
+  document.getElementById("view-th").hidden = v !== "th";
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === v));
+  try { history.replaceState(null, "", "#" + v); } catch (e) {}
+}
+function cap() {
+  const first = D.caption.split("\n")[0];
+  document.getElementById("cap").innerHTML = `<b>${esc(D.handle)}</b>` + (open || D.caption.length <= 125
+    ? esc(D.caption) + (D.tags ? `\n\n<span class="tags">${esc(D.tags)}</span>` : "")
+    : esc(first.slice(0, 110)) + `… <button class="more" id="more">${esc(D.labels.more)}</button>`);
+}
+function go(k) {
+  i = Math.max(0, Math.min(N - 1, k));
+  document.getElementById("track").style.transform = `translateX(${-100 * i}%)`;
+  document.getElementById("count").textContent = `${i + 1}/${N}`;
+  document.getElementById("dots").innerHTML = D.slides.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("");
+  document.getElementById("prev").disabled = i === 0;
+  document.getElementById("next").disabled = i === N - 1;
+  document.querySelectorAll("#thumbs button").forEach(b => b.setAttribute("aria-current", +b.dataset.k === i));
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("#prev")) go(i - 1);
+  else if (e.target.closest("#next")) go(i + 1);
+  else if (e.target.closest("#more")) { open = true; cap(); }
+  else if (e.target.closest("#thumbs button")) go(+e.target.closest("button").dataset.k);
+  else if (e.target.closest(".tabs button")) view(e.target.closest("button").dataset.view);
+  else if (e.target.closest("#copy-thread, #copy-thread2")) {
+    const b = e.target.closest("#copy-thread, #copy-thread2");
+    navigator.clipboard.writeText(THREAD_TEXT).then(() => { b.textContent = D.labels.copied; }, () => {
+      view("ig"); const r = document.createRange(); r.selectNodeContents(document.getElementById("thread"));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = D.labels.selected;
+    });
+  }
+});
+let x0 = null;
+const car = document.querySelector(".car");
+car.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+car.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) go(i + (dx < 0 ? 1 : -1)); x0 = null; });
+document.addEventListener("keydown", e => { if (e.key === "ArrowRight") go(i + 1); if (e.key === "ArrowLeft") go(i - 1); });
+cap(); go(0); view(location.hash === "#th" && D.thread.length ? "th" : "ig");
+</script>

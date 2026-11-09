@@ -11,6 +11,7 @@ first; if it is missing, setup runs again.
 - Images: generate automatically for metaphor slides: <yes | no> · tool: <the agent's own
   (Grok Imagine, Codex, ...) | agy | none> · paid APIs: <allowed: gemini first, then openai | not allowed>
   (<date>; the owner can change this by asking)
+- Codex (second agent for brainstorm, copy, research; `references/codex-collab.md`): <yes | no> · <signed in | missing>
 - Default scheme: <name>; series schemes in `brand.md`
 - Assets: `content/brand/assets/` · sources: <site, instagram, ...> · permission: <date, what, signed-in session yes/no>
 - Not collected: <source and why: parked domain, login wall, robots.txt, none given>
