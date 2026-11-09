@@ -11,7 +11,8 @@ chromium), otherwise a Chrome, Chromium, Edge, or Brave binary in headless mode 
 on PATH, in the usual app folders, in Playwright's browser cache, or from $CHROME).
 Writes 01.png, 02.png, ... at 1080×1350 × --scale, and prints the issues kit.js found
 (text past the margins or into the footer, slides that end high, small type, a cover with
-no visual, a long run of plain slides). Exit 1 when issues were found, 3 when no browser
+no visual, a long run of plain slides), plus classes in the page's own <style> that
+kit.css also defines. Exit 1 when issues were found, 3 when no browser
 is available. Fonts load from Google Fonts, so rendering needs the network.
 """
 import argparse
@@ -89,6 +90,20 @@ def with_chrome(chrome, src, out, scale, scheme, issues_only):
         shutil.rmtree(prof, ignore_errors=True)
 
 
+def kit_collisions(src):
+    """Classes the page's own <style> starts a rule with that kit.css also defines.
+    A page `.stat` or `.card` silently inherits the kit's 84 px type or grid (2026-11-09)."""
+    kit = os.path.join(os.path.dirname(os.path.abspath(src)), "kit.css")
+    if not os.path.exists(kit):
+        return []
+    sel = re.compile(r"(?:^|[}\n,])\s*\.([A-Za-z][\w-]*)(?=[\s{,.:>\[])")
+    strip = lambda css: re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    kit_cls = set(sel.findall(strip(open(kit, encoding="utf-8").read())))
+    own = "".join(re.findall(r"<style[^>]*>(.*?)</style>", open(src, encoding="utf-8").read(), re.S))
+    hits = sorted(set(sel.findall(strip(own))) & kit_cls - {"slide"})
+    return [{"css": f".{c} is also a kit.css class; the kit's rules apply too. Rename it (e.g. .my-{c})"} for c in hits]
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("html")
@@ -123,6 +138,7 @@ def main():
         engine = os.path.basename(chrome)
     if not a.issues_only and len(files) != n:
         issues.append({"issue": f"{n - len(files)} of {n} slides were not rendered"})
+    issues += kit_collisions(a.html)
     print(f"{engine}: {len(files)} PNG in {out}" + (f" (scheme {a.scheme})" if a.scheme else ""))
     for i in issues:
         print("issue:", json.dumps(i, ensure_ascii=False))

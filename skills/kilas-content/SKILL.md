@@ -77,7 +77,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
 
 1. **Item folder**: `python3 <skill>/scripts/new_item.py content <date> <slug> <format>`.
 2. **Research** (`research-tools.md`): primary source, one link deep, corrections since
-   publication, named people's own words, the local angle, a second source per number.
+   publication, named people's own words, the local angle, a second source per number,
+   and a read-only scroll of the platform's feed for the topic (section 2, item 8). For a
+   model or product launch, set the vendor's numbers beside an independent board.
    With Codex available, send it the open questions in parallel
    (`scripts/ask_codex.sh research`) and check every link it returns yourself.
 3. **Story** in `brief.md` (`writing-craft.md` sections 1–4): five questions, the turn,

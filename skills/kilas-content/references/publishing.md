@@ -24,3 +24,9 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 New thread → first post → "Add to thread" for each reply → media icon on the post that
 carries `media: slides` → read back every post's text and the image count → Post → open
 the profile and record the link.
+
+- A link in the text (a source such as `tencent.com`) turns into a preview card that takes
+  the media button's place, one card per link. Close each card (× on the card) before
+  attaching the slides, then count the attached images.
+- Instagram's file input is hidden: wait for the file chooser and click "Select from
+  computer" (in ego-browser `page.waitForFileChooser()` then `chooser.setFiles(paths)`).

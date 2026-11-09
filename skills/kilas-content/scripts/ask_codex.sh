@@ -26,6 +26,11 @@ for f in "$@"; do [ -f "$f" ] || { echo "context file not found: $f" >&2; exit 2
 
 ask="$(cat)"
 [ -n "$ask" ] || { echo "write the request on stdin" >&2; exit 2; }
+# Five numbered questions in one research call ran past 600 s twice on 2026-11-09: warn early.
+nq="$(printf '%s\n' "$ask" | grep -cE '^[[:space:]]*[0-9]+[.)][[:space:]]' || true)"
+if [ "$task" = research ] && [ "$nq" -gt 2 ]; then
+  echo "warning: $nq numbered questions in one research call; split them into parallel calls (one question each) or it may hit CODEX_TIMEOUT" >&2
+fi
 mkdir -p "$outdir"
 stamp="$(date +%Y%m%d-%H%M%S)"
 out="$outdir/codex-$task-$stamp.md"

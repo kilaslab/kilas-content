@@ -82,6 +82,18 @@ A budget of about 10–15 searches and fetches is plenty for one item.
 6. **A second source for each key number** where one exists.
 7. **Artefacts**: the page, post, chart, or document that proves the evidence slide
    (section 3).
+8. **Scroll the feed** (read only, signed-in browser): one or two hashtags or accounts on
+   the platform the piece is for (`instagram.com/explore/tags/<tag>/`, the vendor's own
+   account). It shows how others lay the topic out and surfaces what search has not indexed
+   yet: on 2026-11-09 `#aibenchmark` led to the vendor's own post of an independent score,
+   which became the turn of the piece. Owners noticed the difference. Save the grid
+   screenshot in `content/research/`; open a post only to read it.
+
+**Model and product launches.** A vendor's chart is the vendor's test: label it so ("tes
+dari Tencent"), count wins yourself from the chart, and set it beside an independent
+board (Artificial Analysis model page and leaderboard; LMArena) fetched the same day. An
+"open-source" claim is checked on Hugging Face (`huggingface.co/api/models?author=<org>&search=<name>`)
+on the day of posting: a promise to release weights "in the coming days" is not a release.
 
 ## 3. Original images and artefacts
 
