@@ -2,13 +2,19 @@
 
 The deliverable is everything a person or a video tool needs to produce the video: a
 script, a shot-by-shot storyboard, on-screen text, an asset list with sources, a cover
-frame (Figma, or a separate HTML page: `html-render.md` section 4), and the caption. Rendering is optional: if the host has a video tool
-(for example Remotion skills), the storyboard is its input; otherwise the user records
-and edits.
+frame (Figma, or a separate HTML page: `html-render.md` section 4), and the caption. Two
+routes to the video:
+
+- **Motion film**, made by the agent: a character animatic the owner approves, then a
+  voice-over and a HyperFrames render (`motion-video.md`). Characters act the story; a
+  still illustration with small moving parts reads as stiff, and UI alone has no one to
+  care about.
+- **Shoot**, made by the owner: they record and edit from the storyboard below.
 
 ## 1. Length and shape
 
-Aim for 30–60 seconds; Instagram does not recommend Reels over 3 minutes to new
+Aim for 30 seconds for a one-idea story (a contrast, a demo, a joke); go to 60 only when
+the piece teaches steps. Instagram does not recommend Reels over 3 minutes to new
 audiences. Speaking pace is roughly 130–150 words per minute, so 45 seconds holds about
 100 spoken words. Read the script aloud with a timer; that number beats any estimate.
 
@@ -43,6 +49,14 @@ Write `storyboard.md` in the item folder:
 | 1 | 0–3 s | screen recording: commit counter ticking up to 19.671 | 19.671 commit. Dua minggu. | Sembilan belas ribu commit masuk ke kernel Linux dalam dua minggu. | capture: lore.kernel.org, 1 Nov 2026 |
 | 2 | 3–8 s | B-roll: floodgate opening | Anggap saja pintu air | ... | Unsplash: <photographer> |
 ```
+
+For a motion film, the storyboard is the animatic itself: one still per second for the
+first 10 s, then one per 5 s, each with the action (per side in a split screen), the
+on-screen line, and the VO slice, plus the full VO script as a table. **Render only after
+the owner approves it**; a change after the render costs a rebuild.
+
+In `copy.md`, every beat has `onscreen:` and `vo:`; `lint_copy.py` counts the VO words and
+`scripts/vo_elevenlabs.py` turns the `vo:` lines into one clip per beat.
 
 Rules:
 - One row per cut. A new idea gets a new visual.
@@ -82,3 +96,5 @@ minimum); upload the frame at full size.
 - [ ] Text inside the safe zone; cover title inside y = 240–1680.
 - [ ] Captions burned in; no music in the export.
 - [ ] `storyboard.md`, `copy.md`, cover frame, asset list, and caption delivered.
+- [ ] Motion film: animatic and VO script approved before the render; the MP4 passed
+      `motion-video.md` step 6 (size, audio in every beat, stills, transcript = script).

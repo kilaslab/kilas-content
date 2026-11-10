@@ -19,11 +19,28 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 8. Open the profile, confirm the newest post and its caption, record the link in
    `publish.md`, set the brief status to `terbit`.
 
+## Instagram Reels from a video (tested 2026-11-10)
+
+1. Create → Post → set the MP4 on the hidden file input → "Video posts are now shared as
+   reels" → OK.
+2. Crop: choose **Original** (keeps 9:16); look at the frame before "Next".
+3. Edit: the cover defaults to frame 0 (make frame 0 the hook still); check the trim shows
+   the full length.
+4. Caption from `publish.md`; read the field back. Share to Facebook off, schedule off.
+5. Accessibility: Reels on the web has no alt-text field, only auto-generated captions; turn
+   those on. Keep the alt text in `publish.md` for the app.
+6. AI label: on when the video carries a synthetic voice or realistic AI footage (Meta asks
+   for it on realistic AI audio); say so to the owner, who can switch it off from the
+   post's ··· menu.
+7. Share, wait for "Your reel has been shared", open `/<handle>/reels/`, open the newest
+   reel, confirm the caption, record the link.
+
 ## Threads web
 
 New thread → first post → "Add to thread" for each reply → media icon on the post that
-carries `media: slides` → read back every post's text and the image count → Post → open
-the profile and record the link.
+carries `media: slides` (or the video: set it on that post's own file input, the second one
+in a two-post thread) → read back every post's text and the media count → Post → open the
+profile and record the link.
 
 - A link in the text (a source such as `tencent.com`) turns into a preview card that takes
   the media button's place, one card per link. Close each card (× on the card) before

@@ -64,6 +64,10 @@ recommended option when you can infer one:
    by asking ("pakai Gemini", "jangan yang berbayar").
    When Codex is signed in, it is used by default for brainstorming, copy, and research
    while it has quota; record `Codex: yes` in `setup.md` unless the owner says no.
+9. **Reels videos** (only if the brand makes them): the recurring cast (a customer
+   character, the mascot), and the voice-over voice. Check `npx hyperframes --version`,
+   `ffprobe`, and `ELEVENLABS_API_KEY` in `.env`; record them in the "Video" line of
+   `setup.md` and point to `prerequisites.md` "Video companions" for what is missing.
 
 ## 2. Collect the brand's own assets (with permission)
 

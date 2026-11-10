@@ -1,6 +1,6 @@
 ---
 name: kilas-content
-description: "Plan and create social content end to end for any brand: a monthly content plan with pillars, series, and a calendar; researched pieces with a hook that earns attention; Instagram carousels and single posts built in Figma or rendered from HTML to PNG; Reels/TikTok scripts and storyboards; X posts and threads; LinkedIn posts and documents; Threads; and long-form posts that feed them. Use it whenever someone asks to plan content, make a content calendar, write or design a carousel, slides, a post, a thread, a Reels script, or repurpose an article into social posts, says \"buat konten\", \"bikin carousel\", \"rencana konten\", \"content plan\", or asks for a stronger hook. Each brand lives in a brand pack (voice, pillars, series, design tokens); on first use in a project it runs the setup-content skill (brand, assets, renderer)."
+description: "Plan and create social content end to end for any brand: a monthly content plan with pillars, series, and a calendar; researched pieces with a hook that earns attention; Instagram carousels and single posts built in Figma or rendered from HTML to PNG; Reels/TikTok scripts, storyboards, and animated videos with characters and voice-over; X posts and threads; LinkedIn posts and documents; Threads; and long-form posts that feed them. Use it whenever someone asks to plan content, make a content calendar, write or design a carousel, slides, a post, a thread, a Reels script or video, or repurpose an article into social posts, says \"buat konten\", \"bikin carousel\", \"rencana konten\", \"content plan\", or asks for a stronger hook. Each brand lives in a brand pack (voice, pillars, series, design tokens); on first use in a project it runs the setup-content skill (brand, assets, renderer)."
 license: GPL-3.0-or-later
 ---
 
@@ -46,7 +46,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    (`references/codex-collab.md`), unless `content/setup.md` says no; when Codex is
    missing, `bash <skill>/scripts/brainstorm.sh detect` finds another brainstorm partner
    (`references/brainstorm-partner.md`); and Tapinall (paid data per call,
-   `research-tools.md` 1b) when its MCP or CLI is signed in. Note what is missing.
+   `research-tools.md` 1b) when its MCP or CLI is signed in; for a Reels video, the
+   HyperFrames CLI, ffmpeg, and an ElevenLabs key (`references/motion-video.md`). Note what
+   is missing.
 3. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
    `reviews/`, `ideas.md`, `design-log.md`, `lessons.md`. Create it the first time.
 3b. **Read the lessons**: `python3 <skill>/scripts/lessons.py rules content`. Every active
@@ -143,7 +145,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
      kit's layouts, with the chosen photos and generated images copied into `html/img/`;
      `scripts/render_slides.py` renders one PNG per slide.
    Reels: `storyboard.md` + a 1080×1920 cover frame (Figma, or a separate HTML page as
-   `html-render.md` section 4 says).
+   `html-render.md` section 4 says). A Reels **video** the agent makes follows
+   `references/motion-video.md`: character animatic, the owner's approval, voice-over,
+   HyperFrames render, then a check of the file itself.
 8. **Verify cheaply**: the layout check first (`layoutCheck()` in Figma, the issues
    `render_slides.py` prints in HTML) and fix what it reports; then look at the cover,
    the data frame, and what changed (screenshots one at a time in Figma; the PNGs in
@@ -228,6 +232,8 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 - [ ] The action passes "who, with what, when".
 - [ ] `lint_copy.py` exits 0 for the format; every number, name, and quote has a note.
 - [ ] Platform limits respected (`formats/specs.md`): hashtags, characters, safe zones.
+- [ ] Reels video: animatic and VO script approved before rendering; the MP4 checked for
+      size, audio in every beat, stills, and a transcript that matches the script.
 - [ ] Layouts chosen per slide in `brief.md`; cover and headline mark differ from the
       previous piece in `content/design-log.md`; one slide breaks the pattern.
 - [ ] One scheme applied; the brand's own photos used where they fit; photos toned;
@@ -253,6 +259,7 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `references/copy-playbook.md` | frameworks, copy.md format, CTA, caption |
 | `references/language/id.md`, `en.md` | the brand's language |
 | `references/formats/*.md` | the format being made; `specs.md` for limits |
+| `references/motion-video.md`, `templates/video/` (rig.js, index.html) | a Reels video: companion skills, animatic, VO, render, verification |
 | `references/design-system.md`, `design-variety.md`, `design-references.md` | before building frames: roles, layout variants and how to choose them, patterns from other accounts |
 | `references/figma-mechanics.md` | before the first `use_figma`; upload, duotone, screenshots |
 | `references/html-render.md`, `templates/html/` | the HTML → PNG renderer: setup, class reference, render, check |
@@ -263,7 +270,7 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
 | `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example); `preview/` (owner preview) |
-| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
+| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
 
 ## When not to use this
 
