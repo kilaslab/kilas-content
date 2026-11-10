@@ -11,6 +11,20 @@ routes to the video:
   care about.
 - **Shoot**, made by the owner: they record and edit from the storyboard below.
 
+## 0. Kinds of Reel, and the mix
+
+Pick the kind before the script; rotate kinds across the month so the channel is not a
+string of ads.
+
+| Kind | What carries it | Visual route | Product's place |
+|---|---|---|---|
+| News | the event, its number, its source on screen | artefact captures, kinetic type, charts; a presenter if the brand has one | an aside or the last beat ("what it means for you") |
+| Explainer | one idea made plain with one metaphor | characters or objects acting the metaphor | an example, if it fits |
+| Story | a scene the viewer has lived (a contrast, a POV, a twist) | acting characters (`motion-video.md`) | supporting role, or the turn |
+| Demo | the product doing one real thing | screen recording of the real UI, cropped to the action | the subject |
+
+At most every other Reel is a Demo or a story whose turn is the product.
+
 ## 1. Length and shape
 
 Aim for 30 seconds for a one-idea story (a contrast, a demo, a joke); go to 60 only when

@@ -32,36 +32,33 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    `../setup-content/SKILL.md`; invoke it, or follow it by hand) before anything else. It
    asks which brand, collects the brand's own assets from its site and profiles with
    permission, chooses the renderer (Figma or HTML → PNG), and writes the brand pack.
-1. **Find the brand pack** (`brands/README.md`): `content/brand/` in the project, else
+1. **Pick the mode**; it decides which of the steps below the run needs.
+
+| The user wants | Mode | Steps |
+|---|---|---|
+| a plan, a calendar, "rencana konten bulan ini" | Plan | 2–5 |
+| one piece: carousel, single post, thread, Reels script or video, LinkedIn post, article | Create | 2–5 |
+| several pieces from one source | Repurpose | 2–5 |
+| to know what worked and what to change | Review | 2–4 |
+| to set up a new brand, change the renderer, or refresh assets | Setup (the setup-content skill) | — |
+
+2. **Find the brand pack** (`brands/README.md`): `content/brand/` in the project, else
    `brands/<name>/` in this skill. Read `brand.md`, `design.md`, and
    `content/brand/assets/README.md` if it exists (the brand's own photos and logos come
    before stock). Anything marked `(proposed)` is not settled; ask before a plan
    depends on it.
-2. **Take stock of tools** and use every one that helps (`references/research-tools.md`):
-   web search, page fetch, a real browser (`ego-browser`), social-media MCPs or built-in
-   X access, Figma MCP, and image generation: your own image tool if you have one (Grok
-   Bot's Grok Imagine, Codex, ChatGPT, Antigravity), then `python3 <skill>/scripts/gen_image.py
-   detect` (agy, OpenAI, Gemini, xAI keys); and a second agent: the Codex CLI
-   (`command -v codex && codex login status`) for brainstorming, copy, and research
-   (`references/codex-collab.md`), unless `content/setup.md` says no; when Codex is
-   missing, `bash <skill>/scripts/brainstorm.sh detect` finds another brainstorm partner
-   (`references/brainstorm-partner.md`); and Tapinall (paid data per call,
-   `research-tools.md` 1b) when its MCP or CLI is signed in; for a Reels video, the
-   HyperFrames CLI, ffmpeg, and an ElevenLabs key (`references/motion-video.md`). Note what
-   is missing.
-3. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
-   `reviews/`, `ideas.md`, `design-log.md`, `lessons.md`. Create it the first time.
-3b. **Read the lessons**: `python3 <skill>/scripts/lessons.py rules content`. Every active
+3. **Read the lessons**: `python3 <skill>/scripts/lessons.py rules content`. Every active
    rule binds like the brand pack (`references/self-improvement.md`).
-4. **Pick the mode** below.
-
-| The user wants | Mode |
-|---|---|
-| a plan, a calendar, "rencana konten bulan ini" | Plan |
-| one piece: carousel, single post, thread, Reels script, LinkedIn post, article | Create |
-| several pieces from one source | Repurpose |
-| to know what worked and what to change | Review |
-| to set up a new brand, change the renderer, or refresh assets | Setup (the setup-content skill) |
+4. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
+   `reviews/`, `ideas.md`, `design-log.md`, `lessons.md`. Create it the first time.
+5. **Pick the tools for this job** from the tool lines of `content/setup.md` (setup
+   detected them; re-detect only what it marks missing, with `research-tools.md`
+   section 1). One per job: research (web, page fetch, `ego-browser` for a read-only feed
+   scroll), images (your own image tool, then `gen_image.py detect`: agy, paid keys), a
+   second model (Codex, `codex-collab.md`; else `brainstorm.sh detect`), paid platform
+   data (Tapinall, `research-tools.md` 1b), and for a Reels video HyperFrames, ffmpeg,
+   and ElevenLabs (`motion-video.md`). A paid call needs a reason first. Done when the
+   item's `brief.md` (or the plan's notes) names the tool per job and the gaps.
 
 ## Plan
 
@@ -92,6 +89,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    line. With Codex available, add its hooks to the workshop
    (`scripts/ask_codex.sh brainstorm`), five in shapes you did not try; they face the same
    gates and duels (`brainstorm-partner.md` section 1).
+   Scale to the format: a carousel or a Reel gets all of it; a single post or a thread
+   gets three hooks in two shapes and no metaphor rule; a news piece keeps the facts
+   ladder and skips the metaphor.
 4. **Copy** in `copy.md` for the format (`references/formats/`: `carousel.md`,
    `single-post.md`, `x.md`, `threads.md`, `linkedin.md`, `reels-tiktok.md`,
    `long-form.md`), a `>` source
@@ -114,8 +114,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    label for it (`writing-craft.md` 10b); each body opens with a sentence that links to
    the slide before, and no slide changes the subject (section 2); every metaphor
    headline still makes sense without slide 2 (section 4).
-   Then the **partner round** (`brainstorm-partner.md` section 3), before any frame is
-   built: send the copy, the layout limits, and what each frame shows to the partner
+   Then the **partner round** (`brainstorm-partner.md` section 3) for a carousel or a
+   Reel, before any frame is built (other formats: when the owner says the copy reads
+   badly): send the copy, the layout limits, and what each frame shows to the partner
    (Codex by default) for a read by a beginner and a skeptical senior, flow breaks, and
    two options per frame. You pick per frame and write why under "Brainstorm" in
    `brief.md`, then lint again. A self-review missed copy that read as translated in
@@ -218,34 +219,43 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 
 ## Quality gate
 
-- [ ] Brand pack read; nothing `(proposed)` used as settled without asking.
-- [ ] Every research tool available was used where it helps; gaps reported.
+Every piece (Create and Repurpose):
+
+- [ ] Brand pack read; nothing `(proposed)` used as settled without asking; the tools per
+      job and the gaps named in `brief.md`.
 - [ ] Five story questions answered with the local angle; the turn placed.
-- [ ] Hook workshop done with gates and duels; the cover is ≤30 words with no caveat
-      and works alone.
-- [ ] Headline-only read written in `brief.md` and tells the story; the metaphor is in
-      at least three headlines; one piece worth saving, named.
-- [ ] Reader pass done: plain words, bridge sentences, no detour, metaphor headlines
-      read literally (owner feedback on the weight-space carousel, 4 Nov 2026).
-- [ ] Partner round done before building (or the missing partner reported); each frame's
-      pick and reason written under "Brainstorm" in `brief.md`.
-- [ ] The action passes "who, with what, when".
-- [ ] `lint_copy.py` exits 0 for the format; every number, name, and quote has a note.
-- [ ] Platform limits respected (`formats/specs.md`): hashtags, characters, safe zones.
-- [ ] Reels video: animatic and VO script approved before rendering; the MP4 checked for
-      size, audio in every beat, stills, and a transcript that matches the script.
-- [ ] Layouts chosen per slide in `brief.md`; cover and headline mark differ from the
-      previous piece in `content/design-log.md`; one slide breaks the pattern.
-- [ ] One scheme applied; the brand's own photos used where they fit; photos toned;
-      screenshots in colour, unaltered, credited, marked with highlighter marks.
-- [ ] Layout check clean (`layoutCheck()` in Figma, `render_slides.py` in HTML) or each
-      note explained; cover and data frame seen (or the gap reported).
-- [ ] Close: one CTA, all sources and credits; generated images labelled as illustrations.
-- [ ] `publish.md` complete and a row added to `content/design-log.md`; nothing
-      posted, liked, or followed without explicit consent.
-- [ ] Plans pass `check_plan.py`.
-- [ ] Active lessons read; `lessons.py check` exits 0; every new feedback captured as a lesson.
-- [ ] Humanizer pass and social "No AI Tells" done on caption, Threads, and slides; social carousel checklist passed.
+- [ ] Hook workshop at the format's scale, with gates and duels; the cover or first line is
+      ≤30 words with no caveat and works alone.
+- [ ] Reader pass done: plain words, bridge sentences, no detour (owner feedback on the
+      weight-space carousel, 4 Nov 2026).
+- [ ] The action passes "who, with what, when"; one CTA; sources and credits; generated
+      images labelled as illustrations.
+- [ ] `lint_copy.py` and `lessons.py check` exit 0 for `copy.md` and `publish.md`;
+      every number, name, and quote has a note; platform limits respected (`formats/specs.md`).
+- [ ] Humanizer pass and social "No AI Tells" on the caption, the Threads/X text, and the
+      on-screen lines.
+- [ ] `publish.md` complete, a row in `content/design-log.md`, the plan row updated;
+      nothing posted, liked, or followed without the owner's explicit go.
+- [ ] Every new piece of feedback captured as a lesson.
+
+Carousel and single post:
+
+- [ ] Headline-only read in `brief.md` tells the story; metaphor in ≥3 headlines
+      (carousel); one frame worth saving, named.
+- [ ] Partner round done before building (carousel), picks written under "Brainstorm".
+- [ ] Layouts per slide in `brief.md`; cover and headline mark differ from the previous
+      piece in `design-log.md`; one slide breaks the pattern; one scheme applied.
+- [ ] Layout check clean (`layoutCheck()` or `render_slides.py`); cover and data frame
+      seen; social carousel checklist passed; owner preview from `make_preview.py`.
+
+Reels:
+
+- [ ] The Reel's kind fits the plan's mix (`formats/reels-tiktok.md` section 0) and is not
+      a second product Reel in a row.
+- [ ] Video: the beat map of the whole film and the 10 s animatic approved before
+      rendering; the MP4 passed `motion-video.md` step 6.
+
+Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 
 ## File map
 

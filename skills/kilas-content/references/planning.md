@@ -70,14 +70,21 @@ running, or that the team dreads making.
   after 4–6 weeks show a difference.
 - **One piece, several formats.** A strong item usually becomes 3–5 pieces (section 6).
   Count them as separate rows in the calendar.
+- **Reels rotate kinds like the feed does** (`formats/reels-tiktok.md` section 0): news,
+  explainer, story, demo. The product is the subject of at most every other Reel; in the
+  rest it appears as a supporting role or in the last beat. A product brand's owner asked
+  for this after a run of product Reels (Nov 2026): viewers tire of a channel that only
+  sells.
 
 ## 4b. Product brands: show the product working
 
 Lessons from a product brand's first month (2026-11): the owner rejected tips
 any seller already knows and approved pieces that show the product doing one real thing.
 
-- Give roughly half the slots to the product at work, one capability per piece, so no two
+- Give up to half the slots to the product at work, one capability per piece, so no two
   demos repeat (answer from the catalog, upload a file, CRM, settings, follow-up, channels).
+  Fill the rest with what the audience follows the account for (news in the field,
+  explainers, stories), each ending where the product fits naturally, if it does.
 - A tip earns a slot only when it ends in the product ("put your shipping cutoff in the
   bot's data") or teaches something the reader cannot already do.
 - Give the month one storyline (meet the product → the product during the big moment →

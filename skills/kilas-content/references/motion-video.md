@@ -1,6 +1,8 @@
 # Motion video: a Reels film from storyboard to post
 
-A Reel that tells a small story is a **character animatic** first and a rendered film last.
+A Reel that tells a small story or an explainer is a **character animatic** first and a
+rendered film last. News and demo Reels use the same render and checks with other actors
+(artefact captures, kinetic type, a screen recording; `formats/reels-tiktok.md` section 0).
 The owner approves the animatic before anything is rendered, because a change after the
 render costs a full rebuild, while a change in the animatic costs one line.
 
@@ -44,11 +46,15 @@ Install: `prerequisites.md`, section "Video companions".
    mouth states, arms on shoulder pivots, props in hand) and the brand mascot. Start from
    `templates/video/rig.js`. Generated images are small props at most; the actors are
    drawn so they can act.
-3. **Animatic of the first 10 s**, live in the browser (GSAP), published as an artifact with
-   one still per second taken from the same timeline (`tl.seek(t)`), each with the action
-   per side, the on-screen line, and the VO slice. Add the full VO script as a table
-   (time, VO, on-screen text, action) with a copy button: it is the dubbing brief.
-   **Gate: the owner approves the animatic and the script.** No render before that.
+3. **Beat map and animatic**, published as one artifact: the whole film as a beat table
+   (time, VO, on-screen text, action, one key still per beat, sketch-level is fine) so the
+   turn and the ending are seen too, and the first 10 s fully animated, live in the
+   browser (GSAP), with one still per second taken from the same timeline (`tl.seek(t)`).
+   Budget every beat before animating: VO seconds (words ÷ 2.5) plus the reaction hold
+   must fit the beat, and the on-screen line needs 0.5 s + 0.3 s a word; cut words from a
+   beat that does not fit. The VO table carries a copy button: it is the dubbing brief.
+   **Gate: the owner approves the beat map, the animatic, and the script.** No render
+   before that.
 4. **Animate the rest** in the same timeline; then **voice-over** (`scripts/vo_elevenlabs.py`):
    one clip per beat, speed ×1.05 for a conversational pace, and retime the animation to
    the VO so each visual lands on its word (a "paid" stamp on the word "paid").
@@ -56,8 +62,14 @@ Install: `prerequisites.md`, section "Video companions".
    `snapshot` at every beat and read the sheet, then `render -q delivery`.
 6. **Verify the file, not the source**: `ffprobe` (1080×1920, 30 fps, duration, an audio
    stream); `ffmpeg -af volumedetect` per beat window (VO present in every beat, silence
-   after the last); stills pulled from the MP4; **transcribe the audio**
-   (`vo_elevenlabs.py --verify`) and compare it with the script word by word.
+   after the last); loudness with `ffmpeg -i film.mp4 -af loudnorm=print_format=summary -f
+   null -` (aim −14 LUFS integrated, true peak ≤ −1 dBTP; the first film shipped at −19 LUFS,
+   quiet next to other Reels; fix with `ffmpeg -i in.mp4 -c:v copy -af
+   loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 192k out.mp4`; one pass lands within
+   about 1 LU, and TP −1.5 keeps the peak under −1, then measure again); stills pulled
+   from the MP4; **transcribe the audio** (`vo_elevenlabs.py --verify`) and compare it
+   with the script word by word; play it once on a phone speaker if a person can, since
+   music added later in the app must sit well under the VO.
 7. **Preview** in the item's artifact: the MP4 (as a data URI under 16 MB), the caption, and
    the posting steps. Then `publish.md` and, on the owner's go, `publishing.md`.
 
@@ -120,6 +132,6 @@ Install: `prerequisites.md`, section "Video companions".
 
 ## Done when
 
-The animatic and script were approved, the MP4 passed step 6 (dimensions, audio in every
-beat, stills, transcript matching the script), the artifact shows the final file and
+The beat map, animatic, and script were approved, the MP4 passed step 6 (dimensions,
+audio in every beat, loudness, stills, transcript matching the script), the artifact shows the final file and
 caption, and every correction the owner made is in `content/lessons.md`.
