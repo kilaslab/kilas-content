@@ -3,7 +3,7 @@
 """Voice-over for a Reel: one ElevenLabs clip per beat, from the `vo:` lines of copy.md.
 
   vo_elevenlabs.py <item>/copy.md <outdir> [--voice ID] [--speed 1.05] [--model ID]
-  vo_elevenlabs.py --verify <outdir or audio/video file> [<item>/copy.md]
+  vo_elevenlabs.py --verify <outdir or audio/video file> [<item>/copy.md] [--words words.json]
 
 Generate: each non-empty `vo:` line becomes <outdir>/vo<N>.mp3 (raw from ElevenLabs) and,
 when ffmpeg is present and --speed is not 1, <outdir>/vo<N>-x<speed>.mp3. Neighbouring lines
@@ -11,7 +11,9 @@ go along as previous_text/next_text so the clips sound like one take. Prints eac
 duration: put each one on the timeline as its own <audio> with that duration.
 
 Verify: transcribes the clips (or one rendered file) with ElevenLabs speech-to-text and
-prints the transcript beside the script, flagging words that differ. Catch misreadings
+prints the transcript beside the script, flagging words that differ, in order. With --words,
+it also saves every word with its start and end time (seconds from the start of the file):
+time each character reaction 0-3 frames before its word. Catch misreadings
 here ("QRIS" heard as "queries"); write acronyms and numbers the way they are said.
 
 The key comes from ELEVENLABS_API_KEY or a .env file in the working directory; it is never
@@ -110,7 +112,7 @@ def stt(path, k):
                  + Path(src).read_bytes() + f"\r\n--{b}--\r\n".encode())
     req = urllib.request.Request(f"{API}/speech-to-text", data=b"".join(parts), method="POST",
                                  headers={"xi-api-key": k, "Content-Type": f"multipart/form-data; boundary={b}"})
-    return json.loads(call(req)).get("text", "")
+    return json.loads(call(req))
 
 
 def words(s):
@@ -129,7 +131,16 @@ def verify(args):
             files = sorted((f for f in target.glob("vo*.mp3") if "-x" not in f.stem), key=lambda p: (len(p.stem), p.stem))
     else:
         files = [target]
-    heard = " ".join(stt(f, k) for f in files)
+    results = [stt(f, k) for f in files]
+    heard = " ".join(r.get("text", "") for r in results)
+    if args.words:
+        if len(files) != 1:
+            print("--words needs one file (the rendered film or the full VO track), not a folder of clips", file=sys.stderr)
+        else:
+            ws = [{"word": w.get("text"), "start": w.get("start"), "end": w.get("end")}
+                  for w in results[0].get("words", []) if w.get("type", "word") == "word"]
+            Path(args.words).write_text(json.dumps(ws, indent=1, ensure_ascii=False))
+            print(f"WORDS  {len(ws)} words with times -> {args.words}")
     print("HEARD:  " + heard)
     if args.copy:
         script = " ".join(vo_lines(args.copy))
@@ -154,6 +165,7 @@ def main():
     p.add_argument("--voice", default=DEFAULT_VOICE)
     p.add_argument("--model", default="eleven_multilingual_v2")
     p.add_argument("--speed", type=float, default=1.05)
+    p.add_argument("--words", help="with --verify on one file: save word timings as JSON")
     args = p.parse_args()
     if args.verify:
         args.target = args.verify

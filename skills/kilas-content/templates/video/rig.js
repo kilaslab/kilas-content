@@ -170,7 +170,29 @@
       },
       // Pop a node in (a bubble, a card) with the brand's enter ease; node keeps translate/scale/rotate in its transform attribute.
       pop(node, t, x, y, rot) { tl.to(node, { attr: { transform: `translate(${x},${y}) scale(1) rotate(${rot || 0})` }, duration: M.dur.base, ease: M.ease.enter }, t); },
-      blink(p, t) { tl.to(p.lids, { attr: { height: 32 }, duration: 0.06, ease: "none" }, t); tl.to(p.lids, { attr: { height: 0 }, duration: 0.08, ease: "none" }, t + 0.09); },
+      // A blink over 4 frames (half, shut, shut, half); add one on every expression swap, and one every 0.5-2.3 s.
+      blink(p, t) {
+        const f = 1 / 30;
+        [[0, 16], [f, 32], [3 * f, 16], [4 * f, 0]].forEach(([dt, h]) => tl.set(p.lids, { attr: { height: h } }, t + dt));
+      },
+      // ---- camera: wrap the whole scene in one top-level <g> and pass it here ----
+      // The camera is almost never dead still: every hold creeps in (0.15-0.35 % a frame), moves glide
+      // with an ease in and out over 18-40 frames, impacts kick with a shake that flips every frame.
+      camera(g) { A._cam = g; A._camS = 1; gsap.set(g, { svgOrigin: "540 960" }); return g; },
+      creep(t0, t1, perFrame) {
+        const frames = Math.max(1, Math.round((t1 - t0) * 30));
+        A._camS = A._camS * (1 + (perFrame != null ? perFrame : 0.0025) * frames);
+        tl.to(A._cam, { scale: A._camS, svgOrigin: "540 960", duration: t1 - t0, ease: "none" }, t0);
+      },
+      glide(t, to, frames) {
+        if (to.scale) A._camS = to.scale;
+        tl.to(A._cam, Object.assign({ svgOrigin: "540 960", duration: (frames || 24) / 30, ease: "sine.inOut" }, to), t);
+      },
+      kick(t, px) {
+        const f = 1 / 30, amp = px || 10;
+        for (let i = 0; i < 7; i++) tl.set(A._cam, { y: (i % 2 ? -1 : 1) * amp * (1 - i / 7) }, t + i * f);
+        tl.set(A._cam, { y: 0 }, t + 7 * f);
+      },
       // A number on screen as a pure function of time: keys [[t, value], ...], eased between keys.
       count(textEl, keys, suffix) { counters.push([textEl, keys, suffix || ""]); },
       // Call once after the last tween: keeps counters right in stills, scrubbing and renders.

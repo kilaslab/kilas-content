@@ -147,6 +147,28 @@ frames) is the rest.
 - **One timeline, several formats**: lay scenes out against the frame size, not fixed
   pixels, when the owner wants 1:1 or 16:9 too; reframe, never crop a 9:16 render.
 
+## 2d. Camera, timing, and the one-command QA
+
+Adapted from the measured style study in mromidev/claude-animated-shorts (20 viral story
+shorts, Oct 2026; ideas paraphrased, no text or code copied).
+
+- **The camera is almost never still**: wrap the scene in one `<g>` and use the rig's
+  `camera()`, `creep()` (a push-in of 0.15–0.35 % a frame on every hold), `glide()` (ease in
+  and out over 18–40 frames), `kick()` (an impact shake that flips every frame and fades in
+  7). A static camera made the first film's dead beats.
+- **Time reactions to words**: `vo_elevenlabs.py --verify film.mp4 --words words.json` gives
+  every word's start; land each reaction 0–3 frames before its word. Blink every 0.5–2.3 s
+  over 4 frames, plus one on each expression swap.
+- **Story script formula** (story and explainer Reels): sentence 1 is the paradox stated as
+  a fact; setting in 1–2 lines; 3–6 escalating beats; one mystery beat; a pivot ("Ternyata",
+  "You see") into the mechanism through an everyday analogy; an ironic payoff; the film
+  ends on the last word. Never narrate what the viewer already sees.
+- **Mix**: VO on top, music 5–10 dB under it, SFX under the VO; −14 LUFS.
+- **QA in one command**: `python3 <skill>/scripts/reel_qa.py out.mp4 --hold 0-1,29-33`
+  (format, loudness, frozen runs ≥12 frames, dead seconds, flash frames, contact and phone
+  sheets). It must exit 0 before the critique scores; on the first film it found the same
+  dead seconds as the audit (6, 8, 17, 18, 22, 23) and −19 LUFS.
+
 ## 3. Acting rules
 
 - Every mood change is a **take**: anticipation (a small squash), the new face, overshoot,
