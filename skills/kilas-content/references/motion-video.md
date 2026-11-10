@@ -59,7 +59,8 @@ Install: `prerequisites.md`, section "Video companions".
    one clip per beat, speed ×1.05 for a conversational pace, and retime the animation to
    the VO so each visual lands on its word (a "paid" stamp on the word "paid").
 5. **Render** with HyperFrames (`templates/video/index.html`): `check` until 0 errors,
-   `snapshot` at every beat and read the sheet, then `render -q delivery`.
+   a draft render, the **critique loop** (section 2c) until every score is 8+, then
+   `render -q delivery`.
 6. **Verify the file, not the source**: `ffprobe` (1080×1920, 30 fps, duration, an audio
    stream); `ffmpeg -af volumedetect` per beat window (VO present in every beat, silence
    after the last); loudness with `ffmpeg -i film.mp4 -af loudnorm=print_format=summary -f
@@ -72,6 +73,70 @@ Install: `prerequisites.md`, section "Video companions".
    music added later in the app must sit well under the VO.
 7. **Preview** in the item's artifact: the MP4 (as a data URI under 16 MB), the caption, and
    the posting steps. Then `publish.md` and, on the owner's go, `publishing.md`.
+
+## 2b. Motion language, review, and decisions
+
+Adapted from "Design Engineering: Build a Motion Studio Around Opus 5.5" (@dyfwsammy on X,
+4 Nov 2026), which sets up UI motion the same way.
+
+- **Motion language per brand**, written once in `design.md` under "Motion" and passed to
+  the rig as tokens: durations (fast, base, slow), named eases (enter, exit, emphasis), the
+  take timings, spring limits (the mascot's squash), transitions in use, and what never
+  animates (the logo, a line the viewer is reading, product UI shown as proof). Every film
+  then moves like the same brand.
+- **Describe the feel, then the numbers**: "Mira lands light and settles once" becomes
+  `back.out(1.7)` over 0.4 s; "the panic shakes the whole desk" becomes a ±6° jitter at
+  0.07 s steps. Write the feel in the beat table so the owner approves the feel, not the
+  curve.
+- **A motion review before the render**: send the beat stills and the timing table to the
+  second model as "a skeptical senior motion designer": readability per beat, holds that
+  are too short, parts moving in unison, off-model poses, a transition without a cause.
+  Treat it as a first pass, like the copy partner round.
+- **Decision records**: under "Motion decisions" in `brief.md`, one line per choice that
+  will be argued again (why 1.05× VO, why the mascot moved left in two beats, which ease
+  was rejected and why). They feed the brand's "Motion" block when they repeat.
+
+## 2c. Director's brief, references, and the critique loop
+
+Adapted from "How to build motion design studio with Opus 5.5" (@0xMovez on X, 27 Sep 2026),
+a study of the code-rendered films that went viral that month. Its finding: the prompt is
+10 % of the film; the harness (reference, render engine, a model that looks at its own
+frames) is the rest.
+
+- **Brief like a director**, in `brief.md` before any code: the film in one line (what the
+  viewer feels at the end); references (what to keep, what to push); tools and keys; a
+  **character bible** (proportions, palette, expressions, an identity lock that holds in
+  every beat, kept in `design.md`); the beat sheet with a payoff every 3–5 s; when text
+  is huge and when it sits like a caption; the gates; the deliverables (MP4, poster frame,
+  contact sheet).
+- **Name a look and feed it a frame.** Without a reference the model falls back to its
+  defaults. Give one frame (say what to take: palette, type, grain; and what not: the
+  subject), a video (`ffmpeg -i ref.mp4 -vf fps=2 refs/frames/%03d.png`, then describe the
+  pacing shot by shot), or the brand's own library; write `style_guide.md` from it. Take
+  the grammar, never the content, logos, or characters.
+- **Looks that read as generated**, to design away from: a centred title on a gradient,
+  every element fading in, labels and frames in the corners, glow on UI, generic particle
+  bursts, a beat where nothing happens.
+- **Critique loop before the full render** (every new film, at least two rounds):
+
+  ```bash
+  ffmpeg -i out.mp4 -vf "fps=2,scale=270:-1,tile=6x5" -frames:v 1 contact.png       # 2 frames a second
+  ffmpeg -ss 4.1 -i out.mp4 -vf "scale=320:-1,tile=12x1" -frames:v 1 strip.png      # 12 frames round a fast action
+  ffmpeg -i out.mp4 -vf "fps=1,scale=360:-1,tile=5x3" -frames:v 1 phone.png         # how it reads 360 px wide
+  ffmpeg -stream_loop 1 -i out.mp4 -c copy loop_check.mp4                            # watch the seam
+  ```
+
+  Look at them as a harsh motion director, not a proud author. Score 1–10: hook in the
+  first 2 s, readability at phone size, motion quality, variety (something new every
+  2–4 s), composition, brand accuracy, sound sync. Write the three worst problems with
+  timestamps, fix them, re-render the affected seconds, score again; show the owner only
+  when every score is 8 or more. Hunt for text overlapping during swaps, anything that
+  slides instead of easing, scaled blurry text, a dead beat, a stutter at the loop seam.
+- **Sound on the picture's timeline**: the VO clips, plus short SFX on visible actions
+  (a pop for each bubble, a whoosh on a move, a thump on a stamp) from `media-use` or
+  synthesised in code; with a supplied track, measure its beats first and cut on them.
+- **One timeline, several formats**: lay scenes out against the frame size, not fixed
+  pixels, when the owner wants 1:1 or 16:9 too; reframe, never crop a 9:16 render.
 
 ## 3. Acting rules
 
@@ -93,6 +158,9 @@ Install: `prerequisites.md`, section "Video companions".
   wide as the safe area allows; split-screen stories stack two panels.
 - Spend empty space on the story, not on a giant watermark.
 - Every bubble sits whole inside its panel: check the top edge in each still.
+- Every word in a bubble, chip, or badge is at least 34 px on the 1080 canvas, and the
+  characters fill their panel; the first film used 26 px bubbles that were close to
+  unreadable at 360 px wide. The phone sheet (section 2c) decides.
 - Text and faces inside y 168–1330; below that, panel bottoms and props only.
 
 ## 5. Voice-over (ElevenLabs)

@@ -25,6 +25,14 @@
     rule: "#E5E0D4", bubble: "#FFFFFF", out: "#DCF8C6", alarm: "#E5484D",
   };
 
+  // Motion language: override from the brand's design.md "Motion" block (motion-video.md 2b).
+  const MOTION = {
+    dur: { fast: 0.15, base: 0.4, slow: 0.6 },
+    ease: { enter: "back.out(1.7)", exit: "power3.in", emphasis: "elastic.out(1,0.5)", move: "power2.inOut" },
+    take: { anticipate: 0.08, stretch: 0.14, settle: 0.35 },
+    squashMax: 0.12,
+  };
+
   function create(svg, opts) {
     const C = Object.assign({}, DEFAULTS, (opts && opts.palette) || {});
 
@@ -32,11 +40,11 @@
     // Kinds: in, out, brand (the mascot's answers), bad (a complaint or a wrong reply).
     function bubble(parent, text, kind) {
       const g = el(parent, "g", {});
-      const w = Math.round(text.length * 15.5 + 44);
+      const w = Math.round(text.length * 20 + 52); // 34 px text: readable at 360 px wide
       const fill = kind === "brand" ? C.accent : kind === "out" ? C.out : kind === "bad" ? "#FFE9E9" : C.bubble;
       const stroke = kind === "in" ? C.rule : kind === "bad" ? C.alarm : "none";
-      el(g, "rect", { x: -w / 2, y: -27, width: w, height: 54, rx: 22, fill, stroke, "stroke-width": 3 });
-      el(g, "text", { x: 0, y: 9, "text-anchor": "middle", "font-family": "Inter, system-ui, sans-serif", "font-size": 26, "font-weight": 600,
+      el(g, "rect", { x: -w / 2, y: -34, width: w, height: 68, rx: 26, fill, stroke, "stroke-width": 3 });
+      el(g, "text", { x: 0, y: 12, "text-anchor": "middle", "font-family": "Inter, system-ui, sans-serif", "font-size": 34, "font-weight": 600,
         fill: kind === "brand" ? "#fff" : kind === "bad" ? C.alarm : C.ink }, text);
       g._w = w;
       return g;
@@ -170,5 +178,5 @@
     return A;
   }
 
-  window.KilasRig = { create, acting };
+  window.KilasRig = { create, acting, MOTION };
 })();
