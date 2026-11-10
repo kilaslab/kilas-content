@@ -7,7 +7,8 @@
 //   const p = R.person(parentG, 300, { phone: true, mug: true });
 //   const m = R.mascot(parentG, 700, 190, { color: "#22A08F" });
 //   const tl = gsap.timeline({ paused: true });
-//   const A = KilasRig.acting(tl);                         // rot, jitter, face, take, blink, count, finish
+//   const A = KilasRig.acting(tl, R.motion);               // rot, jitter, face, take, blink, count, finish
+//   Brand motion tokens: KilasRig.create(svg, { palette, motion: { take: {...}, squashMax: 0.1 } })
 //   A.face(p, 1.0, "big", "o"); A.take(p, 1.0, 0.08); A.rot(p.armR, 150, 2.0, 0.3, "back.out(1.6)");
 //   A.finish(); window.__timelines["main"] = tl;           // counters synced on every seek
 (function () {
@@ -35,6 +36,7 @@
 
   function create(svg, opts) {
     const C = Object.assign({}, DEFAULTS, (opts && opts.palette) || {});
+    const motion = mergeMotion((opts && opts.motion) || {});
 
     // A chat bubble; g._w is its width, for right-aligning: x = rightEdge - g._w / 2.
     // Kinds: in, out, brand (the mascot's answers), bad (a complaint or a wrong reply).
@@ -133,14 +135,24 @@
       return { root, body, armL, armR };
     }
 
-    return { el, bubble, person, mascot, C };
+    return { el, bubble, person, mascot, C, motion };
   }
 
-  function acting(tl) {
+  function mergeMotion(m) {
+    return {
+      dur: Object.assign({}, MOTION.dur, m.dur || {}),
+      ease: Object.assign({}, MOTION.ease, m.ease || {}),
+      take: Object.assign({}, MOTION.take, m.take || {}),
+      squashMax: m.squashMax != null ? m.squashMax : MOTION.squashMax,
+    };
+  }
+
+  function acting(tl, motionTokens) {
+    const M = mergeMotion(motionTokens || {});
     const counters = [];
     const A = {
       // Rotate an arm about its shoulder (attribute form; GSAP's svgOrigin is global and drifts in nested groups).
-      rot(arm, a, t, d, ease) { tl.to(arm, { attr: { transform: `rotate(${a} ${arm._sx} 262)` }, duration: d, ease: ease || "power2.out" }, t); },
+      rot(arm, a, t, d, ease) { tl.to(arm, { attr: { transform: `rotate(${a} ${arm._sx} 262)` }, duration: d != null ? d : M.dur.fast, ease: ease || M.ease.move }, t); },
       // Typing, buzzing, waving: alternate between two angles n times, ending on a0.
       jitter(arm, a0, a1, t, step, n) { for (let i = 0; i < n; i++) A.rot(arm, i % 2 ? a0 : a1, t + i * step, step, "none"); A.rot(arm, a0, t + n * step, step, "none"); },
       // Swap eye and mouth states at t (pair with take()).
@@ -150,10 +162,14 @@
       },
       // A take: anticipation squash, stretch with a small rise, elastic settle. amt 0.05-0.1.
       take(p, t, amt) {
-        tl.to(p.head, { scaleY: 1 - amt, scaleX: 1 + amt * 0.6, transformOrigin: "50% 100%", duration: 0.08, ease: "power2.in" }, t - 0.08);
-        tl.to(p.head, { scaleY: 1 + amt * 1.2, scaleX: 1 - amt * 0.5, y: -90 * amt, transformOrigin: "50% 100%", duration: 0.14, ease: "power3.out" }, t);
-        tl.to(p.head, { scaleY: 1, scaleX: 1, y: 0, transformOrigin: "50% 100%", duration: 0.35, ease: "elastic.out(1,0.5)" }, t + 0.14);
+        amt = Math.min(amt, M.squashMax); // never squash past the brand's limit
+        const T = M.take;
+        tl.to(p.head, { scaleY: 1 - amt, scaleX: 1 + amt * 0.6, transformOrigin: "50% 100%", duration: T.anticipate, ease: "power2.in" }, t - T.anticipate);
+        tl.to(p.head, { scaleY: 1 + amt * 1.2, scaleX: 1 - amt * 0.5, y: -90 * amt, transformOrigin: "50% 100%", duration: T.stretch, ease: "power3.out" }, t);
+        tl.to(p.head, { scaleY: 1, scaleX: 1, y: 0, transformOrigin: "50% 100%", duration: T.settle, ease: M.ease.emphasis }, t + T.stretch);
       },
+      // Pop a node in (a bubble, a card) with the brand's enter ease; node keeps translate/scale/rotate in its transform attribute.
+      pop(node, t, x, y, rot) { tl.to(node, { attr: { transform: `translate(${x},${y}) scale(1) rotate(${rot || 0})` }, duration: M.dur.base, ease: M.ease.enter }, t); },
       blink(p, t) { tl.to(p.lids, { attr: { height: 32 }, duration: 0.06, ease: "none" }, t); tl.to(p.lids, { attr: { height: 0 }, duration: 0.08, ease: "none" }, t + 0.09); },
       // A number on screen as a pure function of time: keys [[t, value], ...], eased between keys.
       count(textEl, keys, suffix) { counters.push([textEl, keys, suffix || ""]); },

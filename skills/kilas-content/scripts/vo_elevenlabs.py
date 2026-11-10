@@ -18,7 +18,7 @@ The key comes from ELEVENLABS_API_KEY or a .env file in the working directory; i
 printed. Needs the key permissions text_to_speech (and speech_to_text for --verify).
 Exit codes: 0 ok, 2 usage, 3 key missing or lacks a permission, 1 other failure.
 """
-import argparse, json, os, re, shutil, subprocess, sys, tempfile, unicodedata, urllib.request, urllib.error, uuid
+import argparse, difflib, json, os, re, shutil, subprocess, sys, tempfile, unicodedata, urllib.request, urllib.error, uuid
 from pathlib import Path
 
 API = "https://api.elevenlabs.io/v1"
@@ -67,7 +67,12 @@ def generate(args):
         sys.exit(2)
     out = Path(args.outdir)
     out.mkdir(parents=True, exist_ok=True)
+    for old in out.glob("vo*.mp3"):  # clips from an earlier, longer script would pollute --verify
+        old.unlink()
+    if args.speed != 1 and not shutil.which("ffmpeg"):
+        print(f"warning: ffmpeg not found, speed {args.speed} not applied; clips stay at 1.0", file=sys.stderr)
     k = key()
+    made = []
     for i, text in enumerate(lines):
         body = {"text": text, "model_id": args.model,
                 "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.3, "use_speaker_boost": True}}
@@ -86,7 +91,9 @@ def generate(args):
             subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-filter:a", f"atempo={args.speed}",
                             "-ar", "44100", "-b:a", "160k", str(final)], check=True)
         d = duration(final)
+        made.append({"file": raw.name, "final": final.name, "seconds": d, "text": text})
         print(f"{final}\t{d:.3f}s\t{text}" if d else f"{final}\t{text}")
+    (out / "vo-manifest.json").write_text(json.dumps(made, indent=1, ensure_ascii=False))
 
 
 def stt(path, k):
@@ -114,21 +121,29 @@ def words(s):
 def verify(args):
     k = key()
     target = Path(args.target)
-    files = sorted(target.glob("vo*.mp3"), key=lambda p: (len(p.stem), p.stem)) if target.is_dir() else [target]
-    files = [f for f in files if "-x" not in f.stem] if target.is_dir() else files
+    if target.is_dir():
+        manifest = target / "vo-manifest.json"
+        if manifest.exists():
+            files = [target / m["file"] for m in json.loads(manifest.read_text())]
+        else:
+            files = sorted((f for f in target.glob("vo*.mp3") if "-x" not in f.stem), key=lambda p: (len(p.stem), p.stem))
+    else:
+        files = [target]
     heard = " ".join(stt(f, k) for f in files)
     print("HEARD:  " + heard)
     if args.copy:
         script = " ".join(vo_lines(args.copy))
         print("SCRIPT: " + script)
         a, b = words(script), words(heard)
-        missing = [w for w in a if w not in b]
-        extra = [w for w in b if w not in a]
-        if missing or extra:
-            print(f"DIFF   not heard: {sorted(set(missing))}  heard instead: {sorted(set(extra))}")
-            print("Check each: a spoken spelling (kris, ei-ai) is fine; a wrong word means rewrite and regenerate.")
+        diffs = [(op, " ".join(a[i1:i2]), " ".join(b[j1:j2]))
+                 for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes() if op != "equal"]
+        if diffs:
+            for op, want, got in diffs:
+                print(f"DIFF   {op:7} script: '{want}'  heard: '{got}'")
+            print("Check each, in order: a spoken spelling (kris, ei-ai, titik i-d) is fine; a wrong, missing,")
+            print("or reordered word means rewrite the vo: line and regenerate.")
         else:
-            print("OK     every script word was heard")
+            print("OK     the transcript matches the script word for word, in order")
 
 
 def main():

@@ -4,7 +4,7 @@
 # See references/brainstorm-partner.md.
 #
 #   bash scripts/brainstorm.sh detect [content] [--self claude|codex|gemini|grok|...]
-#   bash scripts/brainstorm.sh run <dir>/brief-round1.md [--self FAMILY] [--partner NAME] [--model M]
+#   bash scripts/brainstorm.sh run <dir>/brief-round1.md --self FAMILY [--partner NAME] [--model M] [--workspace content]
 #
 # detect lists every agent CLI on this machine in the default order
 #   codex -> claude -> agy -> cursor-agent -> opencode -> gemini
@@ -27,6 +27,22 @@ cmd="${1:-}"; shift || true
 
 family() {  # model family behind each CLI's default
   case "$1" in codex) echo openai ;; claude) echo claude ;; agy|gemini) echo gemini ;; *) echo mixed ;; esac
+}
+model_family() {  # family of an explicit model name, for the multi-vendor CLIs
+  case "$(printf '%s' "$1" | tr 'A-Z' 'a-z')" in
+    *claude*|*sonnet*|*opus*|*haiku*|*fable*) echo claude ;;
+    *gpt*|o[0-9]*|*openai*|*codex*) echo openai ;;
+    *gemini*) echo gemini ;; *grok*) echo xai ;; "") echo "" ;; *) echo other ;;
+  esac
+}
+find_ws() {  # the content/ folder that holds setup.md: walk up from a path, else ./content
+  local d; d="$(cd "$(dirname "$1")" && pwd)"
+  while [ "$d" != "/" ]; do
+    [ -f "$d/setup.md" ] && [ -d "$d/items" -o -d "$d/plan" ] && { echo "$d"; return; }
+    [ -f "$d/content/setup.md" ] && { echo "$d/content"; return; }
+    d="$(dirname "$d")"
+  done
+  echo content
 }
 self_family() {
   case "${1:-}" in claude*|anthropic) echo claude ;; codex|openai|gpt*) echo openai ;; gemini|google|agy) echo gemini ;; "") echo "" ;; *) echo "$1" ;; esac
@@ -67,8 +83,8 @@ case "$cmd" in
       case "$1" in --self) self="$2"; shift 2 ;; *) ws="$1"; shift ;; esac
     done
     fam="$(self_family "$self")"
+    [ -n "$fam" ] || { echo "pass --self <your model family> (claude, codex, gemini, grok, ...): the partner must differ from you" >&2; exit 2; }
     found="$(available "$fam")"
-    [ -z "$fam" ] && echo "note: pass --self <your model family> so your own family is left out"
     echo "available (main model family '${fam:-unknown}' left out): ${found:-none}"
     echo "mixed = Cursor agent and OpenCode run several vendors: pick a --model from another family"
     line="$(approved_line "$ws")"
@@ -83,18 +99,21 @@ case "$cmd" in
     ;;
   run)
     brief="${1:?usage: brainstorm.sh run <brief.md> [--partner NAME] [--model M]}"; shift
-    partner=""; model=""
+    partner=""; model=""; ws=""
     while [ $# -gt 0 ]; do
       case "$1" in
         --partner) partner="$2"; shift 2 ;;
         --model) model="$2"; shift 2 ;;
         --self) KILAS_SELF="$2"; shift 2 ;;
+        --workspace) ws="$2"; shift 2 ;;
         *) echo "unknown option $1" >&2; exit 2 ;;
       esac
     done
     fam="$(self_family "${KILAS_SELF:-}")"
+    [ -n "$fam" ] || { echo "pass --self <your model family> (or set KILAS_SELF): the partner must differ from you" >&2; exit 2; }
     [ -f "$brief" ] || { echo "no such brief: $brief" >&2; exit 2; }
-    names="$(approved_names content)"
+    ws="${ws:-$(find_ws "$brief")}"
+    names="$(approved_names "$ws")"
     [ -n "$names" ] || { echo "no approved partner in content/setup.md; run detect and ask the owner" >&2; exit 4; }
     if [ -z "$partner" ]; then
       for n in $names; do
@@ -105,7 +124,11 @@ case "$cmd" in
     elif ! printf '%s\n' $names | grep -qx "$partner"; then
       echo "$partner is not approved in content/setup.md" >&2; exit 4
     fi
-    [ -n "$fam" ] && [ "$(family "$partner")" = "$fam" ] && { echo "$partner is the main model's own family; the partner must differ" >&2; exit 4; }
+    [ "$(family "$partner")" = "$fam" ] && { echo "$partner is the main model's own family; the partner must differ" >&2; exit 4; }
+    if [ "$(family "$partner")" = mixed ]; then
+      [ -n "$model" ] || { echo "$partner runs several vendors: pass --model from a family other than $fam" >&2; exit 2; }
+      [ "$(model_family "$model")" = "$fam" ] && { echo "--model $model is the main model's own family ($fam)" >&2; exit 4; }
+    fi
     [ -n "$partner" ] && command -v "$partner" >/dev/null 2>&1 || { echo "approved partner not installed: $names" >&2; exit 3; }
     dir="$(cd "$(dirname "$brief")" && pwd)"
     base="$(basename "$brief" .md)"
@@ -133,7 +156,8 @@ case "$cmd" in
         margs=(); [ -n "$model" ] && margs=(--model "$model")
         (cd "$dir" && with_timeout "$t" claude -p --permission-mode plan "${margs[@]}" "$prompt") > "$out" 2> "$log" ;;
       gemini)
-        (cd "$dir" && with_timeout "$t" gemini -p "$prompt") > "$out" 2> "$log" ;;
+        margs=(); [ -n "$model" ] && margs=(-m "$model")
+        (cd "$dir" && with_timeout "$t" gemini "${margs[@]}" -p "$prompt") > "$out" 2> "$log" ;;
       *) echo "no recipe for $partner; add one here or use a fresh subagent" >&2; exit 3 ;;
     esac
     rc=$?

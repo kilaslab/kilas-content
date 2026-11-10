@@ -133,7 +133,9 @@ frames) is the rest.
   must reach 8**; an average hides the one that loses the viewer (the first film averaged
   6 with readability at 4). The approved partner scores (`brainstorm-partner.md` section 2:
   send the sheets and the beat table as "a harsh motion director, not a proud author");
-  your own score counts only when no partner is available, and the report says so. Write
+  when no partner is approved or installed, score it yourself, write "self-scored" next
+  to the scores in `brief.md`, and say so in the report (the same rule as the gate in
+  `SKILL.md`). Write
   the three worst problems with timestamps, fix them, re-render the affected seconds,
   score again. Before the owner sees it, the measured checks pass too: text ≥34 px, no
   dead beat mid-film (mean frame difference per second, `fps=4`, above the quiet floor

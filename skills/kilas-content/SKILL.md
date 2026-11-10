@@ -116,9 +116,10 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    the slide before, and no slide changes the subject (section 2); every metaphor
    headline still makes sense without slide 2 (section 4).
    Then the **partner round** (`brainstorm-partner.md` section 3) for a carousel or a
-   Reel, before any frame is built (other formats: when the owner says the copy reads
-   badly): send the copy, the layout limits, and what each frame shows to the partner
-   (Codex by default) for a read by a beginner and a skeptical senior, flow breaks, and
+   Reel (both routes: shoot and motion film), before any frame is built (other formats:
+   when the owner says the copy reads badly), with the partner the owner approved in
+   `setup.md`: send the copy, the layout limits, and what each frame shows to the partner
+   for a read by a beginner and a skeptical senior, flow breaks, and
    two options per frame. You pick per frame and write why under "Brainstorm" in
    `brief.md`, then lint again. A self-review missed copy that read as translated in
    the pay-to-win carousel (owner, 7 Nov 2026); a second model hears it.
@@ -253,9 +254,11 @@ Reels:
 
 - [ ] The Reel's kind fits the plan's mix (`formats/reels-tiktok.md` section 0) and is not
       a second product Reel in a row.
+- [ ] Partner round done on the script and on-screen lines (both routes).
 - [ ] Video: the beat map of the whole film and the 10 s animatic approved before
-      rendering; every critique score ≥8 from the approved partner and the measured checks
-      passed (`motion-video.md` 2c); the MP4 passed step 6.
+      rendering; every critique score ≥8 and the measured checks passed (`motion-video.md`
+      2c: scored by the approved partner, or by you marked "self-scored" when none is
+      approved or installed); the MP4 passed step 6.
 
 Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 
