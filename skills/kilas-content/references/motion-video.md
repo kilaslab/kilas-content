@@ -14,7 +14,8 @@ watermark. What finally shipped: two cartoon characters (the same customer of th
 and this year) acting out the story beside the brand mascot, a voice-over, and one twist.
 
 Read `formats/reels-tiktok.md` for the script, the beats, and the safe zones; this file is
-the production line.
+the production line. `examples/reels-character-story.md` runs that line once on the real
+film, with every command, done-check, and the audit that scored it 6/10.
 
 ## 1. Companion skills
 

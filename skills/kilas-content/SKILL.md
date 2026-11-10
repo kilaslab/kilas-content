@@ -17,7 +17,8 @@ before Figma or a camera. Read `references/writing-craft.md` and the three worke
 before writing anything: `references/examples/linux-7.4-carousel.md` (a news record),
 `references/examples/ai-cost-js-carousel.md` (someone else's experiment), and
 `references/examples/weight-space-carousel.md` (a research paper made plain). Each lists the
-drafts that lost and why; imitate the moves, not the sentences.
+drafts that lost and why; imitate the moves, not the sentences. For a Reel, also read
+`references/examples/reels-character-story.md`: one film through every step, command, and gate.
 
 ## Start here, every run
 
@@ -270,6 +271,7 @@ Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 | `../setup-content/SKILL.md`, `references/brand-onboarding.md` | first run (no `content/setup.md`), a new brand, a new renderer |
 | `references/planning.md` | planning, repurposing, reviewing |
 | `references/writing-craft.md`, `references/examples/*.md` (three worked carousels with rejected drafts) | before writing anything |
+| `references/examples/reels-character-story.md` (a 33 s Reel, step by step, with its audit) | before the first Reel; whenever a Reel step is unclear |
 | `references/brainstorm-partner.md`, `templates/brainstorm-brief.md` | the hook workshop and the partner round after the first copy; whenever the owner says the copy reads badly |
 | `references/copy-playbook.md` | frameworks, copy.md format, CTA, caption |
 | `references/language/id.md`, `en.md` | the brand's language |
