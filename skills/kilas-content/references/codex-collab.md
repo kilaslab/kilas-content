@@ -14,8 +14,8 @@ Skip this section when you are Codex yourself.
 command -v codex && codex login status
 ```
 
-`content/setup.md` says whether the owner allows it (`Codex: yes | no`). No line, or
-`yes`: use it. The owner can switch it off or on any time by asking ("jangan pakai
+`content/setup.md` says whether the owner allows it (`Codex: yes | no`). `yes`: use it.
+No line yet: ask the owner first and record the answer. The owner can switch it off or on any time by asking ("jangan pakai
 Codex", "minta Codex juga").
 
 ## 2. When to ask

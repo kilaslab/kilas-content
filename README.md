@@ -4,7 +4,7 @@
 
 **Agent skills that plan, write, design, check, and preview a brand's social content.**
 
-Monthly plans · Instagram carousels · Reels scripts · Threads · X · LinkedIn
+Monthly plans · Instagram carousels · Reels scripts and animated videos · Threads · X · LinkedIn
 Built for Claude Code, Codex, and any agent that reads `SKILL.md`.
 
 [![License: GPL v3+](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
@@ -54,6 +54,10 @@ rule the next run must follow**.
   read-the-first-charge rule.
 - 🖼️ **Images.** The brand's own photos first, then the agent's image tool or the Antigravity
   CLI (`agy`), then a paid API only if the owner allows it. Generated images are labelled.
+- 🎬 **Reels videos with characters.** A live character animatic the owner approves first,
+  then an ElevenLabs voice-over per beat (`vo_elevenlabs.py`, with a transcript check), a
+  HyperFrames render, and a check of the MP4 itself. Reusable rig in `templates/video/`;
+  companion skills listed in `references/motion-video.md`.
 
 ## Quick start
 

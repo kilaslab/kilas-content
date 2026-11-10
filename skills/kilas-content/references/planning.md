@@ -18,6 +18,12 @@ Read, in this order:
 If any of these is missing, plan with what exists and list the gaps at the top of the
 plan.
 
+**Study the account before planning Reels**: its last 30 posts and Reels (topics, hooks,
+formats, and views, saves, and shares per piece; Tapinall or a signed-in read-only
+scroll), then what spread in the niche in the last 30 days. A creator who started this
+way with AI-animated story Reels reported 4.3M views and 6,500 followers in a month
+(@Axel_bitblaze69 on X, 2026); treat that as a pattern to test, not a promise.
+
 ## 2. Pillars
 
 Three to five topics the brand returns to, each with a goal and a share of the calendar.
@@ -70,14 +76,21 @@ running, or that the team dreads making.
   after 4–6 weeks show a difference.
 - **One piece, several formats.** A strong item usually becomes 3–5 pieces (section 6).
   Count them as separate rows in the calendar.
+- **Reels rotate kinds like the feed does** (`formats/reels-tiktok.md` section 0): news,
+  explainer, story, demo. The product is the subject of at most every other Reel; in the
+  rest it appears as a supporting role or in the last beat. A product brand's owner asked
+  for this after a run of product Reels (Nov 2026): viewers tire of a channel that only
+  sells.
 
 ## 4b. Product brands: show the product working
 
 Lessons from a product brand's first month (2026-11): the owner rejected tips
 any seller already knows and approved pieces that show the product doing one real thing.
 
-- Give roughly half the slots to the product at work, one capability per piece, so no two
+- Give up to half the slots to the product at work, one capability per piece, so no two
   demos repeat (answer from the catalog, upload a file, CRM, settings, follow-up, channels).
+  Fill the rest with what the audience follows the account for (news in the field,
+  explainers, stories), each ending where the product fits naturally, if it does.
 - A tip earns a slot only when it ends in the product ("put your shipping cutoff in the
   bot's data") or teaches something the reader cannot already do.
 - Give the month one storyline (meet the product → the product during the big moment →

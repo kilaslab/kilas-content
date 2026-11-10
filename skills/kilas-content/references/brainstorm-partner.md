@@ -24,19 +24,38 @@ story or invents a fact, that is a gap in your brief, or an idea to throw away.
 Skip it for a one-word fix, for numbers and facts (those come from sources), and for
 design choices (the brand pack and `design-variety.md` decide those).
 
-## 2. Find the partner
+## 2. Find the partner, with the owner's yes
 
-`bash <skill>/scripts/brainstorm.sh detect` prints which partner is available, in this
-order:
+Not every machine has Codex. The partner is always a **different model from the one writing the content**: two reads
+by the same model share its blind spots. `bash <skill>/scripts/brainstorm.sh detect --self
+<your family>` lists every agent CLI it finds, in this order, leaves out your own family,
+and prints the partner the owner approved:
 
-1. **Codex CLI** (`codex`), model from `content/setup.md` ("Brainstorm partner"), default
-   the one in `~/.codex/config.toml` (for example `gpt-6-luna`).
-2. Another CLI the owner named in `content/setup.md` (for example `gemini`).
-3. None. Then ask a fresh subagent without this conversation's context, if your host has
-   one, and say in the report that the partner was missing.
+1. **Codex CLI** (`codex`, read-only `exec`; model from `~/.codex/config.toml`)
+2. **Claude Code** (`claude -p --permission-mode plan`), the second choice whenever the
+   main model is not Claude
+3. **Antigravity CLI** (`agy -p --mode plan`, Gemini models)
+4. **Cursor agent** (`cursor-agent -p --mode ask`) and 5. **OpenCode** (`opencode run
+   --agent plan`): both run several vendors (Grok, GPT, Claude, ...), so pass a `--model`
+   from a family other than yours
+6. **Gemini CLI**, or any other agent CLI on the machine (add its read-only recipe to
+   `brainstorm.sh`)
 
-If you are Codex yourself, the partner is a different family (Claude through `claude -p`,
-or Gemini), so the two reads are not the same model twice.
+So with Claude writing: Codex, agy, Cursor agent, OpenCode, Gemini. With Codex or another
+GPT writing: Claude, agy, Cursor agent, ... With Gemini or agy writing: Codex, Claude, ...
+
+Each one spends the owner's subscription or quota, so **the first call needs the owner's
+yes**: show what `detect` found, recommend the first one it lists, and write the answer as one line in `content/setup.md`:
+
+```
+- Brainstorm partner: agy (approved by the owner 2026-11-10) · fallback: cursor-agent, opencode
+```
+
+`brainstorm.sh run` only calls a partner named on that line (the first one installed, or
+`--partner` with an approved name) and exits 4 otherwise. When the owner says no to all of
+them, or none is installed, use a fresh subagent without this conversation's context if
+your host has one, and say in the report that the partner was missing. The owner can
+change the line any time ("pakai agy aja", "jangan pakai Cursor").
 
 ## 3. One round
 

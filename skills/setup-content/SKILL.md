@@ -62,8 +62,17 @@ recommended option when you can infer one:
    If a paid key was found (OpenAI, Gemini, xAI), ask whether the skill may use it and
    which one first; it costs money per image. Say they can change this any time just
    by asking ("pakai Gemini", "jangan yang berbayar").
-   When Codex is signed in, it is used by default for brainstorming, copy, and research
-   while it has quota; record `Codex: yes` in `setup.md` unless the owner says no.
+   When Codex is signed in, ask whether it may be used for research (`ask_codex.sh`) and
+   record the answer as `Codex: yes | no` in `setup.md`; nothing calls it before that yes.
+   For the **brainstorm partner** (a second model that critiques copy and scores Reels), run
+   `bash <skill>/scripts/brainstorm.sh detect`, show the owner what it found (Codex, agy,
+   Cursor agent, OpenCode, Claude Code, Gemini, ...), recommend one from a different model
+   family than yours, and record the yes with its date and the fallbacks
+   (`brainstorm-partner.md` section 2).
+9. **Reels videos** (only if the brand makes them): the recurring cast (a customer
+   character, the mascot), and the voice-over voice. Check `npx hyperframes --version`,
+   `ffprobe`, and `ELEVENLABS_API_KEY` in `.env`; record them in the "Video" line of
+   `setup.md` and point to `prerequisites.md` "Video companions" for what is missing.
 
 ## 2. Collect the brand's own assets (with permission)
 

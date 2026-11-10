@@ -1,6 +1,6 @@
 ---
 name: kilas-content
-description: "Plan and create social content end to end for any brand: a monthly content plan with pillars, series, and a calendar; researched pieces with a hook that earns attention; Instagram carousels and single posts built in Figma or rendered from HTML to PNG; Reels/TikTok scripts and storyboards; X posts and threads; LinkedIn posts and documents; Threads; and long-form posts that feed them. Use it whenever someone asks to plan content, make a content calendar, write or design a carousel, slides, a post, a thread, a Reels script, or repurpose an article into social posts, says \"buat konten\", \"bikin carousel\", \"rencana konten\", \"content plan\", or asks for a stronger hook. Each brand lives in a brand pack (voice, pillars, series, design tokens); on first use in a project it runs the setup-content skill (brand, assets, renderer)."
+description: "Plan and create social content end to end for any brand: a monthly content plan with pillars, series, and a calendar; researched pieces with a hook that earns attention; Instagram carousels and single posts built in Figma or rendered from HTML to PNG; Reels/TikTok scripts, storyboards, and animated videos with characters and voice-over; X posts and threads; LinkedIn posts and documents; Threads; and long-form posts that feed them. Use it whenever someone asks to plan content, make a content calendar, write or design a carousel, slides, a post, a thread, a Reels script or video, or repurpose an article into social posts, says \"buat konten\", \"bikin carousel\", \"rencana konten\", \"content plan\", or asks for a stronger hook; also "bikin reels", "video animasi", "storyboard reels", "audit reel", "voice-over", "dubbing". Each brand lives in a brand pack (voice, pillars, series, design tokens); on first use in a project it runs the setup-content skill (brand, assets, renderer)."
 license: GPL-3.0-or-later
 ---
 
@@ -17,7 +17,8 @@ before Figma or a camera. Read `references/writing-craft.md` and the three worke
 before writing anything: `references/examples/linux-7.4-carousel.md` (a news record),
 `references/examples/ai-cost-js-carousel.md` (someone else's experiment), and
 `references/examples/weight-space-carousel.md` (a research paper made plain). Each lists the
-drafts that lost and why; imitate the moves, not the sentences.
+drafts that lost and why; imitate the moves, not the sentences. For a Reel, also read
+`references/examples/reels-character-story.md`: one film through every step, command, and gate.
 
 ## Start here, every run
 
@@ -32,34 +33,34 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    `../setup-content/SKILL.md`; invoke it, or follow it by hand) before anything else. It
    asks which brand, collects the brand's own assets from its site and profiles with
    permission, chooses the renderer (Figma or HTML → PNG), and writes the brand pack.
-1. **Find the brand pack** (`brands/README.md`): `content/brand/` in the project, else
+1. **Pick the mode**; it decides which of the steps below the run needs.
+
+| The user wants | Mode | Steps |
+|---|---|---|
+| a plan, a calendar, "rencana konten bulan ini" | Plan | 2–5 |
+| one piece: carousel, single post, thread, Reels script or video, LinkedIn post, article | Create | 2–5 |
+| several pieces from one source | Repurpose | 2–5 |
+| to know what worked and what to change | Review | 2–4 |
+| to set up a new brand, change the renderer, or refresh assets | Setup (the setup-content skill) | — |
+
+2. **Find the brand pack** (`brands/README.md`): `content/brand/` in the project, else
    `brands/<name>/` in this skill. Read `brand.md`, `design.md`, and
    `content/brand/assets/README.md` if it exists (the brand's own photos and logos come
    before stock). Anything marked `(proposed)` is not settled; ask before a plan
    depends on it.
-2. **Take stock of tools** and use every one that helps (`references/research-tools.md`):
-   web search, page fetch, a real browser (`ego-browser`), social-media MCPs or built-in
-   X access, Figma MCP, and image generation: your own image tool if you have one (Grok
-   Bot's Grok Imagine, Codex, ChatGPT, Antigravity), then `python3 <skill>/scripts/gen_image.py
-   detect` (agy, OpenAI, Gemini, xAI keys); and a second agent: the Codex CLI
-   (`command -v codex && codex login status`) for brainstorming, copy, and research
-   (`references/codex-collab.md`), unless `content/setup.md` says no; when Codex is
-   missing, `bash <skill>/scripts/brainstorm.sh detect` finds another brainstorm partner
-   (`references/brainstorm-partner.md`); and Tapinall (paid data per call,
-   `research-tools.md` 1b) when its MCP or CLI is signed in. Note what is missing.
-3. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
-   `reviews/`, `ideas.md`, `design-log.md`, `lessons.md`. Create it the first time.
-3b. **Read the lessons**: `python3 <skill>/scripts/lessons.py rules content`. Every active
+3. **Read the lessons**: `python3 <skill>/scripts/lessons.py rules content`. Every active
    rule binds like the brand pack (`references/self-improvement.md`).
-4. **Pick the mode** below.
-
-| The user wants | Mode |
-|---|---|
-| a plan, a calendar, "rencana konten bulan ini" | Plan |
-| one piece: carousel, single post, thread, Reels script, LinkedIn post, article | Create |
-| several pieces from one source | Repurpose |
-| to know what worked and what to change | Review |
-| to set up a new brand, change the renderer, or refresh assets | Setup (the setup-content skill) |
+4. **Find the workspace** (`templates/workspace.md`): `content/` with `plan/`, `items/`,
+   `reviews/`, `ideas.md`, `design-log.md`, `lessons.md`. Create it the first time.
+5. **Pick the tools for this job** from the tool lines of `content/setup.md` (setup
+   detected them; re-detect only what it marks missing, with `research-tools.md`
+   section 1). One per job: research (web, page fetch, `ego-browser` for a read-only feed
+   scroll), images (your own image tool, then `gen_image.py detect`: agy, paid keys), a
+   second model (the partner the owner approved in `setup.md`: Codex, agy, Cursor agent,
+   OpenCode, ...; `brainstorm.sh detect`, `brainstorm-partner.md` section 2), paid platform
+   data (Tapinall, `research-tools.md` 1b), and for a Reels video HyperFrames, ffmpeg,
+   and ElevenLabs (`motion-video.md`). A paid call needs a reason first. Done when the
+   item's `brief.md` (or the plan's notes) names the tool per job and the gaps.
 
 ## Plan
 
@@ -90,6 +91,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    line. With Codex available, add its hooks to the workshop
    (`scripts/ask_codex.sh brainstorm`), five in shapes you did not try; they face the same
    gates and duels (`brainstorm-partner.md` section 1).
+   Scale to the format: a carousel or a Reel gets all of it; a single post or a thread
+   gets three hooks in two shapes and no metaphor rule; a news piece keeps the facts
+   ladder and skips the metaphor.
 4. **Copy** in `copy.md` for the format (`references/formats/`: `carousel.md`,
    `single-post.md`, `x.md`, `threads.md`, `linkedin.md`, `reels-tiktok.md`,
    `long-form.md`), a `>` source
@@ -112,9 +116,11 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    label for it (`writing-craft.md` 10b); each body opens with a sentence that links to
    the slide before, and no slide changes the subject (section 2); every metaphor
    headline still makes sense without slide 2 (section 4).
-   Then the **partner round** (`brainstorm-partner.md` section 3), before any frame is
-   built: send the copy, the layout limits, and what each frame shows to the partner
-   (Codex by default) for a read by a beginner and a skeptical senior, flow breaks, and
+   Then the **partner round** (`brainstorm-partner.md` section 3) for a carousel or a
+   Reel (both routes: shoot and motion film), before any frame is built (other formats:
+   when the owner says the copy reads badly), with the partner the owner approved in
+   `setup.md`: send the copy, the layout limits, and what each frame shows to the partner
+   for a read by a beginner and a skeptical senior, flow breaks, and
    two options per frame. You pick per frame and write why under "Brainstorm" in
    `brief.md`, then lint again. A self-review missed copy that read as translated in
    the pay-to-win carousel (owner, 7 Nov 2026); a second model hears it.
@@ -143,7 +149,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
      kit's layouts, with the chosen photos and generated images copied into `html/img/`;
      `scripts/render_slides.py` renders one PNG per slide.
    Reels: `storyboard.md` + a 1080×1920 cover frame (Figma, or a separate HTML page as
-   `html-render.md` section 4 says).
+   `html-render.md` section 4 says). A Reels **video** the agent makes follows
+   `references/motion-video.md`: character animatic, the owner's approval, voice-over,
+   HyperFrames render, then a check of the file itself.
 8. **Verify cheaply**: the layout check first (`layoutCheck()` in Figma, the issues
    `render_slides.py` prints in HTML) and fix what it reports; then look at the cover,
    the data frame, and what changed (screenshots one at a time in Figma; the PNGs in
@@ -214,32 +222,46 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 
 ## Quality gate
 
-- [ ] Brand pack read; nothing `(proposed)` used as settled without asking.
-- [ ] Every research tool available was used where it helps; gaps reported.
+Every piece (Create and Repurpose):
+
+- [ ] Brand pack read; nothing `(proposed)` used as settled without asking; the tools per
+      job and the gaps named in `brief.md`.
 - [ ] Five story questions answered with the local angle; the turn placed.
-- [ ] Hook workshop done with gates and duels; the cover is ≤30 words with no caveat
-      and works alone.
-- [ ] Headline-only read written in `brief.md` and tells the story; the metaphor is in
-      at least three headlines; one piece worth saving, named.
-- [ ] Reader pass done: plain words, bridge sentences, no detour, metaphor headlines
-      read literally (owner feedback on the weight-space carousel, 4 Nov 2026).
-- [ ] Partner round done before building (or the missing partner reported); each frame's
-      pick and reason written under "Brainstorm" in `brief.md`.
-- [ ] The action passes "who, with what, when".
-- [ ] `lint_copy.py` exits 0 for the format; every number, name, and quote has a note.
-- [ ] Platform limits respected (`formats/specs.md`): hashtags, characters, safe zones.
-- [ ] Layouts chosen per slide in `brief.md`; cover and headline mark differ from the
-      previous piece in `content/design-log.md`; one slide breaks the pattern.
-- [ ] One scheme applied; the brand's own photos used where they fit; photos toned;
-      screenshots in colour, unaltered, credited, marked with highlighter marks.
-- [ ] Layout check clean (`layoutCheck()` in Figma, `render_slides.py` in HTML) or each
-      note explained; cover and data frame seen (or the gap reported).
-- [ ] Close: one CTA, all sources and credits; generated images labelled as illustrations.
-- [ ] `publish.md` complete and a row added to `content/design-log.md`; nothing
-      posted, liked, or followed without explicit consent.
-- [ ] Plans pass `check_plan.py`.
-- [ ] Active lessons read; `lessons.py check` exits 0; every new feedback captured as a lesson.
-- [ ] Humanizer pass and social "No AI Tells" done on caption, Threads, and slides; social carousel checklist passed.
+- [ ] Hook workshop at the format's scale, with gates and duels; the cover or first line is
+      ≤30 words with no caveat and works alone.
+- [ ] Reader pass done: plain words, bridge sentences, no detour (owner feedback on the
+      weight-space carousel, 4 Nov 2026).
+- [ ] The action passes "who, with what, when"; one CTA; sources and credits; generated
+      images labelled as illustrations.
+- [ ] `lint_copy.py` and `lessons.py check` exit 0 for `copy.md` and `publish.md`;
+      every number, name, and quote has a note; platform limits respected (`formats/specs.md`).
+- [ ] Humanizer pass and social "No AI Tells" on the caption, the Threads/X text, and the
+      on-screen lines.
+- [ ] `publish.md` complete, a row in `content/design-log.md`, the plan row updated;
+      nothing posted, liked, or followed without the owner's explicit go.
+- [ ] Every new piece of feedback captured as a lesson.
+
+Carousel and single post:
+
+- [ ] Headline-only read in `brief.md` tells the story; metaphor in ≥3 headlines
+      (carousel); one frame worth saving, named.
+- [ ] Partner round done before building (carousel), picks written under "Brainstorm".
+- [ ] Layouts per slide in `brief.md`; cover and headline mark differ from the previous
+      piece in `design-log.md`; one slide breaks the pattern; one scheme applied.
+- [ ] Layout check clean (`layoutCheck()` or `render_slides.py`); cover and data frame
+      seen; social carousel checklist passed; owner preview from `make_preview.py`.
+
+Reels:
+
+- [ ] The Reel's kind fits the plan's mix (`formats/reels-tiktok.md` section 0) and is not
+      a second product Reel in a row.
+- [ ] Partner round done on the script and on-screen lines (both routes).
+- [ ] Video: the beat map of the whole film and the 10 s animatic approved before
+      rendering; every critique score ≥8 and the measured checks passed (`motion-video.md`
+      2c: scored by the approved partner, or by you marked "self-scored" when none is
+      approved or installed); the MP4 passed step 6.
+
+Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 
 ## File map
 
@@ -249,10 +271,12 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `../setup-content/SKILL.md`, `references/brand-onboarding.md` | first run (no `content/setup.md`), a new brand, a new renderer |
 | `references/planning.md` | planning, repurposing, reviewing |
 | `references/writing-craft.md`, `references/examples/*.md` (three worked carousels with rejected drafts) | before writing anything |
+| `references/examples/reels-character-story.md` (a 33 s Reel, step by step, with its audit) | before the first Reel; whenever a Reel step is unclear |
 | `references/brainstorm-partner.md`, `templates/brainstorm-brief.md` | the hook workshop and the partner round after the first copy; whenever the owner says the copy reads badly |
 | `references/copy-playbook.md` | frameworks, copy.md format, CTA, caption |
 | `references/language/id.md`, `en.md` | the brand's language |
 | `references/formats/*.md` | the format being made; `specs.md` for limits |
+| `references/motion-video.md`, `templates/video/` (rig.js, index.html) | a Reels video: companion skills, animatic, VO, render, verification |
 | `references/design-system.md`, `design-variety.md`, `design-references.md` | before building frames: roles, layout variants and how to choose them, patterns from other accounts |
 | `references/figma-mechanics.md` | before the first `use_figma`; upload, duotone, screenshots |
 | `references/html-render.md`, `templates/html/` | the HTML → PNG renderer: setup, class reference, render, check |
@@ -263,7 +287,7 @@ Full method in `writing-craft.md`, rules in `copy-playbook.md`, language in
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
 | `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example); `preview/` (owner preview) |
-| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
+| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `reel_qa.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
 
 ## When not to use this
 

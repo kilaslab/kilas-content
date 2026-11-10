@@ -56,6 +56,26 @@ Caveat: two agents (Eve, PromptScript) refuse global installs and print
 `does not support global skill installation`. That is expected; the other agents and the
 hub still get the files.
 
+## Video companions (for a Reels video)
+
+Install when the brand makes Reels videos (`motion-video.md` says which step uses each):
+
+```bash
+npx skills@latest add heygen-com/hyperframes -s '*' --agent '*' -g -y          # hyperframes, -cli, -registry, media-use, ...
+npx skills@latest add iart-ai/tiktok-video-skills -s short-form-video --agent '*' -g -y
+npx skills@latest add lottiefiles/motion-design-skill -s motion-design --agent '*' -g -y
+npx skills@latest add iart-ai/kinetic-typography-skills -s kinetic-typography --agent '*' -g -y
+npx skills@latest add elevenlabs/skills -s sound-effects -s music -s text-to-speech -s speech-to-text --agent '*' -g -y
+npx skills@latest add greensock/gsap-skills -s gsap-core -s gsap-timeline --agent '*' -g -y
+npx skills@latest add remotion-dev/skills -s '*' --agent '*' -g -y              # optional: only for Remotion builds
+brew install ffmpeg                                                              # ffprobe is required by the HyperFrames render
+```
+
+Voice-over: an ElevenLabs API key in the project's `.env` as `ELEVENLABS_API_KEY`, with the
+permissions `text_to_speech` and `speech_to_text` (`scripts/vo_elevenlabs.py`). An agent's
+classifier may block installing third-party skills until the owner asks for it in so many
+words; then run the command again or hand it to the owner.
+
 ## The Figma MCP skills are not installable
 
 `figma-use` and `figma-generate-design` ship with the **Figma MCP server**, not the
