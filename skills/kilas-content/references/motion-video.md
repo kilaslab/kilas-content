@@ -126,11 +126,16 @@ frames) is the rest.
   ffmpeg -stream_loop 1 -i out.mp4 -c copy loop_check.mp4                            # watch the seam
   ```
 
-  Look at them as a harsh motion director, not a proud author. Score 1–10: hook in the
-  first 2 s, readability at phone size, motion quality, variety (something new every
-  2–4 s), composition, brand accuracy, sound sync. Write the three worst problems with
-  timestamps, fix them, re-render the affected seconds, score again; show the owner only
-  when every score is 8 or more. Hunt for text overlapping during swaps, anything that
+  Score 1–10: hook in the first 2 s, readability at phone size, motion quality, variety
+  (something new every 2–4 s), composition, brand accuracy, sound sync. **Every criterion
+  must reach 8**; an average hides the one that loses the viewer (the first film averaged
+  6 with readability at 4). The approved partner scores (`brainstorm-partner.md` section 2:
+  send the sheets and the beat table as "a harsh motion director, not a proud author");
+  your own score counts only when no partner is available, and the report says so. Write
+  the three worst problems with timestamps, fix them, re-render the affected seconds,
+  score again. Before the owner sees it, the measured checks pass too: text ≥34 px, no
+  dead beat mid-film (mean frame difference per second, `fps=4`, above the quiet floor
+  except intended holds), −14 LUFS, transcript equal to the script. Hunt for text overlapping during swaps, anything that
   slides instead of easing, scaled blurry text, a dead beat, a stutter at the loop seam.
 - **Sound on the picture's timeline**: the VO clips, plus short SFX on visible actions
   (a pop for each bubble, a whoosh on a move, a thump on a stamp) from `media-use` or

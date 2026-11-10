@@ -55,7 +55,8 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    detected them; re-detect only what it marks missing, with `research-tools.md`
    section 1). One per job: research (web, page fetch, `ego-browser` for a read-only feed
    scroll), images (your own image tool, then `gen_image.py detect`: agy, paid keys), a
-   second model (Codex, `codex-collab.md`; else `brainstorm.sh detect`), paid platform
+   second model (the partner the owner approved in `setup.md`: Codex, agy, Cursor agent,
+   OpenCode, ...; `brainstorm.sh detect`, `brainstorm-partner.md` section 2), paid platform
    data (Tapinall, `research-tools.md` 1b), and for a Reels video HyperFrames, ffmpeg,
    and ElevenLabs (`motion-video.md`). A paid call needs a reason first. Done when the
    item's `brief.md` (or the plan's notes) names the tool per job and the gaps.
@@ -253,7 +254,8 @@ Reels:
 - [ ] The Reel's kind fits the plan's mix (`formats/reels-tiktok.md` section 0) and is not
       a second product Reel in a row.
 - [ ] Video: the beat map of the whole film and the 10 s animatic approved before
-      rendering; the MP4 passed `motion-video.md` step 6.
+      rendering; every critique score ≥8 from the approved partner and the measured checks
+      passed (`motion-video.md` 2c); the MP4 passed step 6.
 
 Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 

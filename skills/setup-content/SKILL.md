@@ -64,6 +64,11 @@ recommended option when you can infer one:
    by asking ("pakai Gemini", "jangan yang berbayar").
    When Codex is signed in, it is used by default for brainstorming, copy, and research
    while it has quota; record `Codex: yes` in `setup.md` unless the owner says no.
+   For the **brainstorm partner** (a second model that critiques copy and scores Reels), run
+   `bash <skill>/scripts/brainstorm.sh detect`, show the owner what it found (Codex, agy,
+   Cursor agent, OpenCode, Claude Code, Gemini, ...), recommend one from a different model
+   family than yours, and record the yes with its date and the fallbacks
+   (`brainstorm-partner.md` section 2).
 9. **Reels videos** (only if the brand makes them): the recurring cast (a customer
    character, the mascot), and the voice-over voice. Check `npx hyperframes --version`,
    `ffprobe`, and `ELEVENLABS_API_KEY` in `.env`; record them in the "Video" line of

@@ -14,7 +14,8 @@ first; if it is missing, setup runs again.
 - Codex (second agent for brainstorm, copy, research; `references/codex-collab.md`): <yes | no> · <signed in | missing>
 - Video (Reels, `references/motion-video.md`): <hyperframes CLI version | missing> · ffmpeg <yes | no>
   · voice-over <ElevenLabs voice name + id | none> · cast <recurring characters, mascot>
-- Brainstorm partner: <codex (model) | gemini | none> for hooks, copy, and slide flow
+- Brainstorm partner: <codex | agy | cursor-agent | opencode | claude | none> (approved by the owner <date>) · fallback: <the next approved ones>
+  for hooks, copy, slide flow, and scoring Reels
   (`references/brainstorm-partner.md`)
 - Default scheme: <name>; series schemes in `brand.md`
 - Assets: `content/brand/assets/` · sources: <site, instagram, ...> · permission: <date, what, signed-in session yes/no>
