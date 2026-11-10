@@ -29,6 +29,8 @@ Load each when its step comes; none replaces this file's order.
 | `hyperframes-cli` | render | `init`, `check`, `snapshot`, `render`, `timeline` |
 | `hyperframes-registry` | render | ready blocks (transitions, captions) before you hand-build one |
 | `media-use` | sound | music, SFX, voice when HeyGen or local tools are the route |
+| `elevenlabs` skills (`sound-effects`, `music`, `text-to-speech`, `speech-to-text`) | sound | official ElevenLabs: SFX and music from a prompt, the VO, the transcript check |
+| `gsap-timeline`, `gsap-core` (GreenSock) | animatic, render | the official GSAP reference for timelines, eases, and SVG |
 | `remotion-best-practices`, `remotion-captions` | render (alternative) | only when the owner asks for Remotion |
 | `humanizer`, `social` | script | the voice-over and caption pass, like any copy |
 | `ego-browser` | research, publish | read-only feed scroll; posting on the owner's go (`publishing.md`) |

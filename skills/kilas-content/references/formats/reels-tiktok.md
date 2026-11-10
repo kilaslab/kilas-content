@@ -28,7 +28,12 @@ At most every other Reel is a Demo or a story whose turn is the product.
 ## 1. Length and shape
 
 Aim for 30 seconds for a one-idea story (a contrast, a demo, a joke); go to 60 only when
-the piece teaches steps. Instagram does not recommend Reels over 3 minutes to new
+the piece teaches steps. Write for the numbers that spread a Reel: watch time, replays, comments,
+and shares; a fast payoff and a quiet CTA. Shorter often wins: one creator took a Reel
+from 12.6K to 2.1M views by cutting it from 9 to 7 seconds, making the hook easier to
+read, and moving the full payoff into the caption (@louiseivan on X, Nov 2026). Past 30 s,
+give the viewer a new hook about every 15 s, where retention curves keep dipping
+(@kuswanto, Nov 2026). Instagram does not recommend Reels over 3 minutes to new
 audiences. Speaking pace is roughly 130–150 words per minute, so 45 seconds holds about
 100 spoken words. Read the script aloud with a timer; that number beats any estimate.
 

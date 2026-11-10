@@ -18,6 +18,12 @@ Read, in this order:
 If any of these is missing, plan with what exists and list the gaps at the top of the
 plan.
 
+**Study the account before planning Reels**: its last 30 posts and Reels (topics, hooks,
+formats, and views, saves, and shares per piece; Tapinall or a signed-in read-only
+scroll), then what spread in the niche in the last 30 days. A creator who started this
+way with AI-animated story Reels reported 4.3M views and 6,500 followers in a month
+(@Axel_bitblaze69 on X, 2026); treat that as a pattern to test, not a promise.
+
 ## 2. Pillars
 
 Three to five topics the brand returns to, each with a goal and a share of the calendar.

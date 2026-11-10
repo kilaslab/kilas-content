@@ -65,6 +65,8 @@ npx skills@latest add heygen-com/hyperframes -s '*' --agent '*' -g -y          #
 npx skills@latest add iart-ai/tiktok-video-skills -s short-form-video --agent '*' -g -y
 npx skills@latest add lottiefiles/motion-design-skill -s motion-design --agent '*' -g -y
 npx skills@latest add iart-ai/kinetic-typography-skills -s kinetic-typography --agent '*' -g -y
+npx skills@latest add elevenlabs/skills -s sound-effects -s music -s text-to-speech -s speech-to-text --agent '*' -g -y
+npx skills@latest add greensock/gsap-skills -s gsap-core -s gsap-timeline --agent '*' -g -y
 npx skills@latest add remotion-dev/skills -s '*' --agent '*' -g -y              # optional: only for Remotion builds
 brew install ffmpeg                                                              # ffprobe is required by the HyperFrames render
 ```
