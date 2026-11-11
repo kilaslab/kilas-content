@@ -51,9 +51,11 @@ Keep the brief narrow (one question per round); a broad brief timed out at 600 s
 | 28.05–33 | CTA | Cobain <MASCOT>, asisten chat ei-ai untuk tokomu, dari <BRAND>. | Cobain <MASCOT>. Asisten chat AI untuk tokomu, dari <BRAND>. | end card, mascot waves, clock back to 00:00 |
 
 Rules this table follows:
-- **Write the VO the way it is said.** QRIS → "kris" (the first take said "queries"), AI →
-  "ei-ai", 11.11 → "sebelas-sebelas", 48 → "empat puluh delapan", a domain `.id` → "titik
-  i-d". The on-screen line keeps the normal spelling.
+- **Write the VO the way it is said.** QRIS → "kris" (the first take said "queries"),
+  11.11 → "sebelas-sebelas", 48 → "empat puluh delapan", a domain `.id` → "titik
+  i-d". The on-screen line keeps the normal spelling. This film wrote AI as "ei-ai"; a later
+  film found that respelling read letter by letter, so English acronyms now stay in English on
+  `eleven_v3` (`motion-video.md` 5).
 - **Budget every beat**: VO seconds ≈ words ÷ 2.5, plus 0.3–0.6 s of reaction hold. Beat 1
   has 14 words → 5.6 s at ×1 speed, 5.0 s at ×1.05: it fits 7.5–14 with a 1 s hold. An
   on-screen line needs 0.5 s + 0.3 s a word (6 words → 2.3 s). Cut words from a beat that
@@ -165,11 +167,11 @@ Fixes, in that order: loudness with
 (this film went to −14.9 LUFS, peak −1.3); each dead second gets a reaction, a push-in, or
 a shorter beat.
 
-Done when: `reel_qa.py` exits 0 and you have looked at `contact.png` and `phone.png`.
+Done when: `reel_qa.py` exits 0 and you have looked at every page of `contact*.png` and `phone*.png`.
 
 ## 7. Critique loop (gate 2)
 
-Send `phone.png` and the contact sheet with a narrow brief to the approved partner
+Send every `phone*.png` page and the contact sheets with a narrow brief to the approved partner
 (`brainstorm.sh run ... --self <your family>`), scoring the seven criteria 1–10 with
 evidence. Every criterion needs **8 or more**; below that, fix and score again. The first
 film, scored after it shipped:

@@ -1,6 +1,6 @@
 ---
 name: kilas-content
-description: "Plan and create social content end to end for any brand: a monthly content plan with pillars, series, and a calendar; researched pieces with a hook that earns attention; Instagram carousels and single posts built in Figma or rendered from HTML to PNG; Reels/TikTok scripts, storyboards, and animated videos with characters and voice-over; X posts and threads; LinkedIn posts and documents; Threads; and long-form posts that feed them. Use it whenever someone asks to plan content, make a content calendar, write or design a carousel, slides, a post, a thread, a Reels script or video, or repurpose an article into social posts, says \"buat konten\", \"bikin carousel\", \"rencana konten\", \"content plan\", or asks for a stronger hook; also "bikin reels", "video animasi", "storyboard reels", "audit reel", "voice-over", "dubbing". Each brand lives in a brand pack (voice, pillars, series, design tokens); on first use in a project it runs the setup-content skill (brand, assets, renderer)."
+description: "Plan and create social content end to end for any brand: a monthly content plan with pillars, series, and a calendar; researched pieces with a hook that earns attention; Instagram carousels and single posts built in Figma or rendered from HTML to PNG; Reels/TikTok scripts, storyboards, and animated videos with characters and voice-over; X posts and threads; LinkedIn posts and documents; Threads; and long-form posts that feed them. Use it whenever someone asks to plan content, make a content calendar, write or design a carousel, slides, a post, a thread, a Reels script or video, or repurpose an article into social posts, says \"buat konten\", \"bikin carousel\", \"rencana konten\", \"content plan\", or asks for a stronger hook; also \"bikin reels\", \"video animasi\", \"storyboard reels\", \"audit reel\", \"voice-over\", \"dubbing\". Each brand lives in a brand pack (voice, pillars, series, design tokens); on first use in a project it runs the setup-content skill (brand, assets, renderer)."
 license: GPL-3.0-or-later
 ---
 
@@ -84,6 +84,10 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    model or product launch, set the vendor's numbers beside an independent board.
    With Codex available, send it the open questions in parallel
    (`scripts/ask_codex.sh research`) and check every link it returns yourself.
+   A piece that explains how the brand's own product works starts from its code when the
+   owner has it locally: a light subagent reads it and returns each capability with a
+   file:line and whether it is live, flagged, or roadmap (`research-tools.md` 2, item 9);
+   anything that differs from `brand.md` "Product facts" goes to the owner before copy.
 3. **Story** in `brief.md` (`writing-craft.md` sections 1–4): five questions, the turn,
    the ladder (berita, uji coba, daftar referensi, or a rubric from
    `copy-playbook.md`), the slide or post worth saving, five hooks in at least three
@@ -287,7 +291,7 @@ Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
 | `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example); `preview/` (owner preview) |
-| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `reel_qa.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
+| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `vo_acronym_check.py`, `reel_qa.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `scene_stills.sh`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
 
 ## When not to use this
 

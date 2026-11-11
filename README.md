@@ -55,8 +55,10 @@ rule the next run must follow**.
 - 🖼️ **Images.** The brand's own photos first, then the agent's image tool or the Antigravity
   CLI (`agy`), then a paid API only if the owner allows it. Generated images are labelled.
 - 🎬 **Reels videos with characters.** A live character animatic the owner approves first,
-  then an ElevenLabs voice-over per beat (`vo_elevenlabs.py`, with a transcript check), a
-  HyperFrames render, and a check of the MP4 itself. Reusable rig in `templates/video/`;
+  then an ElevenLabs voice-over per beat (`vo_elevenlabs.py`, with a transcript check and a
+  measured check that English acronyms sound English, `vo_acronym_check.py`), a HyperFrames
+  render, and a check of the MP4 itself (`reel_qa.py`). Reusable rig in `templates/video/`;
+  3D explainers in three.js with stills straight from the scene (`scene_stills.sh`);
   companion skills listed in `references/motion-video.md`.
 
 ## Quick start
