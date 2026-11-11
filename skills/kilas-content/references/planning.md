@@ -91,6 +91,11 @@ any seller already knows and approved pieces that show the product doing one rea
   demos repeat (answer from the catalog, upload a file, CRM, settings, follow-up, channels).
   Fill the rest with what the audience follows the account for (news in the field,
   explainers, stories), each ending where the product fits naturally, if it does.
+- News that does not touch the product stays plain news: no product or customer angle in the
+  slides, caption, or Threads; the brand shows in the handle and the follow CTA. An owner
+  called a frontier-model story bent toward shop chats forced (Nov 2026).
+- A new account opens with an ordinary useful piece; it introduces itself in the bio and the
+  highlights. An owner turned down a re-introduction post (Nov 2026).
 - A tip earns a slot only when it ends in the product ("put your shipping cutoff in the
   bot's data") or teaches something the reader cannot already do.
 - Give the month one storyline (meet the product → the product during the big moment →

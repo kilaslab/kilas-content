@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Mascot pose sheet</title>
+<style>html,body{margin:0;background:#FAF6EE} canvas{display:block}</style>
+</head>
+<body>
+<!-- Eight poses in tiles (?view=front|3q|side): check the mascot against the brand's renders
+     before it goes into the scene. scripts/scene_stills.sh with SIZE=1440,900 takes a still. -->
+<canvas id="gl" width="1440" height="900"></canvas>
+<script type="importmap">{ "imports": { "three": "./lib/three.module.js" } }</script>
+<script type="module">
+import * as THREE from "three";
+import { makeMascot, poseMascot } from "./mascot.js";
+import { MASCOT } from "./beats.js";
+const r = new THREE.WebGLRenderer({ canvas: document.getElementById("gl"), antialias: true, preserveDrawingBuffer: true });
+r.setSize(1440, 900, false); r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+r.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0xFAF6EE);
+scene.add(new THREE.HemisphereLight(0xFFF8EC, 0xC9B79A, 1.5));
+const sun = new THREE.DirectionalLight(0xFFF1DC, 2.0); sun.position.set(-5, 10, 9); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14 }); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xDDE6FF, 0.7); fill.position.set(4, 3, 10); scene.add(fill);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: 0xEFE3CA, roughness: 0.9 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+const TW = 360, TH = 450, COLS = 4;
+const cam = new THREE.PerspectiveCamera(30, TW / TH, 0.1, 100);
+const t = +(new URLSearchParams(location.search).get("t") || 0.6);
+const view = new URLSearchParams(location.search).get("view") || "front";
+const P = [
+  ["rest", {}],
+  ["wave", { armR: { wave: 1 }, face: { joy: 1, open: 0.6 } }],
+  ["thumbs", { armR: { thumbs: 1 }, armL: { thumbs: 1 }, face: { open: 0.8 }, checks: 1 }],
+  ["think", { armR: { think: 1 }, face: { look: [-0.7, -0.6], frown: 0.4 }, tilt: 0.5 }],
+  ["confused", { face: { frown: 1, look: [0.3, -0.2] }, question: 1, tilt: -0.4 }],
+  ["point", { armR: { point: 1 }, face: { look: [0.9, 0], open: 0.5 } }],
+  ["reach", { armR: { reach: 1 }, armL: { reach: 1 }, face: { look: [0, 0.8] }, lean: 0.6 }],
+  ["surprise", { face: { surprise: 1, o: 1 } }],
+];
+const m = makeMascot(scene, MASCOT);
+r.setScissorTest(true);
+P.forEach(([name, s], i) => {
+  poseMascot(m, t, s);
+  m.root.rotation.y = view === "side" ? Math.PI / 2.3 : view === "3q" ? 0.6 : 0;
+  cam.position.set(0, 3.0, 10.5); cam.lookAt(0, 1.95, 0);
+  const x = (i % COLS) * TW, y = (1 - Math.floor(i / COLS)) * TH;
+  r.setViewport(x, y, TW, TH); r.setScissor(x, y, TW, TH);
+  r.render(scene, cam);
+});
+document.title = "ready";
+</script>
+</body>
+</html>

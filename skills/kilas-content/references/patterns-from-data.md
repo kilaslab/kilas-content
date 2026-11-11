@@ -95,7 +95,7 @@ Each line names the post it came from, the lift, and where the rule now lives.
 - **A sponsor's ad or an unrelated house ad as the last slide** (SINDOnews, detikinet).
   The close is the brand's own single CTA and the sources. (Part 2 refines this: a
   brand's own offer as the CTA slide is fine.)
-- **The MitraChat section** of `analysis.md`; it is about another product.
+- **The product section** of `analysis.md`; it is about another product.
 
 # Part 2: Instagram
 
@@ -174,7 +174,7 @@ Readings, all low to medium confidence on a sample this small:
 - **Narasi's 80–100 words per slide**: it works for a news brand with a reading
   audience; the skill keeps its 45-word warning and moves detail to the caption.
 - **Hourly cadence**: a newsroom's capacity; cadence comes from the brand's own.
-- **The dataset's own recommendations** for another product (MitraChat): not used.
+- **The dataset's own recommendations** for another product: not used.
 
 ## Refreshing this file
 

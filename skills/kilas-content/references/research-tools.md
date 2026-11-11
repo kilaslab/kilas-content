@@ -88,6 +88,18 @@ A budget of about 10–15 searches and fetches is plenty for one item.
    yet: on 2026-11-09 `#aibenchmark` led to the vendor's own post of an independent score,
    which became the turn of the piece. Owners noticed the difference. Save the grid
    screenshot in `content/research/`; open a post only to read it.
+9. **The product's own code**, for an explainer or demo of the brand's product when the
+   repository is on the machine: send a light, read-only subagent (a small model is
+   enough) with the exact questions (which channels, which tools the agent calls, which
+   provider, what is behind a flag) and ask for file:line per claim. On 2026-11-10 it
+   showed that two capabilities the brand pack listed (shipping cost, payment link) were
+   not built in; the owner explained they run as tools the seller connects, and the film
+   said so. The code beats the pack; the owner settles a difference.
+
+**Codex research timing.** A style or reference hunt ("find 5–8 examples of a look, with
+links") ran past the 600 s limit twice on 2026-11-10, even as one question per call. Do
+that kind of search yourself (web search plus the feed scroll above) and keep Codex for
+one narrow factual question per call, or for the partner round, which needs no web.
 
 **Model and product launches.** A vendor's chart is the vendor's test: label it so ("tes
 dari Tencent"), count wins yourself from the chart, and set it beside an independent

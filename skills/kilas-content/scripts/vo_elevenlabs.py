@@ -2,8 +2,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Voice-over for a Reel: one ElevenLabs clip per beat, from the `vo:` lines of copy.md.
 
-  vo_elevenlabs.py <item>/copy.md <outdir> [--voice ID] [--speed 1.05] [--model ID]
+  vo_elevenlabs.py <item>/copy.md <outdir> [--voice ID] [--speed 1.05] [--model ID] [--only 2,4]
   vo_elevenlabs.py --verify <outdir or audio/video file> [<item>/copy.md] [--words words.json]
+
+Model: eleven_multilingual_v2 by default. For a script in another language with English
+acronyms in it (AI, API), use --model eleven_v3: in Indonesian sentences v2 read "API" as the
+word "api" and "AI" with Indonesian letters, v3 read both with English letter names (measured,
+Nov 2026). v3 takes no previous/next text, so each clip is its own take.
 
 Generate: each non-empty `vo:` line becomes <outdir>/vo<N>.mp3 (raw from ElevenLabs) and,
 when ffmpeg is present and --speed is not 1, <outdir>/vo<N>-x<speed>.mp3. Neighbouring lines
@@ -40,14 +45,24 @@ def key():
     return k
 
 
-def call(req):
-    try:
-        with urllib.request.urlopen(req, timeout=120) as r:
-            return r.read()
-    except urllib.error.HTTPError as e:
-        body = e.read().decode(errors="replace")[:300]
-        print(f"ElevenLabs HTTP {e.code}: {body}", file=sys.stderr)
-        sys.exit(3 if e.code in (401, 403) else 1)
+def call(req, tries=3):
+    # eleven_v3 can take minutes for a long line and sometimes stalls: wait longer, then retry
+    for n in range(tries):
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            body = e.read().decode(errors="replace")[:300]
+            if e.code in (429, 500, 502, 503) and n + 1 < tries:
+                print(f"ElevenLabs HTTP {e.code}, retrying", file=sys.stderr)
+                continue
+            print(f"ElevenLabs HTTP {e.code}: {body}", file=sys.stderr)
+            sys.exit(3 if e.code in (401, 403) else 1)
+        except (TimeoutError, OSError) as e:
+            if n + 1 == tries:
+                print(f"ElevenLabs request failed after {tries} tries: {e}", file=sys.stderr)
+                sys.exit(1)
+            print(f"ElevenLabs request timed out ({e}), retrying", file=sys.stderr)
 
 
 def vo_lines(copy_md):
@@ -62,6 +77,9 @@ def duration(path):
     return float(out) if out else None
 
 
+V3PLUS = re.compile(r"eleven_v[3-9]")
+
+
 def generate(args):
     lines = vo_lines(args.copy)
     if not lines:
@@ -69,19 +87,28 @@ def generate(args):
         sys.exit(2)
     out = Path(args.outdir)
     out.mkdir(parents=True, exist_ok=True)
-    for old in out.glob("vo*.mp3"):  # clips from an earlier, longer script would pollute --verify
-        old.unlink()
+    only = {int(n) for n in args.only.split(",")} if args.only else None
+    if only is None:
+        for old in out.glob("vo*.mp3"):  # clips from an earlier, longer script would pollute --verify
+            old.unlink()
     if args.speed != 1 and not shutil.which("ffmpeg"):
         print(f"warning: ffmpeg not found, speed {args.speed} not applied; clips stay at 1.0", file=sys.stderr)
     k = key()
     made = []
+    manifest = out / "vo-manifest.json"
+    if only is not None and manifest.exists():
+        made = json.loads(manifest.read_text())
     for i, text in enumerate(lines):
-        body = {"text": text, "model_id": args.model,
-                "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.3, "use_speaker_boost": True}}
-        if i:
-            body["previous_text"] = lines[i - 1]
-        if i + 1 < len(lines):
-            body["next_text"] = lines[i + 1]
+        if only is not None and i not in only:
+            continue
+        body = {"text": text, "model_id": args.model}
+        if not V3PLUS.match(args.model):
+            # v3 and later take neither these settings nor previous/next text (request stitching)
+            body["voice_settings"] = {"stability": 0.45, "similarity_boost": 0.8, "style": 0.3, "use_speaker_boost": True}
+            if i:
+                body["previous_text"] = lines[i - 1]
+            if i + 1 < len(lines):
+                body["next_text"] = lines[i + 1]
         req = urllib.request.Request(f"{API}/text-to-speech/{args.voice}?output_format=mp3_44100_128",
                                      data=json.dumps(body).encode(), method="POST",
                                      headers={"xi-api-key": k, "Content-Type": "application/json"})
@@ -93,9 +120,10 @@ def generate(args):
             subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-filter:a", f"atempo={args.speed}",
                             "-ar", "44100", "-b:a", "160k", str(final)], check=True)
         d = duration(final)
-        made.append({"file": raw.name, "final": final.name, "seconds": d, "text": text})
+        made = [m for m in made if m.get("file") != raw.name] + [{"file": raw.name, "final": final.name, "seconds": d, "text": text}]
         print(f"{final}\t{d:.3f}s\t{text}" if d else f"{final}\t{text}")
-    (out / "vo-manifest.json").write_text(json.dumps(made, indent=1, ensure_ascii=False))
+    made.sort(key=lambda m: int(re.match(r"vo(\d+)", m["file"]).group(1)))
+    manifest.write_text(json.dumps(made, indent=1, ensure_ascii=False))
 
 
 def stt(path, k):
@@ -151,7 +179,7 @@ def verify(args):
         if diffs:
             for op, want, got in diffs:
                 print(f"DIFF   {op:7} script: '{want}'  heard: '{got}'")
-            print("Check each, in order: a spoken spelling (kris, ei-ai, titik i-d) is fine; a wrong, missing,")
+            print("Check each, in order: a spoken spelling (kris, titik i-d) is fine; a wrong, missing,")
             print("or reordered word means rewrite the vo: line and regenerate.")
         else:
             print("OK     the transcript matches the script word for word, in order")
@@ -165,6 +193,7 @@ def main():
     p.add_argument("--voice", default=DEFAULT_VOICE)
     p.add_argument("--model", default="eleven_multilingual_v2")
     p.add_argument("--speed", type=float, default=1.05)
+    p.add_argument("--only", help="regenerate only these clip numbers (e.g. 2 or 2,4); the others stay")
     p.add_argument("--words", help="with --verify on one file: save word timings as JSON")
     args = p.parse_args()
     if args.verify:
