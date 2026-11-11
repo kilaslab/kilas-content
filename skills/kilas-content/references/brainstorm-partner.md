@@ -72,7 +72,9 @@ change the line any time ("pakai agy aja", "jangan pakai Cursor").
    bash <skill>/scripts/brainstorm.sh run content/items/<item>/codex/brief-round1.md
    ```
 
-   The answer lands in `codex/round1.md`, the log in `codex/round1.log`.
+   The answer lands in `codex/round1.md`, the log in `codex/round1.log`. Any other brief name
+   (a second opinion, two partners on one question) answers in `<brief>-<partner>.md`, so
+   nothing overwrites an earlier round; run two partners in parallel with `--partner`.
 3. **Ask for reads, not only rewrites.** The template asks for: a slide-by-slide read
    by two readers (a beginner on free tools and a skeptical senior), flow breaks between
    slides, two options per frame within the layout limits, its pick with one reason, the
