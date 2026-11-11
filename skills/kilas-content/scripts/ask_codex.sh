@@ -43,7 +43,8 @@ case "$task" in
   review) role="Review the draft as a strict editor: weak hook, claims without a source, jargon, slides that change the subject, AI tells, a CTA that does not fit. Quote the line, say the problem, suggest a fix." ;;
 esac
 
-prompt="You are helping another agent make social content with the kilas-content skill (.agents/skills/kilas-content). The brand pack is content/brand/brand.md and content/brand/design.md; read them first if they exist.
+skill_dir="$(cd "$(dirname "$0")/.." && pwd)"
+prompt="You are helping another agent make social content with the content skill in $skill_dir. The brand pack is content/brand/brand.md and content/brand/design.md; read them first if they exist.
 Task: $task. $role
 Rules: read only, do not create or edit files, do not post anything anywhere. Answer in the brand pack's language (Indonesian unless it says otherwise), in Markdown.
 

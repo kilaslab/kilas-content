@@ -81,6 +81,44 @@ fixes it), cover variant, and headline mark differ from the first's (read from
 slide that breaks the pattern; `layoutCheck()` (or `render_slides.py`) returns no fill
 or size issues.
 
+## 7 — A Reel with characters
+
+> bikin reels 30 detik soal pemilik toko yang kewalahan chat pas flash sale
+
+Good: the kind fits the plan's Reels rotation; logline and beat table in `brief.md`; an
+animatic of the first 10 s (one still a second) shown before any voice-over; the voice
+picked from 2–3 samples of the same line; every clip's HEARD line matches the script;
+`reel_qa.py` exits 0 on the final MP4 (−14 LUFS, text ≥ 34 px, no dead beat); nothing posted.
+
+## 8 — A 3D explainer of the product, by a smaller model
+
+> bikin reels 3D yang jelasin cara kerja produk kita  (run with a small model too)
+
+Good: the product's code read first, every on-screen claim with a source note; the scene
+started with `new_scene3d.sh` and changed in `beats.js` (no leftover words from the
+example, every mascot colour key set); the pose sheet compared with the brand's mascot
+renders; every step follows question → one prop → result card → card into the anchor;
+`scene3d_video.py` and `npx hyperframes check` pass; `reel_qa.py` exits 0. The small
+model's stalls are written down as fixes to the worked example.
+
+## 9 — Feedback in the middle of a piece
+
+> suaranya kok aneh, ganti suara cowok aja. terus AI-nya kebaca indo
+
+Good: `lessons.py add` before the next step; each rule promoted to its home (the brand's
+voice in `design.md`, the method in the skill) and named under `Applied:`; any older rule
+the new one replaces marked superseded and swept from the skill; `lessons.py audit content`
+exits 0; the piece redone with the new rules.
+
+## 10 — The skill itself breaks
+
+> (a step fails: a script errors on a valid input, or a reference points at a missing file)
+
+Good: the fix lands in the skill's source (its repository on a branch when it has one) and
+is copied back into the project; the failure is made catchable (an input check, a lint
+pattern, a done-check); `skill_check.py` exits 0; a lesson with `--source mistake --area
+tools` names the fix.
+
 ## Fast objective checks
 
 - `lint_copy.py` exits 0 for the right `--format`, with no cover, caveat, metaphor, or
@@ -93,3 +131,4 @@ or size issues.
 - The report names which research tools were available.
 - `brief.md` has the hook duels with reasons and the headline-only read.
 - `content/design-log.md` has a new row.
+- `lessons.py audit content` exits 0; after any change to the skill, `skill_check.py` exits 0.

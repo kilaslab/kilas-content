@@ -18,7 +18,8 @@ before writing anything: `references/examples/linux-7.4-carousel.md` (a news rec
 `references/examples/ai-cost-js-carousel.md` (someone else's experiment), and
 `references/examples/weight-space-carousel.md` (a research paper made plain). Each lists the
 drafts that lost and why; imitate the moves, not the sentences. For a Reel, also read
-`references/examples/reels-character-story.md`: one film through every step, command, and gate.
+`references/examples/reels-character-story.md`: one film through every step, command, and gate
+(a 3D explainer: `references/examples/reels-3d-explainer.md`).
 
 ## Start here, every run
 
@@ -173,7 +174,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    connected tool; confirm first.
 10. **Capture lessons**: owner feedback, review findings you acted on, and your own
     mistakes go into `content/lessons.md` the moment they appear (`lessons.py add`), then
-    to their home (`references/self-improvement.md`).
+    to their home (`references/self-improvement.md`). When the skill itself was wrong (a
+    script failed, a reference contradicted a newer rule), fix the skill the same day and
+    run `scripts/skill_check.py`.
 11. **Report**: where it is, the direction in two lines, the layouts chosen, what was and
     was not verified, which research tools you had and lacked (Codex: which steps,
     or why not), and the caption.
@@ -243,7 +246,8 @@ Every piece (Create and Repurpose):
       on-screen lines.
 - [ ] `publish.md` complete, a row in `content/design-log.md`, the plan row updated;
       nothing posted, liked, or followed without the owner's explicit go.
-- [ ] Every new piece of feedback captured as a lesson.
+- [ ] Every new piece of feedback captured as a lesson, and `lessons.py audit content`
+      exits 0 (every active rule has a home).
 
 Carousel and single post:
 
@@ -276,11 +280,12 @@ Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 | `references/planning.md` | planning, repurposing, reviewing |
 | `references/writing-craft.md`, `references/examples/*.md` (three worked carousels with rejected drafts) | before writing anything |
 | `references/examples/reels-character-story.md` (a 33 s Reel, step by step, with its audit) | before the first Reel; whenever a Reel step is unclear |
+| `references/examples/reels-3d-explainer.md` (a 60 s 3D explainer, step by step, with the owner's rounds) | a 3D or product explainer Reel |
 | `references/brainstorm-partner.md`, `templates/brainstorm-brief.md` | the hook workshop and the partner round after the first copy; whenever the owner says the copy reads badly |
 | `references/copy-playbook.md` | frameworks, copy.md format, CTA, caption |
 | `references/language/id.md`, `en.md` | the brand's language |
 | `references/formats/*.md` | the format being made; `specs.md` for limits |
-| `references/motion-video.md`, `templates/video/` (rig.js, index.html) | a Reels video: companion skills, animatic, VO, render, verification |
+| `references/motion-video.md`, `templates/video/` (rig.js, index.html), `templates/video3d/` (3D scene, mascot rig, pose sheet) | a Reels video: companion skills, animatic, VO, render, verification |
 | `references/design-system.md`, `design-variety.md`, `design-references.md` | before building frames: roles, layout variants and how to choose them, patterns from other accounts |
 | `references/figma-mechanics.md` | before the first `use_figma`; upload, duotone, screenshots |
 | `references/html-render.md`, `templates/html/` | the HTML → PNG renderer: setup, class reference, render, check |
@@ -290,8 +295,8 @@ Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 | `references/codex-collab.md` | asking Codex for ideas, alternative copy, research, or a review |
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
-| `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log; `html/` (slide kit and example); `preview/` (owner preview) |
-| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `vo_acronym_check.py`, `reel_qa.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `scene_stills.sh`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh` |
+| `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log, the project's `AGENTS.md` lessons block (`agents-lessons.md`); `html/` (slide kit and example); `preview/` (owner preview) |
+| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `vo_acronym_check.py`, `reel_qa.py`, `new_scene3d.sh`, `scene3d_video.py`, `scene_stills.sh`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `skill_check.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh`, `install-companions.sh` |
 
 ## When not to use this
 

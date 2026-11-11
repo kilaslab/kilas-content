@@ -9,18 +9,26 @@ rules every later run reads and checks. The lessons live in content/lessons.md, 
     Rule: what to do from now on, stated positively.
     Check: regex|regex          (optional; matched against published copy, case-insensitive)
     Applied: where the rule now also lives (brand.md, design.md, a reference, a script)
-    Status: active               (active | retired)
+    Status: active               (active | active; partly superseded by L-NNN (what changed)
+                                  | superseded by L-NNN (why) | retired (why))
 
     python3 scripts/lessons.py rules content                 # print active rules (read before planning or writing)
     python3 scripts/lessons.py check content content/items/<item>/copy.md   # exit 1 if a Check pattern hits
     python3 scripts/lessons.py add content --source owner --area tone \
         --lesson "..." --rule "..." [--check "a|b"] [--applied "..."]
+    python3 scripts/lessons.py audit content                 # exit 1 if a rule has no home yet
+
+audit is the self-heal check: every active lesson's Applied names a home outside the item it
+came from (brand.md, design.md, a skill reference, script or template, AGENTS.md, the agent's
+memory, or "lessons.md only: <reason>"), every file it names exists, every superseded-by
+points at a real lesson, and every Check pattern compiles. Run it before calling work done.
 
 check reads only published text in copy.md (key: value lines and the caption), skipping
 "> " source notes and builder keys, so a lesson can name a phrase without tripping itself.
 """
 import argparse
 import datetime as dt
+import glob
 import os
 import re
 import sys
@@ -58,6 +66,55 @@ def parse(ws):
     return out
 
 
+def active(l):
+    # "active; partly superseded by L-049 ..." still binds for the part that was not replaced
+    return l.get("status", "active").startswith("active")
+
+
+SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+HOME_WORDS = re.compile(r"brand\.md|design\.md|AGENTS\.md|CLAUDE\.md|memory|SKILL\.md|"
+                        r"references/|scripts/|templates/|lessons\.md only", re.I)
+# a file (name.ext, maybe with folders) or a folder under a known root; "a/b" in prose is not a path
+FILE_TOKEN = re.compile(r"(?:[\w.-]+/)*[\w*-]+\.(?:md|py|sh|js|html|css|json)\b|"
+                        r"(?:content|references|scripts|templates|brands|evals|\.agents)/[\w./*-]*")
+
+
+def audit(ws):
+    lessons = parse(ws)
+    ids = {l["id"] for l in lessons}
+    root = os.path.dirname(os.path.abspath(ws))
+    # a name in Applied may be relative to the project, the workspace, the brand pack, or the skill
+    bases = [root, os.path.abspath(ws), os.path.join(os.path.abspath(ws), "brand"), SKILL]
+    problems = []
+    for l in lessons:
+        status = l.get("status", "active")
+        for ref in re.findall(r"superseded by (L-\d+)|digantikan (L-\d+)|digabung ke (L-\d+)", status):
+            ref = next(r for r in ref if r)
+            if ref not in ids:
+                problems.append((l["id"], f"status points at {ref}, which does not exist"))
+        if not active(l):
+            continue
+        if l.get("check"):
+            try:
+                re.compile(l["check"])
+            except re.error as e:
+                problems.append((l["id"], f"Check does not compile: {e}"))
+        applied = l.get("applied", "").strip()
+        if not applied or applied == "-" or not HOME_WORDS.search(applied):
+            problems.append((l["id"], f"no home yet (Applied: {applied or '-'}); promote the rule "
+                                      "(references/self-improvement.md, step 4)"))
+            continue
+        for tok in FILE_TOKEN.findall(applied):
+            tok = tok.rstrip("/.")
+            if tok.startswith(("http", "www.", "/")) or "*" in tok or "/" not in tok and "." not in tok:
+                continue
+            if not any(glob.glob(os.path.join(b, tok)) or glob.glob(os.path.join(b, "**", tok), recursive=True)
+                       for b in bases):
+                problems.append((l["id"], f"Applied names {tok}, which is not in the project, the brand "
+                                          "pack, or the skill"))
+    return problems
+
+
 def published(copy_path):
     lines = []
     for line in open(copy_path, encoding="utf-8"):
@@ -82,22 +139,32 @@ def main():
     for k in ("source", "area", "lesson", "rule"):
         a.add_argument("--" + k, required=True)
     a.add_argument("--check", default=""); a.add_argument("--applied", default="")
+    u = sub.add_parser("audit"); u.add_argument("workspace")
     args = ap.parse_args()
 
     if args.cmd == "rules":
-        active = [l for l in parse(args.workspace) if l.get("status", "active") == "active"]
-        if not active:
+        rules = [l for l in parse(args.workspace) if active(l)]
+        if not rules:
             print("no lessons yet:", path_of(args.workspace)); return 0
-        for l in active:
-            print(f"{l['id']} [{l['area']}] {l.get('rule', '')}")
+        for l in rules:
+            note = l.get("status", "active")[len("active"):].lstrip("; ")
+            print(f"{l['id']} [{l['area']}] {l.get('rule', '')}" + (f"  ({note})" if note else ""))
         return 0
+
+    if args.cmd == "audit":
+        problems = audit(args.workspace)
+        for lid, msg in problems:
+            print(f"FAIL {lid}: {msg}")
+        n = len([l for l in parse(args.workspace) if active(l)])
+        print(f"audit: {n} active lessons, " + ("every rule has a home" if not problems else f"{len(problems)} problem(s)"))
+        return 1 if problems else 0
 
     if args.cmd == "check":
         text = published(args.copy)
         hits = 0
         for l in parse(args.workspace):
             pat = l.get("check", "")
-            if l.get("status", "active") != "active" or not pat:
+            if not active(l) or not pat:
                 continue
             rx = re.compile(pat, re.I)
             for s in text:

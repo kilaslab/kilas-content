@@ -35,6 +35,11 @@ competitor or one question per call and run calls in parallel; the script stops 
 two numbered questions (five per call hit the limit twice on 2026-11-09, with nothing saved). One or two calls
 per item is usually enough; do not ask Codex for what you can settle in one search.
 
+For copy (`brainstorm` on hooks, `copy`, `review`), put the whole concept in the prompt, ask one
+task per call, and write "do not research the web, do not open other files": hooks and flow in
+one call with web search ran past 600 s; split and without web, each came back in under 2
+minutes (Nov 2026).
+
 ## 3. How
 
 ```bash
