@@ -32,7 +32,8 @@ if [ "$task" = research ] && [ "$nq" -gt 2 ]; then
   echo "warning: $nq numbered questions in one research call; split them into parallel calls (one question each) or it may hit CODEX_TIMEOUT" >&2
 fi
 mkdir -p "$outdir"
-stamp="$(date +%Y%m%d-%H%M%S)"
+# The PID keeps parallel calls started in the same second from writing one file (2026-11-11).
+stamp="$(date +%Y%m%d-%H%M%S)-$$"
 out="$outdir/codex-$task-$stamp.md"
 log="$outdir/.codex-$task-$stamp.log"
 
