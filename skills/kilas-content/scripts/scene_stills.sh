@@ -7,13 +7,15 @@
 #   scripts/scene_stills.sh <page url> <out prefix> [times...]
 #   scripts/scene_stills.sh http://localhost:8791/index.html frames/f              # 2.5, 7.5, ... 57.5
 #   scripts/scene_stills.sh http://localhost:8791/index.html frames/a 0.5 1.5 2.5  # first seconds
+# Still NN is the NN-th time given (frames/a01.png is 0.5 s above); the prefix may be relative
+# or absolute.
 #
 # Serve the scene folder first (python3 -m http.server <port>): module imports fail from
 # file://, and a port already in use serves someone else's folder, so check the page title.
 # Env: SIZE=1080,1920 (window), BUDGET=4000 (virtual ms to settle), DUR=60 (default times),
 #      TIMEOUT=60 (seconds before a hung still is stopped and reported).
 set -euo pipefail
-[ $# -ge 2 ] || { sed -n '3,14p' "$0"; exit 2; }
+[ $# -ge 2 ] || { sed -n '3,16p' "$0"; exit 2; }
 url="$1"; pfx="$2"; shift 2
 CH="${CHROME:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
 command -v google-chrome >/dev/null 2>&1 && [ ! -x "$CH" ] && CH="$(command -v google-chrome)"
@@ -21,6 +23,8 @@ command -v google-chrome >/dev/null 2>&1 && [ ! -x "$CH" ] && CH="$(command -v g
 if [ $# -eq 0 ]; then
   set -- $(python3 -c "print(' '.join(str(i*5+2.5) for i in range(int(${DUR:-60})//5)))")
 fi
+# Chrome writes where --screenshot says, relative to its own cwd: make the prefix absolute
+case "$pfx" in /*) ;; *) pfx="$PWD/$pfx" ;; esac
 mkdir -p "$(dirname "$pfx")"
 sep='?'; case "$url" in *\?*) sep='&' ;; esac
 i=0; pids=""
@@ -28,7 +32,7 @@ for t in "$@"; do
   i=$((i+1))
   "$CH" --headless=new --use-angle=swiftshader --enable-unsafe-swiftshader --hide-scrollbars \
     --window-size="${SIZE:-1080,1920}" --virtual-time-budget="${BUDGET:-4000}" \
-    --screenshot="$PWD/$pfx$(printf %02d $i).png" "$url${sep}t=$t" >/dev/null 2>&1 &
+    --screenshot="$pfx$(printf %02d $i).png" "$url${sep}t=$t" >/dev/null 2>&1 &
   pids="$pids $!"
 done
 # a headless Chrome sometimes hangs after writing nothing (2026-11-10): stop any still after TIMEOUT s
