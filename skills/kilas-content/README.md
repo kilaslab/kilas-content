@@ -72,7 +72,7 @@ references/
   language/id.md, en.md           language rules and AI tells
   formats/                        carousel, single post, Reels/TikTok, X, LinkedIn, Threads, long form, specs
   video-racikan.md                preset table for a Reels video, filled before the script
-  video-presets.md                nine generic cards (short reel, explainer, story, polygon 3D, demo, news, music, list, tutorial)
+  video-presets.md                twelve generic cards (short reel, explainer, story, polygon 3D, demo, launch, feature, footage, news, music, list, tutorial)
   design-system.md                roles, grid, layouts, fill rules, signature moves, chart recipe
   design-variety.md               layout variants per slide role and how to vary them between pieces
   html-render.md                  the HTML → PNG renderer: class reference, render, check

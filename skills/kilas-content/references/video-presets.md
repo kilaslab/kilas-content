@@ -1,12 +1,15 @@
 # Video presets
 
-Nine cards. Pick one in `video-racikan.md`. A card sets defaults. The owner's
+Twelve cards. Pick one in `video-racikan.md`. A card sets defaults. The owner's
 words and the brand pack's `design.md` "Video" section override a default.
 
 Each card names the production route. A flat character film uses `motion-video.md`
 and `templates/video/`. A polygon film uses `templates/video3d/` (section
-`poly-3d` below). A demo uses a screen recording. Do not mix a polygon scene
-and a screen recording in one film unless the owner asks for both.
+`poly-3d` below). A product film uses a screen recording of the real UI.
+`product-demo`, `launch`, and `feature` all count as a product Reel: at most
+every other Reel is one of them (`formats/reels-tiktok.md` section 0). Do not
+mix a polygon scene and a screen recording in one film unless the owner asks
+for both.
 
 Hook shape is a pointer into `writing-craft.md`, not the line itself.
 
@@ -75,8 +78,48 @@ you copy. It is not one of these cards.
 - Structure: before/after. Hook shape: product + price, only when the price is
   confirmed; otherwise number + scene + stakes.
 - Captions: lower third.
-- Route: a capture of the real product (`formats/reels-tiktok.md`, Demo). At most
-  every other Reel is a demo.
+- Route: a capture of the real product (`formats/reels-tiktok.md`, Demo).
+
+## launch
+
+- When: a product is being introduced. The viewer should leave knowing what it
+  is and who it is for.
+- Aspect / length: 16:9 when the film also sits on a site or YouTube, 9:16 when
+  it is only a Reel. Default 16:9, 45 s.
+- First 3 s: the product already in a person's hands, one result on screen.
+- Visual / edit: screen recording of the real UI, one scene per capability,
+  three capabilities at most.
+- Structure: three acts (the situation, the product doing the thing, the result).
+- Hook shape: product + price only when the price is confirmed; otherwise
+  number + scene + stakes.
+- Captions: lower third.
+- Route: captures of the real product (`formats/reels-tiktok.md`, Demo). Check
+  every control against the product.
+
+## feature
+
+- When: one capability that just shipped. The rest of the product stays off screen.
+- Aspect / length: 1:1, or 9:16 when it is only a Reel. Default 1:1, 15 s.
+- First 3 s: that capability already doing its one thing.
+- Visual / edit: screen recording, one continuous scene.
+- Structure: before/after.
+- Hook shape: number + scene + stakes.
+- Captions: lower third, the capability's name.
+- Route: one capture of the real UI. Check the control against the product.
+
+## footage
+
+- When: the pictures already exist. The owner hands over clips, and the film is
+  a cut of those clips.
+- Aspect / length: 9:16, the length of the best stretch. Default 20–30 s. Do not
+  pad with pictures the camera did not catch.
+- First 3 s: the strongest moment already in the clips.
+- Visual / edit: the owner's footage, fast cuts.
+- Structure: before/after, or a list of moments that are actually in the clips.
+- Hook shape: number + scene + stakes, from something the clips show.
+- Captions: lower third, or a word on the beat when someone is speaking.
+- Route: a storyboard over the clips they named (`formats/reels-tiktok.md`).
+  Leave the original files where they are.
 
 ## news
 

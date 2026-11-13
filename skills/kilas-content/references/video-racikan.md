@@ -32,7 +32,7 @@ piece is a video, using the headings in `templates/brief.md`.
 | Field | What to write |
 |---|---|
 | Preset | the card id from `video-presets.md` |
-| Format | short reel, explainer, story, polygon 3D, product demo, news, or music |
+| Format | short reel, explainer, story, polygon 3D, product demo, launch, feature, footage, news, or music |
 | Aspect | a ratio the preset names, unless the owner named one |
 | Length | seconds, from the preset, unless the owner named one |
 | Visual style | vector characters, kinetic type, polygon scene, or screen recording |
