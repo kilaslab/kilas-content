@@ -71,6 +71,8 @@ references/
   copy-playbook.md                frameworks, copy.md format, CTA, caption
   language/id.md, en.md           language rules and AI tells
   formats/                        carousel, single post, Reels/TikTok, X, LinkedIn, Threads, long form, specs
+  video-racikan.md                preset table for a Reels video, filled before the script
+  video-presets.md                eight generic cards (short reel, explainer, demo, news, music, diorama, list, tutorial)
   design-system.md                roles, grid, layouts, fill rules, signature moves, chart recipe
   design-variety.md               layout variants per slide role and how to vary them between pieces
   html-render.md                  the HTML → PNG renderer: class reference, render, check

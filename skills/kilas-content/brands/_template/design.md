@@ -71,6 +71,15 @@ const BRAND = {
 - Minimum size and clear space:
 - On light / on dark:
 
+## Video
+
+Optional. Fill when the brand makes Reels the agent renders. `references/video-racikan.md`
+reads this section and lets it override a preset.
+
+- Cast: a recurring person, if any, and the mascot
+- Voice-over: whose voice, and the ElevenLabs voice id when one is chosen
+- Look the brand always uses, if it has one (vector characters, kinetic type, isometric diorama, screen recording):
+
 ## Files
 
 | | |

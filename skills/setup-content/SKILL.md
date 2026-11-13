@@ -70,7 +70,9 @@ recommended option when you can infer one:
    family than yours, and record the yes with its date and the fallbacks
    (`brainstorm-partner.md` section 2).
 9. **Reels videos** (only if the brand makes them): the recurring cast (a customer
-   character, the mascot), and the voice-over voice. Check `npx hyperframes --version`,
+   character, the mascot), and the voice-over voice. Write them under `design.md`
+   "Video"; the racikan reads that section (`kilas-content/references/video-racikan.md`).
+   Check `npx hyperframes --version`,
    `ffprobe`, and `ELEVENLABS_API_KEY` in `.env`; record them in the "Video" line of
    `setup.md` and point to `prerequisites.md` "Video companions" for what is missing.
 
