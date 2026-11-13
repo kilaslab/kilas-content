@@ -154,7 +154,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
      kit's layouts, with the chosen photos and generated images copied into `html/img/`;
      `scripts/render_slides.py` renders one PNG per slide.
    Reels: `storyboard.md` + a 1080×1920 cover frame (Figma, or a separate HTML page as
-   `html-render.md` section 4 says). A Reels **video** the agent makes follows
+   `html-render.md` section 4 says). A Reels **video** the agent makes fills the racikan
+   first (`references/video-racikan.md`, cards in `references/video-presets.md`): one
+   table in `brief.md`, one question if the preset was not already named. Then
    `references/motion-video.md`: character animatic, the owner's approval, voice-over,
    HyperFrames render, then a check of the file itself.
 8. **Verify cheaply**: the layout check first (`layoutCheck()` in Figma, the issues
@@ -263,6 +265,8 @@ Reels:
 
 - [ ] The Reel's kind fits the plan's mix (`formats/reels-tiktok.md` section 0) and is not
       a second product Reel in a row.
+- [ ] A video the agent makes has a `## Racikan` table in `brief.md` before the script
+      (`video-racikan.md`); every blank the skill filled says why.
 - [ ] Partner round done on the script and on-screen lines (both routes).
 - [ ] Video: the beat map of the whole film and the 10 s animatic approved before
       rendering; every critique score ≥8 and the measured checks passed (`motion-video.md`
@@ -285,6 +289,7 @@ Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 | `references/copy-playbook.md` | frameworks, copy.md format, CTA, caption |
 | `references/language/id.md`, `en.md` | the brand's language |
 | `references/formats/*.md` | the format being made; `specs.md` for limits |
+| `references/video-racikan.md`, `references/video-presets.md` | a Reels video the agent makes: the preset table, before the script |
 | `references/motion-video.md`, `templates/video/` (rig.js, index.html), `templates/video3d/` (3D scene, mascot rig, pose sheet) | a Reels video: companion skills, animatic, VO, render, verification |
 | `references/design-system.md`, `design-variety.md`, `design-references.md` | before building frames: roles, layout variants and how to choose them, patterns from other accounts |
 | `references/figma-mechanics.md` | before the first `use_figma`; upload, duotone, screenshots |

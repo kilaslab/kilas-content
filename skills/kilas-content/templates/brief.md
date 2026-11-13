@@ -11,6 +11,25 @@
 - <primary source URL, date>
 - <secondary>
 
+## Racikan
+
+A Reels video the agent makes. Other formats leave this out (`references/video-racikan.md`).
+
+| Field | Choice | Who chose |
+|---|---|---|
+| Preset | | owner / skill |
+| Format | | |
+| Aspect | | |
+| Length | | |
+| Visual style | | |
+| Edit style | | |
+| Hook shape | | |
+| Structure | | |
+| Captions | | |
+| Gate | owner approves the beat map and the 10 s animatic (a rough cut for real clips) before any render | skill |
+
+Preset: <id from video-presets.md> · Why this card, not the next: <one line>
+
 ## Five story questions
 
 | Question | Answer |

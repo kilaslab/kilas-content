@@ -14,7 +14,10 @@ routes to the video:
 ## 0. Kinds of Reel, and the mix
 
 Pick the kind before the script; rotate kinds across the month so the channel is not a
-string of ads.
+string of ads. A video the agent will render takes its kind from the racikan
+(`video-racikan.md`, cards in `video-presets.md`) and writes that table in `brief.md`
+before this script. A storyboard the owner will shoot still picks a kind from the
+table below.
 
 | Kind | What carries it | Visual route | Product's place |
 |---|---|---|---|
