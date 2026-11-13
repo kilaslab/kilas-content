@@ -84,8 +84,8 @@ you copy. It is not one of these cards.
 
 - When: a product is being introduced. The viewer should leave knowing what it
   is and who it is for.
-- Aspect / length: 16:9 when the film also sits on a site or YouTube, 9:16 when
-  it is only a Reel. Default 16:9, 45 s.
+- Aspect / length: 9:16, 45 s. 16:9 only when the owner says the film also sits
+  on a site or YouTube; then check it with `reel_qa.py --size 1920x1080`.
 - First 3 s: the product already in a person's hands, one result on screen.
 - Visual / edit: screen recording of the real UI, one scene per capability,
   three capabilities at most.
@@ -99,7 +99,8 @@ you copy. It is not one of these cards.
 ## feature
 
 - When: one capability that just shipped. The rest of the product stays off screen.
-- Aspect / length: 1:1, or 9:16 when it is only a Reel. Default 1:1, 15 s.
+- Aspect / length: 9:16, 15 s. 1:1 only when the owner asks for a feed or site
+  cut; then check it with `reel_qa.py --size 1080x1080`.
 - First 3 s: that capability already doing its one thing.
 - Visual / edit: screen recording, one continuous scene.
 - Structure: before/after.
@@ -160,7 +161,8 @@ you copy. It is not one of these cards.
 ## screen-tutorial
 
 - When: the viewer repeats one task in the product after watching.
-- Aspect / length: 9:16, or 16:9 when the UI will not survive a crop. 60–90 s.
+- Aspect / length: 9:16, or 16:9 when the UI will not survive a crop (then
+  `reel_qa.py --size 1920x1080`). 60–90 s.
 - First 3 s: the finished result, then the rewind into step 1.
 - Visual / edit: screen recording, a screen tutorial.
 - Structure: a list of steps. Hook shape: compression promise ("the whole task

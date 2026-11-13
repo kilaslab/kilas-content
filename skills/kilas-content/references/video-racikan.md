@@ -32,15 +32,15 @@ piece is a video, using the headings in `templates/brief.md`.
 | Field | What to write |
 |---|---|
 | Preset | the card id from `video-presets.md` |
-| Format | short reel, explainer, story, polygon 3D, product demo, launch, feature, footage, news, or music |
-| Aspect | a ratio the preset names, unless the owner named one |
+| Format | short reel, explainer, story, polygon 3D, product demo, launch, feature, footage, news, music, kinetic list, or screen tutorial |
+| Aspect | 9:16, unless the owner named another ratio or says the film also lives off Instagram (then the card's other ratio, and `reel_qa.py --size` to match) |
 | Length | seconds, from the preset, unless the owner named one |
-| Visual style | vector characters, kinetic type, polygon scene, or screen recording |
+| Visual style | vector characters, kinetic type, polygon scene, screen recording, artefact captures, or the owner's footage |
 | Edit style | fast cuts, one continuous scene, or a screen tutorial |
 | Hook shape | a shape from `writing-craft.md` section 3 or 3b; the workshop still happens |
 | Structure | before/after, three acts, or a list |
 | Captions | lower third, a word on the beat, a title card, or none |
-| Gate | the owner approves the beat map and the 10 s animatic before any render |
+| Gate | the owner approves the beat map and the 10 s animatic before any render; for a film cut from real clips (`footage`, `product-demo`, `launch`, `feature`, `screen-tutorial`), a 10 s rough cut stands in for the animatic |
 | Who chose | `owner` or `skill` on every row the owner did not name |
 
 The hook row picks a shape. It does not write the hook. Five hooks, the gates,
