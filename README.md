@@ -44,8 +44,10 @@ rule the next run must follow**.
   **Threads** thread view (replies, attached slides) from an item folder. Open it locally or
   publish it as a Claude Artifact.
 - 🧠 **Self-improvement loop.** `lessons.py` records owner feedback, review findings, and your
-  own mistakes as rules (`content/lessons.md`), prints them before every run, and fails a
-  draft that breaks one.
+  own mistakes as rules (`content/lessons.md`), prints them before every run, fails a draft
+  that breaks one, and audits that every rule reached its home (brand pack or skill).
+  `skill_check.py` checks the skill itself (front matter, pointers, scripts), so a broken
+  step is healed at its source.
 - 🤝 **Second agent on call.** `ask_codex.sh` asks the Codex CLI for research, brainstorms,
   alternative copy, or a strict review, read-only and with a time limit; its answers are
   leads to check.
@@ -55,9 +57,14 @@ rule the next run must follow**.
 - 🖼️ **Images.** The brand's own photos first, then the agent's image tool or the Antigravity
   CLI (`agy`), then a paid API only if the owner allows it. Generated images are labelled.
 - 🎬 **Reels videos with characters.** A live character animatic the owner approves first,
-  then an ElevenLabs voice-over per beat (`vo_elevenlabs.py`, with a transcript check), a
-  HyperFrames render, and a check of the MP4 itself. Reusable rig in `templates/video/`;
-  companion skills listed in `references/motion-video.md`.
+  then an ElevenLabs voice-over per beat (`vo_elevenlabs.py`, with a transcript check and a
+  measured check that English acronyms sound English, `vo_acronym_check.py`), a HyperFrames
+  render, and a check of the MP4 itself (`reel_qa.py`). Reusable rig in `templates/video/`;
+  3D explainers in three.js from a working template (`templates/video3d/`: a 60 s scene, a
+  mascot rig with faces and gestures, a pose sheet; `new_scene3d.sh` starts one,
+  `scene3d_video.py` adds the voice-over for the render), with stills straight from the
+  scene (`scene_stills.sh`) and a worked example step by step; companion skills listed in
+  `references/motion-video.md`.
 
 ## Quick start
 
@@ -95,7 +102,7 @@ flowchart LR
   E --> F[Render<br/>Figma or HTML → PNG]
   F --> G[make_preview.py<br/>Instagram + Threads]
   G --> H{Owner}
-  H -->|feedback| I[lessons.py add]
+  H -->|feedback| I[lessons.py add<br/>promote · audit]
   I --> A
   H -->|"posting"| J[Publish + record link]
 ```
@@ -108,7 +115,8 @@ Nothing is posted, liked, or followed without the owner's explicit go for that p
 |---|---|
 | `new_item.py` | Item folder from the templates |
 | `lint_copy.py` | AI tells, language slips, platform limits, banned phrases |
-| `lessons.py` | `rules` · `check` · `add`: the self-improvement loop |
+| `lessons.py` | `rules` · `check` · `add` · `audit`: the self-improvement loop |
+| `skill_check.py` | The skill itself: front matter, every pointer, every script listed and parsing |
 | `check_plan.py` | A month plan against the brand pack |
 | `ask_codex.sh` | Codex research, brainstorm, copy, or review (read-only, `CODEX_TIMEOUT`) |
 | `new_html.py` · `render_slides.py` | HTML slide kit and PNG render with a layout check |

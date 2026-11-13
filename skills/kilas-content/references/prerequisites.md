@@ -38,7 +38,7 @@ Or run them all: `scripts/install-companions.sh`
 | Skill | Source | Needed for |
 |---|---|---|
 | `copywriting` | `coreyhaines31/marketingskills` | headline/CTA craft, AI-tells blacklist |
-| `social` | `coreyhaines31/marketingskills` | `references/carousel-frameworks.md` — pick the framework |
+| `social` | `coreyhaines31/marketingskills` | `social/references/carousel-frameworks.md` — pick the framework |
 | `humanizer` | `blader/humanizer` | strip structural AI tells from the copy |
 | `bahasa-indonesia` | `ajipurn/bahasa-indonesia-skill` | Indonesian register, orthography, no calques |
 | `copy-editing` *(optional)* | `coreyhaines31/marketingskills` | final line-by-line polish |

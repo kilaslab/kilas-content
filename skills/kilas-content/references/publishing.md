@@ -8,7 +8,9 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 1. Create → Post → "Select from computer" → all slides at once (`preview/slides/*.png`).
 2. Crop: the default is 1:1 and cuts a 4:5 slide; set **4:5** (crop icon, bottom left) and
    look at the frame before "Next".
-3. Caption from `copy.md`; check the counter (≤2,200).
+3. Caption from `copy.md`; check the counter (≤2,200). End the pasted caption with a space so
+   the hashtag/mention suggestions close: while they are open, the next click picks one and
+   rewrites the last hashtag (a reel's "#adminolshop" became a longer suggested tag, 2026-11-11).
 4. **Share to**: Threads and the owner's personal Facebook are on by default. Turn both off
    for this post; on the Facebook prompt choose "Don't share this post" (never change the
    owner's global setting). Threads gets its own text, posted separately.
@@ -26,7 +28,8 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 2. Crop: choose **Original** (keeps 9:16); look at the frame before "Next".
 3. Edit: the cover defaults to frame 0 (make frame 0 the hook still); check the trim shows
    the full length.
-4. Caption from `publish.md`; read the field back. Share to Facebook off, schedule off.
+4. Caption from `publish.md`, pasted with a trailing space (see feed step 3); read the field
+   back, and again right before Share. Share to Facebook off, schedule off.
 5. Accessibility: Reels on the web has no alt-text field, only auto-generated captions; turn
    those on. Keep the alt text in `publish.md` for the app.
 6. AI label: on when the video carries a synthetic voice or realistic AI footage (Meta asks

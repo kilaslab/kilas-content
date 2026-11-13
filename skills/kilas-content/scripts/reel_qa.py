@@ -13,7 +13,8 @@ Checks, each PASS or FAIL, and exits 1 on any FAIL:
             pair at 4 fps), outside the --hold windows
   flash     no single black or white frame (a render glitch), unless it is a deliberate flash
             you list with --hold
-Writes to --out (default: <film>_qa/): contact.png (2 fps), phone.png (1 fps at 360 px wide),
+Writes to --out (default: <film>_qa/): contact.png (2 fps, 18 s a page; contact-2.png ... for the
+rest), phone.png (1 fps at 360 px wide, 30 s a page; phone-2.png ...),
 motion.csv (second, motion), and report.md with the numbers. Look at both sheets after a PASS:
 the script measures, it does not judge taste.
 Needs ffmpeg/ffprobe and Pillow.
@@ -135,14 +136,23 @@ def main():
           + ("; add a reaction, a push-in, or cut the beat shorter" if dead else ""))
     shutil.rmtree(tmp)
 
-    run(["ffmpeg", "-v", "error", "-y", "-i", str(film), "-vf", "fps=2,scale=270:-1,tile=6x6", "-frames:v", "1", str(out / "contact.png")])
-    run(["ffmpeg", "-v", "error", "-y", "-i", str(film), "-vf", "fps=1,scale=360:-1,tile=6x6", "-frames:v", "1", str(out / "phone.png")])
+    # one sheet holds 36 (contact) or 30 (phone) frames, so a longer film gets more pages:
+    # contact.png, contact-2.png, ... and phone.png, phone-2.png, ... A single page cut a 60 s
+    # film at 18 s and 36 s, and a partner scored the missing half as "nothing happens" (Nov 2026).
+    sheets = []
+    for name, vf in (("contact", "fps=2,scale=270:-1,tile=6x6"), ("phone", "fps=1,scale=360:-1,tile=6x5")):
+        for old in out.glob(f"{name}*.png"):
+            old.unlink()
+        run(["ffmpeg", "-v", "error", "-y", "-i", str(film), "-vf", vf, "-start_number", "1", str(out / f"{name}-%d.png")])
+        (out / f"{name}-1.png").rename(out / f"{name}.png")
+        pages = [f"{name}.png"] + sorted((q.name for q in out.glob(f"{name}-*.png")), key=lambda n: int(n.split("-")[1][:-4]))
+        sheets.append(", ".join(pages))
 
     lines = [f"# QA: {film.name}", ""]
     for name, ok, detail in results:
         lines.append(f"- {'PASS' if ok else 'FAIL'} {name}: {detail}")
-    lines += ["", "Sheets: contact.png (2 fps), phone.png (1 fps at 360 px). Score them with the critique loop;",
-              "this report covers only what can be measured.", ""]
+    lines += ["", f"Sheets: {sheets[0]} (2 fps, 18 s a page); {sheets[1]} (1 fps at 360 px, 30 s a page).",
+              "Send every page to the critique loop; this report covers only what can be measured.", ""]
     (out / "report.md").write_text("\n".join(lines))
     print("\n".join(lines[2:2 + len(results)]))
     print(f"report: {out / 'report.md'}")

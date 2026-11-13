@@ -32,10 +32,10 @@ piece is a video, using the headings in `templates/brief.md`.
 | Field | What to write |
 |---|---|
 | Preset | the card id from `video-presets.md` |
-| Format | short reel, explainer, product demo, news, or music |
+| Format | short reel, explainer, story, polygon 3D, product demo, news, or music |
 | Aspect | a ratio the preset names, unless the owner named one |
 | Length | seconds, from the preset, unless the owner named one |
-| Visual style | vector characters, kinetic type, isometric diorama, or screen recording |
+| Visual style | vector characters, kinetic type, polygon scene, or screen recording |
 | Edit style | fast cuts, one continuous scene, or a screen tutorial |
 | Hook shape | a shape from `writing-craft.md` section 3 or 3b; the workshop still happens |
 | Structure | before/after, three acts, or a list |

@@ -28,7 +28,7 @@ Load each when its step comes; none replaces this file's order.
 | `short-form-video` | story, beats | hook in frame 0, a visual change every 2–4 s, loop seam, 9:16 safe areas |
 | `motion-design` (LottieFiles) | animatic | timing, easing, the animation principles (squash, anticipation, follow-through) |
 | `kinetic-typography` | animatic | headline reveals per word or line |
-| `hyperframes` | render | the render contract, `references/types/character.md` (acting), `references/motion.md` (eases, holds, cuts), `references/types/vertical.md` |
+| `hyperframes` | render | the render contract, `hyperframes/references/types/character.md` (acting), `hyperframes/references/motion.md` (eases, holds, cuts), `hyperframes/references/types/vertical.md` |
 | `hyperframes-cli` | render | `init`, `check`, `snapshot`, `render`, `timeline` |
 | `hyperframes-registry` | render | ready blocks (transitions, captions) before you hand-build one |
 | `media-use` | sound | music, SFX, voice when HeyGen or local tools are the route |
@@ -61,8 +61,9 @@ Install: `prerequisites.md`, section "Video companions".
    **Gate: the owner approves the beat map, the animatic, and the script.** No render
    before that.
 4. **Animate the rest** in the same timeline; then **voice-over** (`scripts/vo_elevenlabs.py`):
-   one clip per beat, speed ×1.05 for a conversational pace, and retime the animation to
-   the VO so each visual lands on its word (a "paid" stamp on the word "paid").
+   one clip per beat, speed ×1.05 for a conversational pace (1.0 on `eleven_v3`), check any
+   English acronym with `scripts/vo_acronym_check.py`, and retime the animation to the VO so
+   each visual lands on its word (a "paid" stamp on the word "paid").
 5. **Render** with HyperFrames (`templates/video/index.html`): `check` until 0 errors,
    a draft render, the **critique loop** (section 2c) until every score is 8+, then
    `render -q delivery`.
@@ -89,7 +90,7 @@ Adapted from "Design Engineering: Build a Motion Studio Around Opus 5.5" (@dyfws
   take timings, spring limits (the mascot's squash), transitions in use, and what never
   animates (the logo, a line the viewer is reading, product UI shown as proof). Every film
   then moves like the same brand.
-- **Describe the feel, then the numbers**: "Mira lands light and settles once" becomes
+- **Describe the feel, then the numbers**: "the mascot lands light and settles once" becomes
   `back.out(1.7)` over 0.4 s; "the panic shakes the whole desk" becomes a ±6° jitter at
   0.07 s steps. Write the feel in the beat table so the owner approves the feel, not the
   curve.
@@ -125,9 +126,8 @@ frames) is the rest.
 - **Critique loop before the full render** (every new film, at least two rounds):
 
   ```bash
-  ffmpeg -i out.mp4 -vf "fps=2,scale=270:-1,tile=6x5" -frames:v 1 contact.png       # 2 frames a second
+  python3 scripts/reel_qa.py out.mp4                # contact*.png (2 fps) and phone*.png (360 px), paged over the whole film
   ffmpeg -ss 4.1 -i out.mp4 -vf "scale=320:-1,tile=12x1" -frames:v 1 strip.png      # 12 frames round a fast action
-  ffmpeg -i out.mp4 -vf "fps=1,scale=360:-1,tile=5x3" -frames:v 1 phone.png         # how it reads 360 px wide
   ffmpeg -stream_loop 1 -i out.mp4 -c copy loop_check.mp4                            # watch the seam
   ```
 
@@ -138,12 +138,21 @@ frames) is the rest.
   send the sheets and the beat table as "a harsh motion director, not a proud author");
   when no partner is approved or installed, score it yourself, write "self-scored" next
   to the scores in `brief.md`, and say so in the report (the same rule as the gate in
-  `SKILL.md`). Write
-  the three worst problems with timestamps, fix them, re-render the affected seconds,
-  score again. Before the owner sees it, the measured checks pass too: text ≥34 px, no
-  dead beat mid-film (mean frame difference per second, `fps=4`, above the quiet floor
-  except intended holds), −14 LUFS, transcript equal to the script. Hunt for text overlapping during swaps, anything that
-  slides instead of easing, scaled blurry text, a dead beat, a stutter at the loop seam.
+  `SKILL.md`). Write the three worst problems with timestamps, fix them, re-render the
+  affected seconds, score again. Scores from sheets drift between rounds: on a 60 s
+  explainer (Nov 2026) the partner moved untouched criteria by a point either way and, in
+  round 7, asked to drop a colour the brand pack prescribes. Put the brand rules that apply
+  in every brief, give the previous scores, and ask for a re-score of what changed; after
+  four rounds, or when a request contradicts the brand pack, stop and hand the owner the
+  scores and the open problems. Send every sheet page and name its seconds; give image
+  briefs `PARTNER_TIMEOUT=1200` (two image critiques stopped at 600 s). Check each claim on
+  the full-size frame before acting on it: on 360 px sheets a partner called a mascot
+  "thumbless" and a headline "lost on a white window", and neither was true. Before the
+  owner sees it, the measured checks pass too: text ≥34 px, no dead beat mid-film (mean
+  frame difference per second, `fps=4`, above the quiet floor except intended holds),
+  −14 LUFS, transcript equal to the script. Hunt for text overlapping during swaps,
+  anything that slides instead of easing, scaled blurry text, a dead beat, a stutter at
+  the loop seam.
 - **Sound on the picture's timeline**: the VO clips, plus short SFX on visible actions
   (a pop for each bubble, a whoosh on a move, a thump on a stamp) from `media-use` or
   synthesised in code; with a supplied track, measure its beats first and cut on them.
@@ -171,6 +180,64 @@ shorts, Oct 2026; ideas paraphrased, no text or code copied).
   (format, loudness, frozen runs ≥12 frames, dead seconds, flash frames, contact and phone
   sheets). It must exit 0 before the critique scores; on the first film it found the same
   dead seconds as the audit (6, 8, 17, 18, 22, 23) and −19 LUFS.
+
+## 2e. 3D explainer (three.js)
+
+For an explainer the owner wants "in 3D". **Start from the template and follow the worked
+example step by step**: `scripts/new_scene3d.sh <item>` copies `templates/video3d/` (a scene
+that already plays a full 60 s story, a mascot rig with faces and gestures, a pose sheet) and
+fetches three.js; `references/examples/reels-3d-explainer.md` gives every command and
+done-check; `scripts/scene3d_video.py` builds the HyperFrames project with the voice-over.
+Change the story in `beats.js`, the props in `scene.js`. The rules behind the template, learned
+on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
+
+**Story and layout**
+- **Anchor**: one set, and one thing the viewer already knows (for a chat product, the chat)
+  on screen from the moment it opens. Each step arrives as an event in the anchor (a new
+  message), the mascot uses one literal prop (a binder of notes, a courier box, a payment
+  terminal), and the result card flies into the anchor and becomes the answer. In a chat, the
+  brand's side (typing, replies) sits on the right.
+- **Pace**: one idea per 12–15 s, with an everyday case (an exchange within 7 days) over a
+  clever one. Jargon (RAG) goes to the caption; a term the audience uses may label a prop when
+  the owner wants it ("API" over "tool"). An island of buildings that turned per stop, with 12
+  headlines in 60 s, passed every measured check and lost a lay viewer: show the animatic to
+  one person who has not seen the brief before rendering.
+- **Text stays HTML** over the canvas, ≥34 px, with a band in the ground colour behind the
+  headline; labels pinned to 3D points are projected after `camera.updateMatrixWorld()`.
+- **Proof props are real-looking artefacts in HTML** (a QRIS card, a receipt a stamp lands on),
+  numbers that add up across beats, IDs as placeholders; a blank QR board in 3D read as fake.
+- **The end card carries the brand's logo lockup**, above y 1330, and only fades in.
+
+**Mascot**
+- **Look**: match the mascot's own render. A soft, toy-like mascot wants smooth shading (enough
+  segments, capsules, rounded boxes) and a perspective camera at ~30°; flat low-poly suits a
+  geometric brand. A warm key with soft shadows and a fill from the camera side, so the mascot
+  never turns into a silhouette in a night scene.
+- **On-model**: build it from every render of the mascot the brand publishes, side by side with
+  the pose sheet (`mascot-test.html`); the brand's details (face panel, tails, thumbs, boots) only
+  show across poses; a brand with no mascot renders gets the owner's yes on the pose sheet
+  before any story still. A symmetric silhouette; a bubble tail at the side pointing outward, where a
+  tail under the body read as a single leg. The face is drawn on a patch that follows the body,
+  puffed toward its middle.
+- **Acting**: a face from weights (blink, look, surprise, joy, open mouth, frown, "o"), arm
+  gestures with an elbow (point, thumbs-up, think, wave, reach), the props of the brand's own
+  poses ("?" bubble, check badges). A mascot that only stood and hopped read as "not detailed,
+  not expressive".
+- **Motion**: every pose value is a 0..1 weight eased in and out; walk swings the legs on
+  `sin(phase)` with a bob on `1 - cos(2·phase)`. Check each move with stills every 0.1 s;
+  `abs(sin)` hops and on/off waves read as choppy.
+
+**Camera and checks**
+- **Reactions get a push-in**: in the working shot the mascot is ~100 px tall on a phone, so
+  ease in on it for 1.5–2 s at each reaction, and give each tool its own framing (one fixed
+  framing for 37 s scored 7/10 for variety). Between shots, a slow drift; end a move after a
+  hold begins, since a move that ends exactly at a hold reads as frozen.
+- **Props that open**: check the hinge in 3–4 stills; a cover lifts, then falls to the hinge side.
+- **Stills from the scene**: `render(t)` is pure (`?t=12.5` renders one still), so storyboard
+  stills come from the real look (`scripts/scene_stills.sh`, at most ~12 at once). Headless
+  Chrome needs SwiftShader and an HTTP server (the script and template handle both).
+- **Live preview for the owner**: publish the page with the scene files and three.js; scope the
+  scene's CSS under `#stage` so its `html, body` rules leave the page alone.
 
 ## 3. Acting rules
 
@@ -204,13 +271,27 @@ shorts, Oct 2026; ideas paraphrased, no text or code copied).
   `missing_permissions` means the owner must tick it in the ElevenLabs key settings.
   Without `voices_read`, use a premade voice id directly.
 - Model `eleven_multilingual_v2`; pass `previous_text` and `next_text` so the clips
-  sound like one take. Pick the voice with the owner and record it in `content/setup.md`.
-  Premade voices that read Indonesian well: Jessica `cgSgspJ2msm6clMCkdW9` (young female,
-  conversational), Laura `FGY2WhTYpPnrIDTdsKH5`, Matilda `XrExE9yKIg1WjnnlVkGX`.
-- Write the VO for the ear, in the brand's language: numbers in words, acronyms and
+  sound like one take. When the script mixes in English acronyms (AI, API), use
+  `--model eleven_v3`: in Indonesian sentences v2 read "API" as the word "api" and v3 was the
+  only model of five that said both with English letter names. Check every acronym with
+  `scripts/vo_acronym_check.py <clip> <words.json> AI API` (it measures the first vowel; a
+  transcript cannot hear an accent). v3 varies per take and sometimes garbles a word ("catatan
+  toko" came out as "chat token toko"; a brand name written as one word came out as nonsense):
+  transcribe every clip, regenerate only the bad one with `--only N`, and write a name the way
+  it is said if it keeps breaking (two words instead of one). Pick the voice with the owner from 2–3 samples of the same line,
+  transcribed back (`--verify`) to catch extra sounds, and record it in `content/setup.md`.
+  Prefer native speakers of the brand's language from the shared library
+  (`GET /v1/shared-voices?language=id&gender=...`, usable by id in text-to-speech) over
+  English premades: a premade female voice reading Indonesian was rejected as sounding bad
+  (owner, 11 Nov 2026). Premades that read Indonesian: Jessica `cgSgspJ2msm6clMCkdW9`,
+  Laura `FGY2WhTYpPnrIDTdsKH5`, Matilda `XrExE9yKIg1WjnnlVkGX`.
+- Write the VO for the ear, in the brand's language: numbers in words, local acronyms and
   domains as people say them (Indonesian: "11.11" → "sebelas-sebelas", "QRIS" → "kris",
-  "AI" → "ei-ai", ".id" → "titik i-d"). The multilingual model reads unknown acronyms in
-  English; the transcript check caught "QRIS" heard as "queries".
+  ".id" → "titik i-d"). Leave English words and acronyms in English (AI, API, payment
+  gateway): a native Indonesian voice read the respelling "ei-ai" letter by letter as
+  "e i a y", while plain "AI" came out as the owner wanted (Nov 2026). The multilingual
+  model reads unknown local acronyms in English; the transcript check caught "QRIS" heard
+  as "queries". The transcript cannot hear an accent: the owner's ear is the last check.
 - Put each clip on the timeline as its own `<audio>` with its measured duration; a film
   over 15 s with no sound fails HyperFrames' review, and Instagram music can be added at
   low volume by the owner.

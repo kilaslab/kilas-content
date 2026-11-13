@@ -28,6 +28,12 @@ table below.
 
 At most every other Reel is a Demo or a story whose turn is the product.
 
+An explainer of the brand's own product reads best wrapped in a scene the viewer has lived:
+a 60 s film on how a shop's chat agent works opened on a POV of a buyer typing to the shop's WhatsApp at
+23.47 while the owner sleeps, then showed the agent reading it (blue ticks, "typing…"),
+looking things up, and the paid order waiting in the morning (owner's direction, 10 Nov
+2026). The mechanism rides on the scene; check every UI detail it shows against the code.
+
 ## 1. Length and shape
 
 Aim for 30 seconds for a one-idea story (a contrast, a demo, a joke); go to 60 only when
@@ -74,7 +80,13 @@ Write `storyboard.md` in the item folder:
 
 For a motion film, the storyboard is the animatic itself: one still per second for the
 first 10 s, then one per 5 s, each with the action (per side in a split screen), the
-on-screen line, and the VO slice, plus the full VO script as a table. **Render only after
+on-screen line, and the VO slice, plus the full VO script as a table. A 60 s explainer
+for a lay audience is a hook, a setup, three ideas of 12–15 s each, a payoff, and the CTA:
+write `copy.md` as one section per part, take stills at the moments that explain
+something, and keep one anchor on screen throughout (`motion-video.md` 2e). Twelve 5 s
+beats, each with a new place and headline, measured well and still lost a lay viewer
+(Nov 2026). Stills come from the scene itself, not from sketches, whenever
+the scene renders a given time (`scripts/scene_stills.sh`). **Render only after
 the owner approves it**; a change after the render costs a rebuild.
 
 In `copy.md`, every beat has `onscreen:` and `vo:`; `lint_copy.py` counts the VO words and

@@ -42,7 +42,9 @@ stat1label: dibanding rekor sebelumnya, Linux 7.3
 - `key: value` lines are text the audience sees. Use any keys the format needs
   (`headline`, `body`, `post`, `vo` for voice-over, `onscreen`).
 - `>` lines are source notes for you, never published. Every number, name, and quote
-  gets one; derived numbers show the arithmetic.
+  gets one; derived numbers show the arithmetic. Recompute each derived number from the raw
+  data and check each date against its source before it reaches a slide or a preview: a
+  "2×" that was 1.3× and a sale called over a day early both reached a draft (Nov 2026).
 - `chart:`, `sources:`, `photos:`, `credit:`, `note:`, `image:`, `shot:` are builder
   notes; the lint skips them.
 - A `## Caption` section holds the caption so the lint checks it too.

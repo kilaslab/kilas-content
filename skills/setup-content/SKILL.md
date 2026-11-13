@@ -153,7 +153,9 @@ reports it missing until the first `lessons.py add`) and write
 `content/setup.md` from `<skill>/templates/setup.md`: brand, pack location, renderer and
 its details, language, the image generator and whether paid APIs are allowed, assets and
 the permission given (date, which sources, signed-in or not), tools found, and what is
-still `(proposed)`.
+still `(proposed)`. Add the lessons block from `<skill>/templates/agents-lessons.md` to the
+project's `AGENTS.md` (create it if missing, keep what is there), so every agent that opens
+the project reads the lessons first and audits them before calling work done.
 
 ## 6. Show the owner, once
 

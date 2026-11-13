@@ -27,16 +27,45 @@ it. The record is `content/lessons.md`, kept with `scripts/lessons.py`.
    - a method that holds for any brand → the skill's own reference or script, so other
      brands inherit it;
    - the agent's own working habit → the agent's memory and `AGENTS.md`.
-5. **Retire** a lesson the owner reverses: `Status: retired` plus one line why. Keep it;
-   the history explains later choices.
+5. **Supersede or retire.** A newer lesson that replaces part of an older one:
+   `Status: active; partly superseded by L-NNN (what changed)` on the old one, which still
+   binds for the rest. One that replaces all of it: `Status: superseded by L-NNN (why)`. A
+   lesson the owner reverses: `Status: retired` plus one line why. Keep them all; the
+   history explains later choices. Then sweep: search the skill and the brand pack for the
+   old rule's words and change every place that still says it ("AI → ei-ai" outlived the
+   rule that replaced it in an example and in a script message, Nov 2026).
+6. **Audit** before calling the work done: `python3 <skill>/scripts/lessons.py audit content`
+   exits 0. It fails when an active lesson names no home outside its item, when a file it
+   names is gone, or when a status points at a lesson that does not exist. Twenty-six rules
+   once sat in `lessons.md` naming only the piece or plan they came from, so no other brand
+   and no later piece would have read them; this check exists for that.
+
+## When the skill itself is wrong (self-heal)
+
+The signs: a script fails on a valid input (`scene_stills.sh` wrote nothing when given an
+absolute output prefix), a reference contradicts a newer lesson, a pointer leads to a file that
+is not there, a check passes what the owner then catches, a small model following the
+steps gets stuck. Then, before the piece goes on:
+
+1. Fix it where the skill comes from. If the project holds a copy of a skill kept in its
+   own repository, fix it there on a branch and copy the change back into the project, so
+   the next install does not bring the bug back.
+2. Make it catchable: a script's own input check, a `lint_copy.py` pattern, a `Check:` on
+   the lesson, or a done-check in the worked example.
+3. Run `python3 <skill>/scripts/skill_check.py`: front matter, every pointer, every script
+   listed and parsing. Exit 0.
+4. Record a lesson (`--source mistake --area tools`) whose `Applied:` names the fix.
 
 ## In the monthly review
 
 Count lessons by area. An area that keeps growing is a weak spot in the method: fix the
 reference or script behind it rather than adding more rules. Merge lessons that say the
-same thing into one.
+same thing into one. Run `lessons.py audit content` and `skill_check.py`; fix what fails.
+Give one worked example to a smaller model and note where it stalls: each stall is a
+missing step, a vague done-check, or a template that hides a rule.
 
 ## Done when
 
 The lesson is in `content/lessons.md`, its rule is in its home (or `Applied: lessons.md
-only` with a reason), and the piece in progress already follows it.
+only: <reason>`), `lessons.py audit content` exits 0, and the piece in progress already
+follows it. After a fix to the skill, `skill_check.py` exits 0 as well.

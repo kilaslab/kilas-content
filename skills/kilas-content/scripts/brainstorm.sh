@@ -132,8 +132,11 @@ case "$cmd" in
     [ -n "$partner" ] && command -v "$partner" >/dev/null 2>&1 || { echo "approved partner not installed: $names" >&2; exit 3; }
     dir="$(cd "$(dirname "$brief")" && pwd)"
     base="$(basename "$brief" .md)"
-    n="${base##*round}"; [ "$n" = "$base" ] && n=1
-    out="$dir/round$n.md"; log="$dir/round$n.log"
+    # brief-roundN.md -> roundN.md; any other brief -> <brief>-<partner>.md, so a second
+    # partner or an ad-hoc brief never overwrites an earlier round's answer
+    n="${base##*round}"
+    if [ "$n" != "$base" ] && [ -n "$n" ] && [ "${n//[0-9]/}" = "" ]; then stem="$dir/round$n"; else stem="$dir/$base-$partner"; fi
+    out="$stem.md"; log="$stem.log"
     prompt="$(cat "$brief")"
     t="${PARTNER_TIMEOUT:-600}"
     set +e
@@ -141,23 +144,28 @@ case "$cmd" in
       codex)
         [ -z "$model" ] && model="$(codex_model)"
         margs=(); [ -n "$model" ] && margs=(-m "$model")
-        with_timeout "$t" codex exec "${margs[@]}" -s read-only --skip-git-repo-check --ephemeral -C "$dir" \
+        with_timeout "$t" codex exec ${margs[@]+"${margs[@]}"} -s read-only --skip-git-repo-check --ephemeral -C "$dir" \
           -o "$out" - < "$brief" > "$log" 2>&1 ;;
       agy)
         margs=(); [ -n "$model" ] && margs=(--model "$model")
-        with_timeout "$t" agy -p "$prompt" --mode plan --add-dir "$dir" "${margs[@]}" > "$out" 2> "$log" ;;
+        with_timeout "$t" agy -p "$prompt" --mode plan --add-dir "$dir" ${margs[@]+"${margs[@]}"} > "$out" 2> "$log"
+        arc=$?
+        # plan mode often answers in its own plan file and prints only a pointer: pull it in
+        plan="$(grep -o 'file://[^)]*implementation_plan\.md' "$out" | head -1 | sed 's|^file://||')"
+        [ -n "$plan" ] && [ -f "$plan" ] && { printf '\n\n' >> "$out"; cat "$plan" >> "$out"; }
+        (exit $arc) ;;
       cursor-agent)
         margs=(); [ -n "$model" ] && margs=(--model "$model")
-        (cd "$dir" && with_timeout "$t" cursor-agent -p --mode ask --output-format text "${margs[@]}" "$prompt") > "$out" 2> "$log" ;;
+        (cd "$dir" && with_timeout "$t" cursor-agent -p --mode ask --output-format text ${margs[@]+"${margs[@]}"} "$prompt") > "$out" 2> "$log" ;;
       opencode)
         margs=(); [ -n "$model" ] && margs=(-m "$model")
-        (cd "$dir" && with_timeout "$t" opencode run --agent plan "${margs[@]}" "$prompt") > "$out" 2> "$log" ;;
+        (cd "$dir" && with_timeout "$t" opencode run --agent plan ${margs[@]+"${margs[@]}"} "$prompt") > "$out" 2> "$log" ;;
       claude)
         margs=(); [ -n "$model" ] && margs=(--model "$model")
-        (cd "$dir" && with_timeout "$t" claude -p --permission-mode plan "${margs[@]}" "$prompt") > "$out" 2> "$log" ;;
+        (cd "$dir" && with_timeout "$t" claude -p --permission-mode plan ${margs[@]+"${margs[@]}"} "$prompt") > "$out" 2> "$log" ;;
       gemini)
         margs=(); [ -n "$model" ] && margs=(-m "$model")
-        (cd "$dir" && with_timeout "$t" gemini "${margs[@]}" -p "$prompt") > "$out" 2> "$log" ;;
+        (cd "$dir" && with_timeout "$t" gemini ${margs[@]+"${margs[@]}"} -p "$prompt") > "$out" 2> "$log" ;;
       *) echo "no recipe for $partner; add one here or use a fresh subagent" >&2; exit 3 ;;
     esac
     rc=$?

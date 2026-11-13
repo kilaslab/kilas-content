@@ -78,7 +78,7 @@ reads this section and lets it override a preset.
 
 - Cast: a recurring person, if any, and the mascot
 - Voice-over: whose voice, and the ElevenLabs voice id when one is chosen
-- Look the brand always uses, if it has one (vector characters, kinetic type, isometric diorama, screen recording):
+- Look the brand always uses, if it has one (vector characters, kinetic type, polygon scene, screen recording):
 
 ## Files
 

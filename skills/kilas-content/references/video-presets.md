@@ -1,18 +1,19 @@
 # Video presets
 
-Eight cards. Pick one in `video-racikan.md`. A card sets defaults. The owner's
+Nine cards. Pick one in `video-racikan.md`. A card sets defaults. The owner's
 words and the brand pack's `design.md` "Video" section override a default.
 
-Each card names the production route. A character film and a diorama both use
-`motion-video.md` (`templates/video/`). A demo uses a screen recording. Do not
-mix a diorama and a screen recording in one film unless the owner asks for both.
+Each card names the production route. A flat character film uses `motion-video.md`
+and `templates/video/`. A polygon film uses `templates/video3d/` (section
+`poly-3d` below). A demo uses a screen recording. Do not mix a polygon scene
+and a screen recording in one film unless the owner asks for both.
 
 Hook shape is a pointer into `writing-craft.md`, not the line itself.
 
 A public shelf of code-animation prompts, for when the owner wants a look none
 of these cards cover: [awesome-opus5-5-videos](https://github.com/yihui-dev/awesome-opus5-5-videos)
 (creator-credited prompts; HTML, Canvas, SVG, GSAP, Three.js). Credit the file
-you copy. It is not a ninth preset.
+you copy. It is not one of these cards.
 
 ## short-reel
 
@@ -35,6 +36,35 @@ you copy. It is not a ninth preset.
   hold the idea; otherwise number + scene + stakes.
 - Captions: a word on the beat of the voice.
 - Route: `motion-video.md`.
+
+## story
+
+- When: a scene the viewer has lived. A contrast, a point of view, or a twist.
+  The product is a supporting role, or the turn, not the opening claim.
+- Aspect / length: 9:16, about 30 s. 45 s only when the twist needs the extra beat.
+- First 3 s: already inside the scene. No logo open, no "let me tell you".
+- Visual / edit: vector characters, fast cuts. Two people, or the same person
+  in two states.
+- Structure: before/after. Hook shape: number + scene + stakes.
+- Captions: lower third.
+- Route: `motion-video.md`, worked once in `references/examples/reels-character-story.md`.
+  At most every other Reel is a story whose turn is the product
+  (`formats/reels-tiktok.md` section 0).
+
+## poly-3d
+
+- When: the picture is a polygon world. A small world on a block (a diorama),
+  a room the camera moves through, or a mascot and props that need depth.
+- Aspect / length: 9:16, 45–60 s.
+- First 3 s: the camera already in the world, one object moving. No title card
+  before the world is visible.
+- Visual / edit: polygon scene, one continuous move per beat.
+- Structure: three acts. Hook shape: compression promise, when one frame holds
+  the idea; otherwise number + scene + stakes.
+- Captions: title card at the open, then lower third.
+- Route: `references/examples/reels-3d-explainer.md`, then
+  `scripts/new_scene3d.sh` into the item folder. The scene, the mascot rig, and
+  the pose sheet live in `templates/video3d/`.
 
 ## product-demo
 
@@ -72,17 +102,6 @@ you copy. It is not a ninth preset.
 - Captions: a word on the beat, or none when the type is the picture.
 - Route: `motion-video.md` for the picture. Voice-over is optional and sits under
   the track. Do not invent a song.
-
-## isometric-diorama
-
-- When: a system, a place, or a product explained as a small world on a block.
-- Aspect / length: 9:16, 45–60 s.
-- First 3 s: the camera already on the world, one object moving.
-- Visual / edit: isometric diorama, one continuous scene.
-- Structure: three acts. Hook shape: compression promise.
-- Captions: title card at the open, then lower third.
-- Route: `motion-video.md`. Build the world from the vector rig in
-  `templates/video/rig.js`: a block, a few objects, the cast standing on it.
 
 ## kinetic-list
 
