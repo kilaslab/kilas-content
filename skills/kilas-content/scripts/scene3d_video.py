@@ -5,8 +5,8 @@
   scene3d_video.py <item>/scene <item>/video --vo <vo dir> [--duration 60]
 
 Reads VO_STARTS from <scene>/beats.js and the clips vo0.mp3, vo1.mp3, ... from --vo (the
-"final" names in vo-manifest.json when vo_elevenlabs.py wrote one). Copies scene.js, beats.js,
-mascot.js, lib/, img/ and fonts/ into <video>, the clips into <video>/assets/, and writes
+"final" names in vo-manifest.json when vo_elevenlabs.py wrote one). Copies every top-level .js
+module (scene.js, beats.js, mascot.js, ...), lib/, img/ and fonts/ into <video>, the clips into <video>/assets/, and writes
 <video>/index.html: the stage with style.css inlined, one <audio> per clip at its start with
 its measured duration, the scene's build-ready promise, and an empty GSAP timeline that marks
 the film's length (the scene draws every frame itself from the hf-seek time). Rebuild after
@@ -69,9 +69,9 @@ def main():
         sys.exit(1)
 
     video.mkdir(parents=True, exist_ok=True)
-    for f in ("scene.js", "beats.js", "mascot.js"):
-        if (scene / f).exists():
-            shutil.copy2(scene / f, video / f)
+    # every top-level module the scene imports (scene.js, beats.js, mascot.js, mira.js, ...)
+    for f in sorted(scene.glob("*.js")):
+        shutil.copy2(f, video / f.name)
     for d in ("lib", "img", "fonts"):
         if (scene / d).is_dir():
             shutil.copytree(scene / d, video / d, dirs_exist_ok=True)
