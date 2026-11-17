@@ -559,8 +559,8 @@ function render(film) {
   // 3. the receipt rises from the terminal, then the LUNAS stamp lands on it
   const np = toScreen(WS(0.75, TOP + 1.0, 1.2));
   const ni = seg(t, T.nota, T.nota + 0.7, E.io), no = seg(t, T.notaOut, T.notaOut + 0.4);
-  show("nota", ni * (1 - no), lerp(np[0] - 150, 470, ni), lerp(np[1], 915, ni), lerp(0.3, 0.8, ni));
-  show("lunas", t > T.stamp && t < T.notaOut + 0.4 ? 1 - no : 0, 470, 1060, lerp(2.0, 1, seg(t, T.stamp, T.stamp + 0.35, E.back)));
+  show("nota", ni * (1 - no), lerp(np[0] - 150, 540, ni), lerp(np[1], 915, ni), lerp(0.3, 0.8, ni));
+  show("lunas", t > T.stamp && t < T.notaOut + 0.4 ? 1 - no : 0, 545, 1060, lerp(2.0, 1, seg(t, T.stamp, T.stamp + 0.35, E.back)));
   // labels pinned to the props
   const lab = t < T.nbOut + 0.2 ? [COPY.labels[0], WS(1.45, TOP + 1.2, 0.55), hold(t, T.nbIn + 0.3, T.faq)]
     : t < T.m3 + 0.9 ? [COPY.labels[1], WS(1.25, TOP + 1.3, 0.4), hold(t, T.kurirIn + 0.3, T.kurir)]

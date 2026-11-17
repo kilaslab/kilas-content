@@ -6,8 +6,8 @@
 #   scripts/new_scene3d.sh <item> [brand-logo.svg]
 #   scripts/new_scene3d.sh content/items/2026-11-16-explainer content/brand/assets/logos/logo.svg
 #
-# Writes <item>/scene/: index.html (dev page), scene.js, beats.js, mascot.js, style.css,
-# mascot-test.html, lib/ (three.js r178 from jsDelivr), img/logo.svg (the logo given, else the
+# Writes <item>/scene/: index.html (dev page), storyboard.html (animatic page), scene.js, beats.js,
+# mascot.js, audit.js, vo-env.js, style.css, mascot-test.html, lib/ (three.js r178 from jsDelivr), img/logo.svg (the logo given, else the
 # first SVG in content/brand/assets/logos/). Fails if <item>/scene exists.
 # Then: edit beats.js (words and times) and the props in scene.js; serve the folder and look.
 set -euo pipefail
@@ -43,6 +43,10 @@ next:
      live loop:        http://localhost:8792/index.html        (?from=10&to=25 loops a part)
      mascot poses:     SIZE=1440,900 bash $skill/scripts/scene_stills.sh "http://localhost:8792/mascot-test.html" $item/frames/pose 0.6
      story stills:     bash $skill/scripts/scene_stills.sh http://localhost:8792/index.html $item/frames/f 1.5 9.6 17 24 28 31.6 41 47 51 57.8
-  3. after the voice-over: set VO_STARTS in beats.js, then
+     text check:       python3 $skill/scripts/overlay_audit.py http://localhost:8792/index.html 2 9.6 17 21.5 31.6 40.7 46.3 51 57.8 --out $item/audit
+     animatic page:    set TITLE and STILLS in $dest/storyboard.html; (cd $item && python3 -m http.server 8793); open /scene/storyboard.html
+  3. gates:            python3 $skill/scripts/gate.py $item status
+  4. after the voice-over: set VO_STARTS (and WARP, SFX, SYNC) in beats.js, then
+     python3 $skill/scripts/gate.py $item require render
      python3 $skill/scripts/scene3d_video.py $dest $item/video --vo <vo dir>
 EOF

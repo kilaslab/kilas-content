@@ -56,11 +56,15 @@ Install: `prerequisites.md`, section "Video companions".
    (GSAP), from 0 s to the last frame, with one still every 2.5–5 s across the full length
    taken from the same timeline (`tl.seek(t)`), so the turn and the ending are seen before
    any render (an owner rejected a preview that showed only the first 10 s, Nov 2026).
+   Before the owner sees it, the text is measured on the scene itself
+   (`scripts/overlay_audit.py`, 3D scenes: size, safe zone, contrast against the real pixels).
    Budget every beat before animating: VO seconds (words ÷ 2.5) plus the reaction hold
    must fit the beat, and the on-screen line needs 0.5 s + 0.3 s a word; cut words from a
    beat that does not fit. The VO table carries a copy button: it is the dubbing brief.
    **Gate: the owner approves the beat map, the animatic, and the script.** No render
-   before that.
+   before that. Gates are recorded, not remembered: `scripts/gate.py <item> pass animatic --by
+   owner --quote "<their words>"`, and `gate.py <item> require render` must exit 0 before step
+   5 (a film once went out with its critique loop skipped and nobody noticed, Nov 2026).
 4. **Animate the rest** in the same timeline; then **voice-over** (`scripts/vo_elevenlabs.py`):
    one clip per beat, speed ×1.05 for a conversational pace (1.0 on `eleven_v3`), check any
    English acronym with `scripts/vo_acronym_check.py`, and retime the animation to the VO so
@@ -72,9 +76,8 @@ Install: `prerequisites.md`, section "Video companions".
    stream); `ffmpeg -af volumedetect` per beat window (VO present in every beat, silence
    after the last); loudness with `ffmpeg -i film.mp4 -af loudnorm=print_format=summary -f
    null -` (aim −14 LUFS integrated, true peak ≤ −1 dBTP; the first film shipped at −19 LUFS,
-   quiet next to other Reels; fix with `ffmpeg -i in.mp4 -c:v copy -af
-   loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 192k out.mp4`; one pass lands within
-   about 1 LU, and TP −1.5 keeps the peak under −1, then measure again); stills pulled
+   quiet next to other Reels; fix with `reel_qa.py in.mp4 --master out.mp4`, which also sets
+   48 kHz: a loudnorm pass by hand left a posted film at 96 kHz); stills pulled
    from the MP4; **transcribe the audio** (`vo_elevenlabs.py --verify`) and compare it
    with the script word by word; play it once on a phone speaker if a person can, since
    music added later in the app must sit well under the VO.
@@ -156,7 +159,11 @@ frames) is the rest.
   the loop seam.
 - **Sound on the picture's timeline**: the VO clips, plus short SFX on visible actions
   (a pop for each bubble, a whoosh on a move, a thump on a stamp) from `media-use` or
-  synthesised in code; with a supplied track, measure its beats first and cut on them.
+  `scripts/sfx_synth.py` (eight sounds made with ffmpeg, no key); with a supplied track,
+  measure its beats first and cut on them. In a 3D scene the cues are `SFX` in `beats.js`
+  and `scene3d_video.py` places them, ducks a `MUSIC` bed under the voice, and refuses to
+  build a film with a voice and no effects unless `--no-sfx` says the owner wants it bare.
+  A script cannot hear timbre: play the mix to the owner.
 - **One timeline, several formats**: lay scenes out against the frame size, not fixed
   pixels, when the owner wants 1:1 or 16:9 too; reframe, never crop a 9:16 render.
 
@@ -203,8 +210,14 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
   the owner wants it ("API" over "tool"). An island of buildings that turned per stop, with 12
   headlines in 60 s, passed every measured check and lost a lay viewer: show the animatic to
   one person who has not seen the brief before rendering.
-- **Text stays HTML** over the canvas, ≥34 px, with a band in the ground colour behind the
-  headline; labels pinned to 3D points are projected after `camera.updateMatrixWorld()`.
+- **Text stays HTML** over the canvas, ≥34 px (fine print such as a timestamp ≥28 px, marked
+  `data-audit="fine"`), with a band in the ground colour, solid behind both headline lines;
+  labels pinned to 3D points are projected after `camera.updateMatrixWorld()`. Result cards
+  rest above y 1330: the chat shrinks while one is up. `scripts/overlay_audit.py` measures all
+  of it against the real pixels, and a see-through card over the set fails it (a card whose
+  text a window frame crossed went out unnoticed, Nov 2026).
+- **Time**: every `T` is story time; `WARP` in `beats.js` maps film seconds to story seconds, so
+  a clip that outruns its beat is fitted by one pair there instead of by moving every event.
 - **Proof props are real-looking artefacts in HTML** (a QRIS card, a receipt a stamp lands on),
   numbers that add up across beats, IDs as placeholders; a blank QR board in 3D read as fake.
 - **The end card carries the brand's logo lockup**, above y 1330, and only fades in.
@@ -213,7 +226,11 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
 - **Look**: match the mascot's own render. A soft, toy-like mascot wants smooth shading (enough
   segments, capsules, rounded boxes) and a perspective camera at ~30°; flat low-poly suits a
   geometric brand. A warm key with soft shadows and a fill from the camera side, so the mascot
-  never turns into a silhouette in a night scene.
+  never turns into a silhouette in a night scene. The template adds a rim light from behind,
+  an environment map baked from a small lit room (soft reflections, no image file), and
+  Neutral tone mapping, which keeps the brand's hues where ACES shifts them. Supersampling
+  (`?ss=2`) is off: measured next to the renderer's antialiasing it looked the same at phone
+  size and took 2.6 times as long.
 - **On-model**: build it from every render of the mascot the brand publishes, side by side with
   the pose sheet (`mascot-test.html`); the brand's details (face panel, tails, thumbs, boots) only
   show across poses; a brand with no mascot renders gets the owner's yes on the pose sheet
@@ -235,10 +252,12 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
   hold begins, since a move that ends exactly at a hold reads as frozen.
 - **Props that open**: check the hinge in 3–4 stills; a cover lifts, then falls to the hinge side.
 - **Stills from the scene**: `render(t)` is pure (`?t=12.5` renders one still), so storyboard
-  stills come from the real look (`scripts/scene_stills.sh`, at most ~12 at once). Headless
+  stills come from the real look (`scripts/scene_stills.sh`, four at a time, a missing one
+  retaken). Headless
   Chrome needs SwiftShader and an HTTP server (the script and template handle both).
-- **Live preview for the owner**: publish the page with the scene files and three.js; scope the
-  scene's CSS under `#stage` so its `html, body` rules leave the page alone.
+- **Live preview for the owner**: `scene/storyboard.html` (player, scrubber, beat table, stills);
+  publish it with the scene files and three.js. Page styles stay scoped (`.ctl`, `.tbl`): a
+  page rule named `.bar` once restyled the chat's own header.
 
 ## 3. Acting rules
 

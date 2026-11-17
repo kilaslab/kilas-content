@@ -91,30 +91,51 @@ note lights up on "tukar ukuran", the card rises on "Ketemu", the courier card o
 the stamp on "lunas". Here: clips at 0.3, 4.5, 12.2, 25.8, 37.0, 48.8, 55.6 s; question 2 at
 25.4, question 3 at 36.6. Leave 1–2 s after each reply for reading.
 
+A clip that runs longer than its beat: leave `T` alone and add a pair to `WARP` in `beats.js`
+(film second, story second) at that beat's borders, so the film plays that stretch of story
+slower; past about 0.7x it shows, so cut words instead. Name the pictures that must land on a
+word in `SYNC` ("lunas" on the stamp), the sounds in `SFX` (a pop per bubble, a whoosh per
+flying card, a thump on the stamp; `sfx_synth.py` lists the kit), `MUSIC` when the owner
+supplies a bed, and `SPEAK` when the mascot is the one talking.
+
 Done when: `python3 <skill>/scripts/scene3d_video.py <item>/scene <item>/video --vo <item>/vo`
-prints every clip with no overlap and none past 60 s.
+prints every clip with no overlap and none past 60 s, and counts the sound effects.
 
 ## 5. Stills, motion, owner
 
 - Story stills at the moments that explain something:
   `bash <skill>/scripts/scene_stills.sh http://localhost:8792/index.html <item>/frames/f 1.5 8.9 9.6 13.2 17 20 24 27.8 31.6 34.6 41.3 47 51.2 57.8`
+- Text, measured at the same settled moments (never mid-fade):
+  `python3 <skill>/scripts/overlay_audit.py http://localhost:8792/index.html 2 9.6 17 21.5 31.6 40.7 46.3 51 57.8 --out <item>/audit`
+  Done when it exits 0: every word 34 px or more (fine print 28, marked `data-audit="fine"`),
+  inside y 168-1330, and readable against the pixels really behind it. Then
+  `python3 <skill>/scripts/gate.py <item> pass overlay --evidence <item>/audit/report.md`.
+- The animatic page: set TITLE and STILLS in `scene/storyboard.html`, serve `<item>/`, open
+  `scene/storyboard.html` at phone width, publish it for the owner.
 - Motion: stills every 0.1 s across the mascot's hop out of the phone and its first walk.
   Done when: no frame jumps and the silhouette stays two-legged.
 - Close-ups: the mascot is ~100 px tall on a phone in the working shot, so each reaction
   (surprise, thumbs-up, confused, success) gets a camera push-in (`SHOT.cuMascot` in `CAMK`).
 - Show the animatic to one person who has not seen the brief. Done when: they can retell
   "notes → courier API → QRIS until paid" in their own words, and the owner approves the
-  storyboard page (stills, script, voice samples).
+  storyboard page (stills, script, voice samples). Record both approvals in the owner's words:
+  `gate.py <item> pass animatic --by owner --quote "..."`, the same for `script`.
 
 ## 6. Render and check the file
 
 ```bash
+python3 <skill>/scripts/gate.py <item> require render      # racikan, partner, overlay, animatic, script
 python3 <skill>/scripts/scene3d_video.py <item>/scene <item>/video --vo <item>/vo
 cd <item>/video && npx hyperframes check
-npx hyperframes render -q delivery -o ../export/raw.mp4
-ffmpeg -i ../export/raw.mp4 -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:a aac -b:a 192k ../export/film.mp4
-python3 <skill>/scripts/reel_qa.py ../export/film.mp4 --hold 35.0-36.6,59.4-60
+npx hyperframes render -q delivery --video-bitrate 12M -o ../export/raw.mp4     # about 11 min for 60 s
+python3 <skill>/scripts/vo_elevenlabs.py --verify ../export/raw.mp4 <item>/copy.md --words ../export/words.json
+python3 <skill>/scripts/reel_qa.py ../export/raw.mp4 --master ../export/film.mp4 --hold 35.0-36.6,59.4-60 \
+  --sync sync.json --words ../export/words.json
 ```
+
+- `--master` writes `film.mp4` at -14 LUFS and 48 kHz and checks that file; post `film.mp4`.
+  (A loudnorm pass by hand without `-ar 48000` left a posted film at 96 kHz, Nov 2026.)
+- Try a part before the whole: `--start 10 --end 20` renders ten seconds in about two minutes.
 
 - `check` flags text in chat lines that have scrolled out of the panel (occluded, low
   contrast): they are clipped on purpose; `data-layout-allow-occlusion` on the chat items and
@@ -126,13 +147,19 @@ python3 <skill>/scripts/reel_qa.py ../export/film.mp4 --hold 35.0-36.6,59.4-60
   `vo_elevenlabs.py --verify ../export/film.mp4 <item>/copy.md --words ../export/words.json`, then
   `vo_acronym_check.py ../export/film.mp4 ../export/words.json AI API`.
 
-Done when: `reel_qa.py` exits 0, the transcript matches, the acronym check exits 0.
+Done when: `reel_qa.py` exits 0, the transcript matches, the acronym check exits 0; then
+`gate.py <item> pass reel_qa --evidence export/film_qa/report.md` and
+`gate.py <item> pass transcript --evidence <the --verify output saved to a file>`.
 
 ## 7. Critique, then post
 
 - Send every page of `phone*.png` (30 s each) to the approved partner, naming each page's
   seconds; at most four rounds (`motion-video.md` 2c). Here the last round scored brand 9,
   sync 9, lay understanding 8, mascot expression 8, and variety 7 until the push-ins went in.
+- Record the scores: `gate.py <item> pass critique --scores "hook=8,readability=9,motion=8,variety=8,composition=8,brand=9,sound=8" --by <partner>`
+  (or `--self-scored`). A score under 8 is refused: fix and score again.
+- The owner's go, per platform, in their words: `gate.py <item> pass go-instagram --by owner --quote "..."`,
+  then `gate.py <item> require post --platform instagram` and read what it prints.
 - Post on the owner's explicit go (`publishing.md`, Reels): crop Original, caption pasted with
   a trailing space so the hashtag suggestions close, AI label on (synthetic voice), automatic
   captions on, Facebook share off; open the new reel and check the caption.
