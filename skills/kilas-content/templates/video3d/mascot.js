@@ -191,7 +191,7 @@ export function makeMascot(parent, opts = {}) {
     part(new THREE.CapsuleGeometry(0.185, 0.16, 8, 16), skin, el, [0, -0.14, 0]);
     const hand = joint(el, [0, -0.32, 0]);
     part(new THREE.SphereGeometry(0.24, 24, 16), skin, hand, [0, -0.02, 0], [1.05, 1.0, 0.82]);
-    const thumb = joint(hand, [-side * 0.17, 0.0, 0.07]);
+    const thumb = joint(hand, [-side * 0.17, -0.02, 0.0]);
     part(new THREE.CapsuleGeometry(0.085, 0.16, 6, 12), skin, thumb, [0, 0.12, 0]);
     const fingers = [-0.11, 0, 0.11].map((x, i) => {
       const f = joint(hand, [x * side, -0.17, 0.02]);
@@ -258,8 +258,11 @@ function poseArm(a, t, w, swing) {
     f.rotation.x = lerp(1.1, 0, open);                 // curled fingers fold toward the palm
     f.rotation.z = a.side * (i - 1) * 0.18 * p.fingers; // open fingers spread
   });
-  // thumb: rests along the palm; for a thumbs-up it points straight up in the world
-  qa.setFromEuler(new THREE.Euler(-0.35, 0, a.side * 0.9));
+  // thumb: points the way the fingers do, across the curled fingers of a fist and spread out
+  // from the palm as the hand opens (pointing back at the wrist it read as a broken thumb in a
+  // wave); for a thumbs-up it points straight up in the world
+  const spread = clamp((p.fingers - 0.3) / 0.7);
+  qa.setFromEuler(new THREE.Euler(lerp(0.55, 0.1, spread), 0, a.side * (Math.PI - lerp(-0.45, 0.95, spread))));
   if (p.up > 0.001) {
     a.thumb.parent.updateWorldMatrix(true, false);
     a.thumb.parent.getWorldQuaternion(qw); qw.invert();

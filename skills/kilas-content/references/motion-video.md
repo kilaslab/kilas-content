@@ -232,8 +232,8 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
   (`?ss=2`) is off: measured next to the renderer's antialiasing it looked the same at phone
   size and took 2.6 times as long.
 - **On-model**: build it from every render of the mascot the brand publishes, side by side with
-  the pose sheet (`mascot-test.html`); the brand's details (face panel, tails, thumbs, boots) only
-  show across poses; a brand with no mascot renders gets the owner's yes on the pose sheet
+  the pose sheet (`mascot-test.html`, and `?view=hands` for the hands at close-shot size); the
+  brand's details (face panel, tails, thumbs, boots) only show across poses; a brand with no mascot renders gets the owner's yes on the pose sheet
   before any story still. A symmetric silhouette; a bubble tail at the side pointing outward, where a
   tail under the body read as a single leg. The face is drawn on a patch that follows the body,
   puffed toward its middle.
