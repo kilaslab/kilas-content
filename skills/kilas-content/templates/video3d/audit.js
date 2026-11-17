@@ -3,7 +3,7 @@
 // where it sits on the 1080 x 1920 frame, how tall its letters really are after every scale,
 // and its colour. Loaded only with ?audit (scene.js). Mark text that is small on purpose (a
 // timestamp inside a chat bubble) with data-audit="fine" on it or on a parent; it is then
-// measured against the fine-print floor instead of the reading size.
+// measured against the fine-print floor (28 px) instead of the reading size (34 px).
 export function audit(root) {
   const stage = root.getBoundingClientRect(), k = 1080 / stage.width;
   const out = [];

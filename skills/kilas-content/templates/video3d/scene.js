@@ -51,11 +51,11 @@ const hash = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return
 // ---------- renderer, camera, light ----------
 const canvas = document.getElementById("gl");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
-// supersampling: the canvas draws SS times the pixels and the page scales it back to 1080 wide,
-// which smooths edges that MSAA leaves stepped (thin props, the mascot's outline). 2 costs about
-// four times the fill, so the render (HyperFrames) uses 2 and the dev page and stills use 1;
-// ?ss=2 shows the render's edges on a still, ?ss=3 is for a poster frame.
-const SS = clamp(parseFloat(qs.get("ss") || (window.__sceneReady ? "2" : "1")), 1, 3);
+// supersampling, off by default: ?ss=2 draws four times the pixels and the page scales them back.
+// Measured on this scene (Nov 2026): next to the renderer's own antialiasing the edges look the
+// same at phone size, and a 60 s render went from about 11 to 29 minutes. Worth it for a poster
+// still or a scene of thin wires and grids, not for a whole film.
+const SS = clamp(parseFloat(qs.get("ss") || "1"), 1, 3);
 renderer.setPixelRatio(SS);
 renderer.setSize(W, H, false);
 renderer.shadowMap.enabled = true;
@@ -515,7 +515,7 @@ function render(film) {
   // caption line (y 1330) and the list, anchored at its bottom, keeps the newest message in view
   // (the receipt is smaller, so the paid bill above it stays in view)
   const cardUp = Math.max(hold(t, T.faq, T.r1, 0.45), hold(t, T.kurir, T.r2, 0.45), hold(t, T.press + 0.3, T.r3, 0.45));
-  els.wa.style.height = lerp(620, 460, cardUp) - 140 * hold(t, T.nota, T.notaOut + 0.4, 0.45) + "px";
+  els.wa.style.height = lerp(620, 460, cardUp) - 190 * hold(t, T.nota, T.notaOut + 0.4, 0.45) + "px";
   els.wa.style.transformOrigin = `${clamp(pp[0], 100, 980) - 70}px ${pp[1] - 440}px`;
   for (const [k, at] of WA) {
     const e = waItems[k], on = t >= at;
@@ -559,8 +559,8 @@ function render(film) {
   // 3. the receipt rises from the terminal, then the LUNAS stamp lands on it
   const np = toScreen(WS(0.75, TOP + 1.0, 1.2));
   const ni = seg(t, T.nota, T.nota + 0.7, E.io), no = seg(t, T.notaOut, T.notaOut + 0.4);
-  show("nota", ni * (1 - no), lerp(np[0] - 150, 470, ni), lerp(np[1], 965, ni), lerp(0.3, 0.7, ni));
-  show("lunas", t > T.stamp && t < T.notaOut + 0.4 ? 1 - no : 0, 470, 1085, lerp(2.0, 1, seg(t, T.stamp, T.stamp + 0.35, E.back)));
+  show("nota", ni * (1 - no), lerp(np[0] - 150, 470, ni), lerp(np[1], 915, ni), lerp(0.3, 0.8, ni));
+  show("lunas", t > T.stamp && t < T.notaOut + 0.4 ? 1 - no : 0, 470, 1060, lerp(2.0, 1, seg(t, T.stamp, T.stamp + 0.35, E.back)));
   // labels pinned to the props
   const lab = t < T.nbOut + 0.2 ? [COPY.labels[0], WS(1.45, TOP + 1.2, 0.55), hold(t, T.nbIn + 0.3, T.faq)]
     : t < T.m3 + 0.9 ? [COPY.labels[1], WS(1.25, TOP + 1.3, 0.4), hold(t, T.kurirIn + 0.3, T.kurir)]

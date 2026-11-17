@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Measure the text a 3D scene shows, before any render: size, safe zone, contrast.
 
-  overlay_audit.py <page url> [times...] [--out DIR] [--min-px 34] [--fine-px 24]
+  overlay_audit.py <page url> [times...] [--out DIR] [--min-px 34] [--fine-px 28]
                    [--safe 168,1330] [--margin 40] [--contrast 4.5] [--jobs 4]
   overlay_audit.py http://localhost:8792/index.html 1.5 9.6 17 24 31.6 41 47 51 57.8
 
@@ -13,7 +13,7 @@ scale, takes a still of the same second, and reads the real pixels behind the le
 
 Each text is checked, on the 1080 x 1920 frame:
   size      letters >= --min-px (34); text marked data-audit="fine" (a timestamp in a bubble)
-            >= --fine-px (24)
+            >= --fine-px (28, the floor HyperFrames' own check uses)
   safe      inside y --safe (168..1330, clear of the app's top bar and caption) and --margin
             px from the left and right edges; the end card and anything marked
             data-audit-skip="<reason>" are listed, not failed
@@ -70,7 +70,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("url"); p.add_argument("times", nargs="*", type=float)
     p.add_argument("--out", default="overlay_audit"); p.add_argument("--dur", type=float, default=60)
-    p.add_argument("--min-px", type=float, default=34); p.add_argument("--fine-px", type=float, default=24)
+    p.add_argument("--min-px", type=float, default=34); p.add_argument("--fine-px", type=float, default=28)
     p.add_argument("--safe", default="168,1330"); p.add_argument("--margin", type=float, default=40)
     p.add_argument("--contrast", type=float, default=4.5); p.add_argument("--jobs", type=int, default=4)
     p.add_argument("--budget", type=int, default=5000)

@@ -41,6 +41,18 @@ const warp = (x, from, to) => {
 export const storyTime = (film) => warp(film, WARP.film, WARP.story);
 export const filmTime = (story) => warp(story, WARP.story, WARP.film);
 
+// The voice-over, one line per clip, as approved: the dubbing brief (vo_elevenlabs.py reads the
+// vo: lines of copy.md; keep the two the same) and the third column of storyboard.html.
+export const VO = [
+  "Jam sebelas malam, pembeli chat. Kamu lagi tidur.",
+  "Kenalan dulu: ini asisten yang baca dan balas chat tokomu.",
+  "Pertanyaan pertama, dia jawab dari catatan tokomu sendiri.",
+  "Ongkir? Dia cek langsung ke kurir.",
+  "Mau bayar? Tagihan QRIS dibuat, dan langsung lunas.",
+  "Paginya kamu bangun, pesanan sudah lunas.",
+  "Cobain asistennya.",
+];
+
 // Headline band per part: pill, line 1, line 2 (the accent line).
 const HEADS = [
   { t0: 0, t1: 4.5, pill: "Jam 23.47 · pembeli chat", l1: "Pembeli chat,", l2: "kamu lagi tidur" },

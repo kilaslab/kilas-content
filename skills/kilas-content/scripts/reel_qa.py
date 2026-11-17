@@ -3,10 +3,16 @@
 """One-command QA for a rendered Reel: the measured half of the critique loop.
 
   reel_qa.py <film.mp4> [--out DIR] [--hold 0-1.5,29-33] [--quiet 1.5] [--lufs -14]
+             [--master OUT.mp4] [--sync sync.json --words words.json]
 
 Checks, each PASS or FAIL, and exits 1 on any FAIL:
   format    1080x1920 (or the --size given), 25-60 fps, an audio stream
   loudness  integrated LUFS within 1 LU of --lufs, true peak <= -1 dBTP
+  audio     44.1 or 48 kHz (a loudnorm pass without -ar leaves 96 or 192 kHz, which the apps
+            resample their own way)
+  sync      with --sync (written by scene3d_video.py from SYNC in beats.js) and --words (from
+            vo_elevenlabs.py --verify <film> --words): each picture lands within its tolerance
+            before its word, and no more than 0.1 s after it
   frozen    no run of >= 12 frames with almost no change, outside the --hold windows
             (an intended still: the hook frame, the end card); a hold needs a creeping push-in
   dead      no second mid-film whose motion is under --quiet (mean grey difference per frame
@@ -17,6 +23,8 @@ Writes to --out (default: <film>_qa/): contact.png (2 fps, 18 s a page; contact-
 rest), phone.png (1 fps at 360 px wide, 30 s a page; phone-2.png ...),
 motion.csv (second, motion), and report.md with the numbers. Look at both sheets after a PASS:
 the script measures, it does not judge taste.
+--master OUT.mp4 first writes the film at the target loudness (video copied, audio at 48 kHz)
+and checks that file instead: the one step between the render and the post.
 Needs ffmpeg/ffprobe and Pillow.
 """
 import argparse, csv, json, re, shutil, subprocess, sys, tempfile
@@ -48,6 +56,8 @@ def main():
     p.add_argument("--quiet", type=float, default=1.5, help="motion floor for a dead second")
     p.add_argument("--lufs", type=float, default=-14.0)
     p.add_argument("--size", default="1080x1920")
+    p.add_argument("--master", help="write the film here at the target loudness and 48 kHz, then check that file")
+    p.add_argument("--sync", help="sync.json from scene3d_video.py"); p.add_argument("--words", help="word timings of the film")
     a = p.parse_args()
     for tool in ("ffmpeg", "ffprobe"):
         if not shutil.which(tool):
@@ -57,6 +67,12 @@ def main():
     except ImportError:
         sys.exit("Pillow not found (pip install pillow)")
     film = Path(a.film)
+    if a.master:
+        r = run(["ffmpeg", "-v", "error", "-y", "-i", str(film), "-c:v", "copy", "-af", f"loudnorm=I={a.lufs:.0f}:TP=-1.5:LRA=11",
+                 "-ar", "48000", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", a.master])
+        if r.returncode or not Path(a.master).exists():
+            sys.exit(f"--master failed: {r.stderr.strip()[:300]}")
+        film = Path(a.master)
     out = Path(a.out or f"{film.with_suffix('')}_qa")
     out.mkdir(parents=True, exist_ok=True)
     holds = windows(a.hold)
@@ -66,7 +82,7 @@ def main():
         results.append((name, ok, detail))
 
     info = json.loads(run(["ffprobe", "-v", "error", "-show_entries",
-                           "stream=codec_type,width,height,r_frame_rate:format=duration",
+                           "stream=codec_type,width,height,r_frame_rate,sample_rate,bit_rate:format=duration",
                            "-of", "json", str(film)]).stdout)
     streams = info.get("streams", [])
     v = next((s for s in streams if s.get("codec_type") == "video"), {})
@@ -78,6 +94,10 @@ def main():
     check("format", size == a.size and 25 <= fps <= 60 and has_audio,
           f"{size}, {fps:.2f} fps, {dur:.2f} s, audio {'yes' if has_audio else 'NO'}")
 
+    au = next((s for s in streams if s.get("codec_type") == "audio"), {})
+    if has_audio:
+        sr = int(au.get("sample_rate") or 0)
+        check("audio", sr in (44100, 48000), f"{sr} Hz" + ("" if sr in (44100, 48000) else "; re-run with --master OUT.mp4 (it writes 48 kHz)"))
     if has_audio:
         ln = run(["ffmpeg", "-hide_banner", "-i", str(film), "-af", "loudnorm=print_format=summary", "-f", "null", "-"]).stderr
         i_m = re.search(r"Input Integrated:\s+(-?[\d.]+)", ln)
@@ -86,7 +106,7 @@ def main():
         tp = float(tp_m.group(1)) if tp_m else float("nan")
         check("loudness", abs(lufs - a.lufs) <= 1.0 and tp <= -1.0,
               f"{lufs:.1f} LUFS (target {a.lufs:.0f} ±1), true peak {tp:.1f} dBTP (≤ -1); fix: "
-              f"ffmpeg -i in.mp4 -c:v copy -af loudnorm=I={a.lufs:.0f}:TP=-1.5:LRA=11 -c:a aac -b:a 192k out.mp4")
+              f"reel_qa.py in.mp4 --master out.mp4")
 
     tmp = Path(tempfile.mkdtemp())
     # full frame rate, tiny grey frames, for frozen runs and flash frames
@@ -136,6 +156,22 @@ def main():
           + ("; add a reaction, a push-in, or cut the beat shorter" if dead else ""))
     shutil.rmtree(tmp)
 
+    if a.sync and a.words:
+        cues = json.loads(Path(a.sync).read_text()); words = json.loads(Path(a.words).read_text())
+        norm = lambda w: re.sub(r"[^\w]", "", w.lower())
+        off = []
+        for c in cues:
+            hits = [w for w in words if norm(w["word"]) == norm(c["word"])]
+            if not hits:
+                off.append(f'"{c["word"]}" not in the transcript'); continue
+            w = min(hits, key=lambda w: abs(w["start"] - c["film"]))
+            d = c["film"] - w["start"]                       # negative: the picture leads the word
+            if d < -float(c.get("tol", 0.35)) or d > 0.1:
+                off.append(f'"{c["word"]}" said at {w["start"]:.2f} s, picture at {c["film"]:.2f} s ({d:+.2f} s)')
+        check("sync", not off, f"{len(cues)} pictures on their words" if not off else "; ".join(off) + "; move the T time or VO_STARTS in beats.js")
+    elif a.sync or a.words:
+        sys.exit("--sync and --words go together")
+
     # one sheet holds 36 (contact) or 30 (phone) frames, so a longer film gets more pages:
     # contact.png, contact-2.png, ... and phone.png, phone-2.png, ... A single page cut a 60 s
     # film at 18 s and 36 s, and a partner scored the missing half as "nothing happens" (Nov 2026).
@@ -148,13 +184,18 @@ def main():
         pages = [f"{name}.png"] + sorted((q.name for q in out.glob(f"{name}-*.png")), key=lambda n: int(n.split("-")[1][:-4]))
         sheets.append(", ".join(pages))
 
+    vbr = int(v.get("bit_rate") or 0) / 1e6
+    note = (f"- note video {vbr:.1f} Mbps: the apps re-encode every upload, and a thin source loses fine gradients first; "
+            "render with --video-bitrate 12M (hyperframes render)" if 0 < vbr < 8 else "")
     lines = [f"# QA: {film.name}", ""]
     for name, ok, detail in results:
         lines.append(f"- {'PASS' if ok else 'FAIL'} {name}: {detail}")
+    if note:
+        lines.append(note)
     lines += ["", f"Sheets: {sheets[0]} (2 fps, 18 s a page); {sheets[1]} (1 fps at 360 px, 30 s a page).",
               "Send every page to the critique loop; this report covers only what can be measured.", ""]
     (out / "report.md").write_text("\n".join(lines))
-    print("\n".join(lines[2:2 + len(results)]))
+    print("\n".join(lines[2:2 + len(results) + (1 if note else 0)]))
     print(f"report: {out / 'report.md'}")
     sys.exit(0 if all(ok for _, ok, _ in results) else 1)
 
