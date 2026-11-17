@@ -7,10 +7,12 @@
 // Built for an explainer of a shop's chat assistant (references/examples/reels-3d-explainer.md);
 // keep the grammar, swap the story in beats.js and the props below.
 import * as THREE from "three";
-import { BEATS, T, COPY, MASCOT } from "./beats.js";
+import { BEATS, T, COPY, MASCOT, DUR, VO_STARTS, SPEAK, storyTime } from "./beats.js";
+import { ENV } from "./vo-env.js";
 import { makeMascot, poseMascot } from "./mascot.js";
 
-const W = 1080, H = 1920, DUR = 60;
+const W = 1080, H = 1920;
+const qs = new URLSearchParams(location.search);
 // the room and the 3D props; accent* are the brand's colours (design.md)
 const C = {
   cream: 0xFAF6EE, sand: 0xEFE3CA, navy: 0x16233A, ink: 0x111827, accent: 0x22A08F, accentDark: 0x14786B,
@@ -49,11 +51,19 @@ const hash = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return
 // ---------- renderer, camera, light ----------
 const canvas = document.getElementById("gl");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
-renderer.setPixelRatio(1);
+// supersampling: the canvas draws SS times the pixels and the page scales it back to 1080 wide,
+// which smooths edges that MSAA leaves stepped (thin props, the mascot's outline). 2 costs about
+// four times the fill; ?ss=1 for a fast look, ?ss=3 only for a poster still.
+const SS = clamp(parseFloat(qs.get("ss") || "2"), 1, 3);
+renderer.setPixelRatio(SS);
 renderer.setSize(W, H, false);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+// Neutral tone mapping rolls bright light off into white without shifting the brand's hues the
+// way ACES does (a brand teal stays the brand teal); it stops the lamp from clipping paper flat.
+renderer.toneMapping = THREE.NeutralToneMapping;
+renderer.toneMappingExposure = 1.0;
 
 const scene = new THREE.Scene();
 const cam = new THREE.PerspectiveCamera(30, W / H, 0.1, 200);
@@ -72,6 +82,27 @@ const glow = new THREE.PointLight(0xBFF5EA, 0, 6, 1.6); // the phone screen ligh
 scene.add(glow);
 const fill = new THREE.DirectionalLight(0xDDE6FF, 1.0); // from the camera side
 scene.add(fill); scene.add(fill.target);
+// a rim from behind and above, opposite the camera: it draws a light edge round the mascot and
+// the props so they come off a wall of a similar tone
+const rim = new THREE.DirectionalLight(0xCFE0FF, 1.1);
+scene.add(rim); scene.add(rim.target);
+// soft reflections with no image file: a tiny lit room (a warm panel, a cool panel, a top light)
+// baked into an environment map once. Standard materials read it as ambient light and as a
+// faint sheen; envMapIntensity per material sets how much (ENVI below).
+const ENVI = 0.55;
+{
+  const er = new THREE.Scene();
+  const eb = (w, h, d, color, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ color })); m.position.set(x, y, z); er.add(m); };
+  er.add(new THREE.Mesh(new THREE.BoxGeometry(40, 40, 40), new THREE.MeshBasicMaterial({ color: 0x2A2F3A, side: THREE.BackSide })));
+  eb(18, 0.5, 18, 0xFFFFFF, 0, 19, 0);    // top light
+  eb(0.5, 14, 14, 0xFFD9A8, -19, 2, 0);   // warm side
+  eb(0.5, 14, 14, 0xBFD4FF, 19, 4, 0);    // cool side
+  eb(14, 10, 0.5, 0xE8ECF5, 0, 2, 19);    // behind the camera
+  const pm = new THREE.PMREMGenerator(renderer);
+  scene.environment = pm.fromScene(er, 0.04).texture;
+  scene.environmentIntensity = ENVI;
+  pm.dispose();
+}
 
 // ---------- geometry helpers ----------
 const mats = {};
@@ -255,24 +286,24 @@ div("band", "band", ""); els.band.setAttribute("data-layout-allow-occlusion", ""
 div("head", "head", '<span class="pill"></span><div class="h1"><span class="l1"></span><span class="l2"></span></div>');
 // POV: the buyer types to the shop
 const ck = COPY.clock;
-div("pov", "phone", `<div class="scr"><div class="bar"><div class="av">${COPY.shopInitial}</div><div><div class="nm">${COPY.shop}</div><div class="st">${COPY.shopSub}</div></div></div>
-  <div class="clock">${ck[0]}</div><div class="msg"><span class="tx"></span><span class="meta">${ck[0]} <span class="tk">✓✓</span></span></div>
-  <div class="inp"><span class="ty"></span><span class="caret"></span></div><div class="send"></div><div class="kb">${["qwertyuiop", "asdfghjkl", "zxcvbnm"].map((r) => `<div class="kr">${[...r].map((k) => `<span>${k}</span>`).join("")}</div>`).join("")}</div></div>`);
+div("pov", "phone", `<div class="scr"><div class="bar"><div class="av" data-audit-skip="avatar initial">${COPY.shopInitial}</div><div><div class="nm">${COPY.shop}</div><div class="st" data-audit="fine">${COPY.shopSub}</div></div></div>
+  <div class="clock" data-audit="fine">${ck[0]}</div><div class="msg"><span class="tx"></span><span class="meta" data-audit="fine">${ck[0]} <span class="tk">✓✓</span></span></div>
+  <div class="inp"><span class="ty"></span><span class="caret"></span></div><div class="send"></div><div class="kb" data-audit-skip="keyboard keys, decoration">${["qwertyuiop", "asdfghjkl", "zxcvbnm"].map((r) => `<div class="kr">${[...r].map((k) => `<span>${k}</span>`).join("")}</div>`).join("")}</div></div>`);
 els.pov.querySelector(".tx").textContent = COPY.m1plain;
-div("notif", "notif", `<span class="app">${COPY.app}</span>` + COPY.notif); els.notif.dataset.anchor = "pin";
+div("notif", "notif", `<span class="app" data-audit="fine">${COPY.app}</span>` + COPY.notif); els.notif.dataset.anchor = "pin";
 div("zzz", "zzz", COPY.zzz); els.zzz.dataset.anchor = "pin";
 // the shop's chat, always on screen once the mascot opens it; replies sit on the right
 const q = COPY.qr;
-div("wa", "wa", `<div class="bar"><div class="av">${COPY.buyerInitial}</div><div><div class="nm">${COPY.buyer}</div><div class="st">online</div></div><div class="clk">${ck[0]}</div></div>
+div("wa", "wa", `<div class="bar"><div class="av" data-audit-skip="avatar initial">${COPY.buyerInitial}</div><div><div class="nm">${COPY.buyer}</div><div class="st" data-audit="fine">online</div></div><div class="clk" data-audit="fine">${ck[0]}</div></div>
   <div class="body"><div class="list" data-layout-allow-occlusion>
-    <div class="m in" data-k="m1"><span class="tx">${COPY.m1}</span><span class="meta">${ck[0]}</span></div>
-    <div class="m out" data-k="r1">${COPY.r1}<span class="meta">${ck[0]} <i class="tick">✓✓</i></span><span class="chip">${COPY.r1chip}</span></div>
-    <div class="m in" data-k="m2">${COPY.m2}<span class="meta">${ck[1]}</span></div>
-    <div class="m out" data-k="r2">${COPY.r2}<span class="meta">${ck[1]} <i class="tick">✓✓</i></span><span class="chip">${COPY.r2chip}</span></div>
-    <div class="m in" data-k="m3">${COPY.m3}<span class="meta">${ck[2]}</span></div>
-    <div class="m out qmsg" data-k="r3"><div class="qr"><div class="qh"><b>${q.head}</b><span>${q.merchant}</span></div><canvas width="37" height="37"></canvas>
-      <div class="amt">${q.amount}</div><div class="exp">${q.expires}</div><div class="paidtx">${q.paid}</div><div class="sl"></div></div>
-      <span class="meta">${ck[2]} <i class="tick">✓✓</i></span><span class="chip">${COPY.r3chip}</span></div>
+    <div class="m in" data-k="m1"><span class="tx">${COPY.m1}</span><span class="meta" data-audit="fine">${ck[0]}</span></div>
+    <div class="m out" data-k="r1">${COPY.r1}<span class="meta" data-audit="fine">${ck[0]} <i class="tick">✓✓</i></span><span class="chip">${COPY.r1chip}</span></div>
+    <div class="m in" data-k="m2">${COPY.m2}<span class="meta" data-audit="fine">${ck[1]}</span></div>
+    <div class="m out" data-k="r2">${COPY.r2}<span class="meta" data-audit="fine">${ck[1]} <i class="tick">✓✓</i></span><span class="chip">${COPY.r2chip}</span></div>
+    <div class="m in" data-k="m3">${COPY.m3}<span class="meta" data-audit="fine">${ck[2]}</span></div>
+    <div class="m out qmsg" data-k="r3"><div class="qr"><div class="qh"><b>${q.head}</b><span data-audit="fine">${q.merchant}</span></div><canvas width="37" height="37"></canvas>
+      <div class="amt">${q.amount}</div><div class="exp" data-audit="fine">${q.expires}</div><div class="paidtx">${q.paid}</div><div class="sl"></div></div>
+      <span class="meta" data-audit="fine">${ck[2]} <i class="tick">✓✓</i></span><span class="chip">${COPY.r3chip}</span></div>
     <div class="typing" data-k="typing">${COPY.typing}<span class="dots"><i></i><i></i><i></i></span></div>
   </div></div>`);
 const waItems = {}; els.wa.querySelectorAll("[data-k]").forEach((e) => { waItems[e.dataset.k] = e; e.setAttribute("data-layout-allow-occlusion", ""); });
@@ -283,7 +314,7 @@ div("lbl", "lbl", ""); els.lbl.dataset.anchor = "pin";
 const k2 = COPY.tool2, rc = COPY.receipt, rows = (list, cls = "ln") => list.map(([a, b, c]) => `<div class="${cls}"><span>${a}</span><span${c ? ` class="${c}"` : ""}>${b}</span></div>`).join("");
 div("kurir", "card kurir", `<div class="kt">${k2.title} <span class="on">${k2.status}</span></div>${k2.rows.map(([a, b]) => `<div class="row"><span>${a}</span><b>${b}</b></div>`).join("")}
   <div class="price"><span class="rp"></span></div><div class="eta">${k2.eta}</div>`);
-div("nota", "nota", `<div class="in"><div class="tt">${rc.title}</div><div class="sb">${rc.sub}</div>${rows(rc.lines)}
+div("nota", "nota", `<div class="in" data-audit="fine"><div class="tt">${rc.title}</div><div class="sb">${rc.sub}</div>${rows(rc.lines)}
   <div class="rule"></div><div class="ln tot"><span>${rc.total[0]}</span><span>${rc.total[1]}</span></div><div class="rule"></div>${rows(rc.meta)}</div><div class="zz"></div>`);
 div("lunas", "stamp", COPY.stamp); els.lunas.setAttribute("data-layout-allow-overlap", "");
 div("dash", "dash", `<div class="dt">${COPY.dash.title}</div>${COPY.dash.rows.map(([a, b, c]) => `<div class="row"><span>${a}</span><span class="ch ${c}">${b}</span></div>`).join("")}`);
@@ -316,8 +347,22 @@ const ROUTE = [[0, SPOT.phone], [T.mascotOut + 0.6, SPOT.out], [T.shh[1], SPOT.o
   [T.wake + 0.4, SPOT.wide], [DUR, SPOT.wide]];
 
 // ---------- the film ----------
-function render(t) {
-  t = clamp(t, 0, DUR);
+// how loud the voice-over is right now (0..1) for the character named in SPEAK, from the clips'
+// envelopes that scene3d_video.py writes into vo-env.js; 0 when nobody on screen is talking
+function voLevel(film, who) {
+  for (let i = VO_STARTS.length - 1; i >= 0; i--) {
+    if (film < VO_STARTS[i]) continue;
+    if (SPEAK[i] !== who || !ENV.clips[i]) return 0;
+    const f = (film - VO_STARTS[i]) * ENV.fps, a = ENV.clips[i], k = Math.floor(f);
+    if (k >= a.length - 1) return 0;
+    return lerp(a[k], a[k + 1], f - k);
+  }
+  return 0;
+}
+
+function render(film) {
+  film = clamp(film, 0, DUR);
+  const t = storyTime(film); // everything below runs on story time (beats.js WARP)
   floatT = t;
   // night -> morning
   const day = seg(t, T.morning, T.morning + 2.0, E.sine);
@@ -333,7 +378,7 @@ function render(t) {
   stageEl.classList.toggle("night", day < 0.5);
   const bandC = mixS(0x16233A, 0xFAF6EE, day);
   els.band.style.opacity = 1;
-  els.band.style.background = `linear-gradient(${bandC} 0%, ${bandC} 62%, transparent 100%)`;
+  els.band.style.background = `linear-gradient(${bandC} 0%, ${bandC} 94%, transparent 100%)`; // solid behind both headline lines
 
   // camera: eased between shots, plus a slow drift so a hold never freezes
   const c = key(t, CAMK, E.sine);
@@ -342,7 +387,10 @@ function render(t) {
   cam.position.set(lerp(c[0], c[3], dolly) + 0.22 * Math.sin(t * 0.37), lerp(c[1], c[4], dolly) + 0.12 * Math.sin(t * 0.53 + 1), lerp(c[2], c[5], dolly));
   cam.lookAt(c[3] + 0.08 * Math.sin(t * 0.29 + 0.5), c[4], c[5]);
   cam.updateMatrixWorld(true);
-  fill.position.copy(cam.position); fill.target.position.set(c[3], c[4], c[5]); fill.intensity = lerp(1.1, 0.5, day);
+  fill.position.copy(cam.position); fill.target.position.set(c[3], c[4], c[5]); fill.intensity = lerp(0.8, 0.35, day);
+  rim.position.set(c[3] - (c[0] - c[3]) * 0.6 + 4, c[4] + 9, c[5] - (c[2] - c[5]) * 0.6);
+  rim.target.position.set(c[3], c[4], c[5]); rim.intensity = lerp(1.1, 0.7, day);
+  scene.environmentIntensity = ENVI * lerp(0.55, 1, day);
 
   // the phone wakes when the chat arrives
   const lit = seg(t, T.notif - 0.1, T.notif + 0.3) * (1 - 0.6 * day);
@@ -420,7 +468,7 @@ function render(t) {
       surprise: Math.max(H(T.mascotOut, T.mascotOut + 1.0, 0.2), 0.6 * H(T.faq, T.faq + 0.8, 0.2)),
       o: Math.max(H(T.mascotOut, T.mascotOut + 0.9, 0.2), 0.8 * H(T.shh[0] + 0.2, T.shh[1])),
       joy: joyW,
-      open: Math.max(0.7 * H(T.faq + 0.2, T.fly1), joyW, 0.6 * H(T.m3, T.m3 + 1.4)),
+      open: Math.max(0.7 * H(T.faq + 0.2, T.fly1), joyW, 0.6 * H(T.m3, T.m3 + 1.4), voLevel(film, "mascot")),
       frown: Math.max(H(T.q2[0], T.q2[1]), 0.35 * H(T.think[0], T.think[1])),
     },
     question: H(T.q2[0], T.q2[1], 0.25),
@@ -462,6 +510,11 @@ function render(t) {
   // the chat: grows out of the 3D phone at 9.4 s, then stays
   const wi = seg(t, T.chatIn, T.chatIn + 0.8, E.io), wo = seg(t, T.morning - 0.3, T.morning + 0.3, E.io);
   show("wa", wi * (1 - seg(t, T.morning + 0.1, T.morning + 0.3)), null, null, lerp(0.25, 1, wi) * lerp(1, 0.12, wo));
+  // while a result card rests under the chat, the chat gives it room: every word stays above the
+  // caption line (y 1330) and the list, anchored at its bottom, keeps the newest message in view
+  // (the receipt is smaller, so the paid bill above it stays in view)
+  const cardUp = Math.max(hold(t, T.faq, T.r1, 0.45), hold(t, T.kurir, T.r2, 0.45), hold(t, T.press + 0.3, T.r3, 0.45));
+  els.wa.style.height = lerp(620, 460, cardUp) - 140 * hold(t, T.nota, T.notaOut + 0.4, 0.45) + "px";
   els.wa.style.transformOrigin = `${clamp(pp[0], 100, 980) - 70}px ${pp[1] - 440}px`;
   for (const [k, at] of WA) {
     const e = waItems[k], on = t >= at;
@@ -491,22 +544,22 @@ function render(t) {
     show(id, t < landAt ? i * (1 - seg(t, landAt - 0.2, landAt)) : 0, x, y - 60 * Math.sin(Math.PI * f), lerp(lerp(0.3, s0, i), LAND[2], f));
   };
   // 1. the FAQ page rises out of the binder; "tukar ukuran" lights up in it as in the chat
-  fly("faq", toScreen(WS(1.45, TOP + 0.4, 0.55)), T.faq, T.fly1, T.r1, [470, 1100], 0.9);
+  fly("faq", toScreen(WS(1.45, TOP + 0.4, 0.55)), T.faq, T.fly1, T.r1, [470, 1000], 0.9);
   els.faq.querySelector("mark")?.classList.toggle("on", t >= T.hlFaq);
   // 2. the courier card: price digits roll, then settle
-  fly("kurir", toScreen(WS(0.75, TOP + 1.0, 0.4)), T.kurir, T.fly2, T.r2, [500, 1095], 0.85);
+  fly("kurir", toScreen(WS(0.75, TOP + 1.0, 0.4)), T.kurir, T.fly2, T.r2, [500, 945], 0.9);
   const rk = seg(t, T.roll, T.roll + 1.4, E.out);
   const money = (n) => COPY.currency + n.toLocaleString(COPY.locale);
   const roll = Math.floor((lerp(k2.price * 0.3, k2.price, rk) + (rk < 0.95 ? hash(Math.floor(t * 20)) * k2.price * 0.6 : 0)) / 1000) * 1000;
   els.kurir.querySelector(".rp").textContent = money(rk < 1 ? roll : k2.price);
   els.kurir.querySelector(".rp").classList.toggle("set", rk >= 1);
   // 3. the QR comes out of the terminal and flies into the chat as the bill
-  fly("qrfly", toScreen(WS(1.1, TOP + 0.9, 0.4)), T.press + 0.3, T.fly3, T.r3, [560, 1120], 1);
+  fly("qrfly", toScreen(WS(1.1, TOP + 0.9, 0.4)), T.press + 0.3, T.fly3, T.r3, [560, 960], 1);
   // 3. the receipt rises from the terminal, then the LUNAS stamp lands on it
   const np = toScreen(WS(0.75, TOP + 1.0, 1.2));
   const ni = seg(t, T.nota, T.nota + 0.7, E.io), no = seg(t, T.notaOut, T.notaOut + 0.4);
-  show("nota", ni * (1 - no), lerp(np[0] - 150, 430, ni), lerp(np[1], 1110, ni), lerp(0.3, 0.84, ni));
-  show("lunas", t > T.stamp && t < T.notaOut + 0.4 ? 1 - no : 0, 420, 1450, lerp(2.0, 1, seg(t, T.stamp, T.stamp + 0.35, E.back)));
+  show("nota", ni * (1 - no), lerp(np[0] - 150, 470, ni), lerp(np[1], 965, ni), lerp(0.3, 0.7, ni));
+  show("lunas", t > T.stamp && t < T.notaOut + 0.4 ? 1 - no : 0, 470, 1085, lerp(2.0, 1, seg(t, T.stamp, T.stamp + 0.35, E.back)));
   // labels pinned to the props
   const lab = t < T.nbOut + 0.2 ? [COPY.labels[0], WS(1.45, TOP + 1.2, 0.55), hold(t, T.nbIn + 0.3, T.faq)]
     : t < T.m3 + 0.9 ? [COPY.labels[1], WS(1.25, TOP + 1.3, 0.4), hold(t, T.kurirIn + 0.3, T.kurir)]
@@ -520,7 +573,7 @@ function render(t) {
   show("sst", hold(t, T.shh[0] + 0.2, T.shh[1], 0.25), sp[0], sp[1] + 4 * Math.sin(t * 3), 1);
   // morning: the summary the owner wakes up to; the item waiting for them pulses on its word (T.nego)
   const [da, ds] = pop(t, T.dash, T.cta - 0.3, 0.45);
-  show("dash", da, 70, 1230 + 6 * Math.sin(t * 1.4), ds);
+  show("dash", da, 70, 1000 + 6 * Math.sin(t * 1.4), ds);
   els.dash.querySelector(".wait").style.transform = `scale(${1 + 0.1 * Math.max(0, Math.sin((t - T.nego) * 6)) * hold(t, T.nego, T.nego + 2.2, 0.3)})`;
   const ct = seg(t, T.cta, T.cta + 0.6, E.out);
   show("cta", ct, null, null, 1); // the logo never animates: the card only fades in
@@ -531,11 +584,12 @@ function render(t) {
 }
 
 // ---------- drive ----------
-const qs = new URLSearchParams(location.search);
 window.__render = render;
 window.__dur = DUR;
 if (qs.has("t")) {
   render(parseFloat(qs.get("t")));
+  // ?audit: measure every text on screen at this second (scripts/overlay_audit.py reads it)
+  if (qs.has("audit")) document.fonts.ready.then(() => { render(parseFloat(qs.get("t"))); return import("./audit.js"); }).then((m) => m.audit(ov));
   document.title = "ready " + qs.get("t");
 }
 // HyperFrames seek protocol
