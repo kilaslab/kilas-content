@@ -176,6 +176,10 @@ shorts, Oct 2026; ideas paraphrased, no text or code copied).
   `camera()`, `creep()` (a push-in of 0.15–0.35 % a frame on every hold), `glide()` (ease in
   and out over 18–40 frames), `kick()` (an impact shake that flips every frame and fades in
   7). A static camera made the first film's dead beats.
+- **Frame 0 already shows the problem**: the first chat is in the inbox, the first card is up.
+  A container that waits a second to fill (an empty chat panel under the headline) scored 7
+  for the hook in a self-critique (Nov 2026); start the first item before 0 s and stack the
+  rest under the first VO line.
 - **Time reactions to words**: `vo_elevenlabs.py --verify film.mp4 --words words.json` gives
   every word's start; land each reaction 0–3 frames before its word. Blink every 0.5–2.3 s
   over 4 frames, plus one on each expression swap.
