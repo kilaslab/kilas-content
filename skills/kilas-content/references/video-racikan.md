@@ -40,6 +40,7 @@ piece is a video, using the headings in `templates/brief.md`.
 | Hook shape | a shape from `writing-craft.md` section 3 or 3b; the workshop still happens |
 | Structure | before/after, three acts, or a list |
 | Captions | lower third, a word on the beat, a title card, or none |
+| Music bed | mood, two or three instruments, and a tempo ("playful ad / casual game: marimba, plucked synth, 116 BPM"), or `none` only when the owner said so; made with `music_elevenlabs.py` (`motion-video.md` 2d) |
 | Gate | the owner approves the beat map and the full-length animatic (stills every 2.5–5 s) before any render; for a film cut from real clips (`footage`, `product-demo`, `launch`, `feature`, `screen-tutorial`), a full rough cut stands in for the animatic |
 | Who chose | `owner` or `skill` on every row the owner did not name |
 
