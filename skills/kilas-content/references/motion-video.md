@@ -250,6 +250,15 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
   ease in on it for 1.5–2 s at each reaction, and give each tool its own framing (one fixed
   framing for 37 s scored 7/10 for variety). Between shots, a slow drift; end a move after a
   hold begins, since a move that ends exactly at a hold reads as frozen.
+- **Every hold creeps**: a scene that writes its own camera keeps the template's dolly, a push
+  of a few % of the distance a second along the view line (capped), plus a sideways drift. A
+  sway of 0.16 units alone failed `reel_qa.py` "frozen" on 29 spans of one film (L-074).
+- **Read the phone sheet's edges**: a mascot parked off-shot stays out of every frame of the
+  camera move to the next shot (project its outline at 3–4 points of the move, not only the
+  last framing); a card that rises from an anchor near the edge starts inside the margins;
+  an overlay backdrop that changes with a camera cut swaps on the cut frame, since a crossfade
+  shows the old shot's labels through the new title. All three passed QA in one film and
+  showed only on the sheets (L-075).
 - **Props that open**: check the hinge in 3–4 stills; a cover lifts, then falls to the hinge side.
 - **Stills from the scene**: `render(t)` is pure (`?t=12.5` renders one still), so storyboard
   stills come from the real look (`scripts/scene_stills.sh`, four at a time, a missing one
