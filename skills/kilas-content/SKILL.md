@@ -268,7 +268,7 @@ Reels:
 - [ ] A video the agent makes has a `## Racikan` table in `brief.md` before the script
       (`video-racikan.md`); every blank the skill filled says why.
 - [ ] Partner round done on the script and on-screen lines (both routes).
-- [ ] Video: the beat map of the whole film and the 10 s animatic approved before
+- [ ] Video: the beat map and the full-length animatic (stills every 2.5–5 s) approved before
       rendering; every critique score ≥8 and the measured checks passed (`motion-video.md`
       2c: scored by the approved partner, or by you marked "self-scored" when none is
       approved or installed); the MP4 passed step 6.

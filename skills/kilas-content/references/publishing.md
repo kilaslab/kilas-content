@@ -11,6 +11,7 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 3. Caption from `copy.md`; check the counter (≤2,200). End the pasted caption with a space so
    the hashtag/mention suggestions close: while they are open, the next click picks one and
    rewrites the last hashtag (a reel's "#adminolshop" became a longer suggested tag, 2026-11-11).
+   Never press Escape in the Create new post dialog: it opens "Discard post?" (pick Cancel).
 4. **Share to**: Threads and the owner's personal Facebook are on by default. Turn both off
    for this post; on the Facebook prompt choose "Don't share this post" (never change the
    owner's global setting). Threads gets its own text, posted separately.

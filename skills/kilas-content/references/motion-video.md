@@ -52,9 +52,10 @@ Install: `prerequisites.md`, section "Video companions".
    `templates/video/rig.js`. Generated images are small props at most; the actors are
    drawn so they can act.
 3. **Beat map and animatic**, published as one artifact: the whole film as a beat table
-   (time, VO, on-screen text, action, one key still per beat, sketch-level is fine) so the
-   turn and the ending are seen too, and the first 10 s fully animated, live in the
-   browser (GSAP), with one still per second taken from the same timeline (`tl.seek(t)`).
+   (time, VO, on-screen text, action) and the **whole film animated live** in the browser
+   (GSAP), from 0 s to the last frame, with one still every 2.5–5 s across the full length
+   taken from the same timeline (`tl.seek(t)`), so the turn and the ending are seen before
+   any render (an owner rejected a preview that showed only the first 10 s, Nov 2026).
    Budget every beat before animating: VO seconds (words ÷ 2.5) plus the reaction hold
    must fit the beat, and the on-screen line needs 0.5 s + 0.3 s a word; cut words from a
    beat that does not fit. The VO table carries a copy button: it is the dubbing brief.

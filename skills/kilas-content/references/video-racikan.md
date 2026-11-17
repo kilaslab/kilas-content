@@ -40,7 +40,7 @@ piece is a video, using the headings in `templates/brief.md`.
 | Hook shape | a shape from `writing-craft.md` section 3 or 3b; the workshop still happens |
 | Structure | before/after, three acts, or a list |
 | Captions | lower third, a word on the beat, a title card, or none |
-| Gate | the owner approves the beat map and the 10 s animatic before any render; for a film cut from real clips (`footage`, `product-demo`, `launch`, `feature`, `screen-tutorial`), a 10 s rough cut stands in for the animatic |
+| Gate | the owner approves the beat map and the full-length animatic (stills every 2.5–5 s) before any render; for a film cut from real clips (`footage`, `product-demo`, `launch`, `feature`, `screen-tutorial`), a full rough cut stands in for the animatic |
 | Who chose | `owner` or `skill` on every row the owner did not name |
 
 The hook row picks a shape. It does not write the hook. Five hooks, the gates,
