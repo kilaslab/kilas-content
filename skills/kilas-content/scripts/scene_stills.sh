@@ -13,7 +13,7 @@
 # Serve the scene folder first (python3 -m http.server <port>): module imports fail from
 # file://, and a port already in use serves someone else's folder, so check the page title.
 # Env: SIZE=1080,1920 (window), BUDGET=4000 (virtual ms to settle), DUR=60 (default times),
-#      TIMEOUT=60 (seconds before a hung still is stopped and reported).
+#      TIMEOUT=60 (seconds before a hung still is stopped), JOBS=4 (stills taken at once).
 set -euo pipefail
 [ $# -ge 2 ] || { sed -n '3,16p' "$0"; exit 2; }
 url="$1"; pfx="$2"; shift 2
@@ -27,19 +27,35 @@ fi
 case "$pfx" in /*) ;; *) pfx="$PWD/$pfx" ;; esac
 mkdir -p "$(dirname "$pfx")"
 sep='?'; case "$url" in *\?*) sep='&' ;; esac
-i=0; pids=""
-for t in "$@"; do
-  i=$((i+1))
+# JOBS stills at a time: twenty headless Chromes at once starve each other and some write
+# nothing (a 24-still animatic lost a third of its frames, Nov 2026). A still that is missing
+# after its batch is taken once more on its own.
+shoot() { # <index> <time>
   "$CH" --headless=new --use-angle=swiftshader --enable-unsafe-swiftshader --hide-scrollbars \
     --window-size="${SIZE:-1080,1920}" --virtual-time-budget="${BUDGET:-4000}" \
-    --screenshot="$pfx$(printf %02d $i).png" "$url${sep}t=$t" >/dev/null 2>&1 &
-  pids="$pids $!"
+    --screenshot="$pfx$(printf %02d "$1").png" "$url${sep}t=$2" >/dev/null 2>&1 &
+}
+batch() { # waits for the stills started since the last call, stopping any that hang
+  [ -n "$pids" ] || return 0
+  ( sleep "${TIMEOUT:-60}"; kill $pids 2>/dev/null ) & dog=$!
+  wait $pids 2>/dev/null || true
+  kill $dog 2>/dev/null; wait $dog 2>/dev/null || true
+  pids=""
+}
+i=0; pids=""; n=0
+for t in "$@"; do
+  i=$((i+1)); rm -f "$pfx$(printf %02d $i).png"
+  shoot $i "$t"; pids="$pids $!"; n=$((n+1))
+  [ $n -lt "${JOBS:-4}" ] || { batch; n=0; }
 done
-# a headless Chrome sometimes hangs after writing nothing (2026-11-10): stop any still after TIMEOUT s
-( sleep "${TIMEOUT:-60}"; kill $pids 2>/dev/null ) & dog=$!
-wait $pids 2>/dev/null || true
-kill $dog 2>/dev/null; wait $dog 2>/dev/null || true
-for k in $(seq 1 $i); do [ -s "$pfx$(printf %02d $k).png" ] || echo "missing still $k (timed out); run that time again" >&2; done
+batch
+k=0
+for t in "$@"; do
+  k=$((k+1))
+  [ -s "$pfx$(printf %02d $k).png" ] && continue
+  shoot $k "$t"; pids="$!"; batch
+  [ -s "$pfx$(printf %02d $k).png" ] || echo "missing still $k (t=$t) after a second try: open $url${sep}t=$t in a browser and read its console" >&2
+done
 python3 - "$pfx" <<'PY'
 import glob, sys
 from PIL import Image

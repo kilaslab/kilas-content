@@ -11,6 +11,7 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 3. Caption from `copy.md`; check the counter (≤2,200). End the pasted caption with a space so
    the hashtag/mention suggestions close: while they are open, the next click picks one and
    rewrites the last hashtag (a reel's "#adminolshop" became a longer suggested tag, 2026-11-11).
+   Never press Escape in the Create new post dialog: it opens "Discard post?" (pick Cancel).
 4. **Share to**: Threads and the owner's personal Facebook are on by default. Turn both off
    for this post; on the Facebook prompt choose "Don't share this post" (never change the
    owner's global setting). Threads gets its own text, posted separately.
@@ -21,13 +22,22 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 8. Open the profile, confirm the newest post and its caption, record the link in
    `publish.md`, set the brief status to `terbit`.
 
-## Instagram Reels from a video (tested 2026-11-10)
+## Before any post on a brand's account
+
+`python3 <skill>/scripts/gate.py <item> require post --platform <name>` exits 0 and you have
+read what it printed: the lessons of the tools and process areas (the Escape rule was on
+file and still broken once, because this page was not re-read before posting) and the Reels
+already published. A date moved forward changes the order: check that the Reel before this
+one is not the same kind, at posting time and not only in the plan.
+
+## Instagram Reels from a video (tested 2026-11-16)
 
 1. Create → Post → set the MP4 on the hidden file input → "Video posts are now shared as
    reels" → OK.
 2. Crop: choose **Original** (keeps 9:16); look at the frame before "Next".
-3. Edit: the cover defaults to frame 0 (make frame 0 the hook still); check the trim shows
-   the full length.
+3. Edit: the cover defaults to frame 0. For another cover, set a 1080×1920 JPG on the dialog's
+   image file input ("Select from computer"; the input is in the DOM, no file chooser needed)
+   and look at the preview; check the trim shows the full length.
 4. Caption from `publish.md`, pasted with a trailing space (see feed step 3); read the field
    back, and again right before Share. Share to Facebook off, schedule off.
 5. Accessibility: Reels on the web has no alt-text field, only auto-generated captions; turn
@@ -40,7 +50,8 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
 
 ## Threads web
 
-New thread → first post → "Add to thread" for each reply → media icon on the post that
+New thread → topic ("Community or topic": type it, pick the suggestion; replies inherit it) →
+first post → "Add to thread" for each reply → media icon on the post that
 carries `media: slides` (or the video: set it on that post's own file input, the second one
 in a two-post thread) → read back every post's text and the media count → Post → open the
 profile and record the link.
@@ -48,8 +59,11 @@ profile and record the link.
 - A link in the text (a source such as `tencent.com`) turns into a preview card that takes
   the media button's place, one card per link. Close each card (× on the card) before
   attaching the slides, then count the attached images.
-- ego-browser selectors are CSS plus `:has-text()`; `:text("Add to thread")` is rejected.
-  Mark the leaf element whose text is "Add to thread" with a `data-*` attribute in
-  `page.evaluate()` and click that; mark the newest `[contenteditable=true]` the same way.
-- Instagram's file input is hidden: wait for the file chooser and click "Select from
-  computer" (in ego-browser `page.waitForFileChooser()` then `chooser.setFiles(paths)`).
+- ego-browser (2.2, Nov 2026): `text="Add to thread"` (quoted, exact) clicks it, and
+  `loc=role:button[name="Next"]` a dialog button; chains such as `div[role=dialog] >> text=...`
+  are rejected (`>> nth=N` is the only chain). Focus the newest `[contenteditable=true]` in
+  `page.evaluate()` and paste with `keyboard.paste()`, which keeps line breaks.
+- Threads on the web has no AI label and no alt text for video; "Post options" holds who can
+  reply and cross-posting (leave it off).
+- Instagram's file input: `page.setInputFiles("input[type=file]", [path])` works on the hidden
+  input; fall back to `page.waitForFileChooser()` and "Select from computer" if it does not.

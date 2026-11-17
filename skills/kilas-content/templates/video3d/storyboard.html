@@ -1,0 +1,98 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- The animatic page the owner approves before any render (references/motion-video.md step 3):
+     the whole film playing live from the real scene, a scrubber, the beat table, and stills
+     across the full length. Set TITLE and STILLS below; the beats come from beats.js.
+     Stills: scripts/scene_stills.sh http://localhost:8792/index.html <item>/frames/s <times...>
+     Serve <item>/ (not scene/) so ../frames resolves: (cd <item> && python3 -m http.server 8792),
+     then open http://localhost:8792/scene/storyboard.html. -->
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animatic</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@700&family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  :root { --bg: #F7F4EE; --ink: #16181D; --mute: #5B6170; --line: #E3DDD0; --card: #FFFFFF; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #14161B; --ink: #F1EFEA; --mute: #A3A9B6; --line: #2B2F38; --card: #1C1F26; } }
+  html, body { margin: 0; padding: 0; background: var(--bg) !important; color: var(--ink); font: 16px/1.5 Inter, system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 20px 16px 60px; }
+  main > h1 { font: 800 22px/1.25 Inter, sans-serif; margin: 0 0 4px; } main > h2 { font: 800 16px Inter, sans-serif; margin: 28px 0 10px; }
+  .sub { color: var(--mute); margin: 0 0 16px; }
+  /* the 1080 x 1920 stage, scaled to the page; everything inside keeps its own pixels */
+  .fit { --w: min(100%, 340px); width: var(--w); aspect-ratio: 9 / 16; margin: 0 auto; position: relative; overflow: hidden; border-radius: 14px; background: #000; }
+  .fit #stage { transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+  .ctl { display: flex; gap: 10px; align-items: center; max-width: 340px; margin: 10px auto 0; }
+  .ctl button { font: 700 14px Inter, sans-serif; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+  .ctl input { flex: 1; min-width: 0; } .ctl output { font: 600 13px "JetBrains Mono", monospace; color: var(--mute); width: 52px; text-align: right; }
+  .tbl { overflow-x: auto; } .tbl table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .tbl th, .tbl td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); } .tbl th { color: var(--mute); font-weight: 700; white-space: nowrap; }
+  .tbl td:first-child { white-space: nowrap; font: 600 13px "JetBrains Mono", monospace; color: var(--mute); }
+  tr.on td { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+  .stills { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+  .stills figure { margin: 0; } .stills img { width: 100%; display: block; border-radius: 8px; background: var(--line); aspect-ratio: 9 / 16; }
+  .stills figcaption { font: 600 12px "JetBrains Mono", monospace; color: var(--mute); margin-top: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="sub" id="sub"></p>
+  <div class="fit" id="fit"><div id="stage"><canvas id="gl" width="1080" height="1920"></canvas><div id="ov"></div></div></div>
+  <div class="ctl"><button id="play" type="button">Jeda</button><input id="scrub" type="range" min="0" step="0.05" value="0" aria-label="Waktu"><output id="clock">0.0 s</output></div>
+  <h2>Beat</h2>
+  <div class="tbl"><table><thead><tr><th>Waktu</th><th>Di layar</th><th>Voice-over</th></tr></thead><tbody id="beats"></tbody></table></div>
+  <h2>Still sepanjang film</h2>
+  <div class="stills" id="stills"></div>
+</main>
+<script type="importmap">{ "imports": { "three": "./lib/three.module.js" } }</script>
+<script type="module" src="scene.js"></script>
+<script type="module">
+  import * as B from "./beats.js";
+  // ---- set these two for the item ----
+  const TITLE = "Animatic";                                   // the film's working title
+  const STILLS = { prefix: "../frames/s", times: [] };        // the times given to scene_stills.sh, in order
+  // -------------------------------------
+  const DUR = B.DUR || 60, film = B.filmTime || ((x) => x), VO = B.VO || [];
+  document.title = TITLE; document.getElementById("title").textContent = TITLE;
+  document.getElementById("sub").textContent = `${DUR} detik · 9:16 · adegan asli, belum dirender. Geser untuk melihat detik mana pun.`;
+  const fit = document.getElementById("fit"), stage = document.getElementById("stage");
+  const size = () => { stage.style.transform = `scale(${fit.clientWidth / 1080})`; };
+  size(); addEventListener("resize", size);
+  const heads = B.BEATS.heads, rows = document.getElementById("beats");
+  heads.forEach((h, i) => {
+    const tr = document.createElement("tr"), a = film(h.t0), b = film(h.t1);
+    for (const text of [`${a.toFixed(1)}–${b.toFixed(1)} s`, [h.pill, h.l1, h.l2].filter(Boolean).join(" · ") || "(kartu penutup)", VO[i] || ""]) {
+      const td = document.createElement("td"); td.textContent = text; tr.appendChild(td);
+    }
+    tr.addEventListener("click", () => seek(a + 0.05)); rows.appendChild(tr);
+  });
+  const grid = document.getElementById("stills");
+  STILLS.times.forEach((t, i) => {
+    const f = document.createElement("figure"), im = document.createElement("img"), c = document.createElement("figcaption");
+    im.src = `${STILLS.prefix}${String(i + 1).padStart(2, "0")}.png`; im.alt = `Still detik ${t}`; im.loading = "lazy"; c.textContent = `${t} s`;
+    f.append(im, c); f.addEventListener("click", () => seek(t)); grid.appendChild(f);
+  });
+  if (!STILLS.times.length) grid.textContent = "Belum ada still: jalankan scene_stills.sh lalu isi STILLS.times.";
+  const scrub = document.getElementById("scrub"), clock = document.getElementById("clock"), play = document.getElementById("play");
+  scrub.max = DUR;
+  let t = 0, playing = true, last = performance.now();
+  const draw = () => {
+    window.__render(t); scrub.value = t; clock.textContent = t.toFixed(1) + " s";
+    const s = (B.storyTime || ((x) => x))(t);
+    [...rows.children].forEach((tr, i) => tr.classList.toggle("on", s >= heads[i].t0 && s < heads[i].t1));
+  };
+  const seek = (v) => { t = Math.max(0, Math.min(DUR, v)); playing = false; play.textContent = "Putar"; draw(); };
+  scrub.addEventListener("input", () => seek(parseFloat(scrub.value)));
+  play.addEventListener("click", () => { playing = !playing; play.textContent = playing ? "Jeda" : "Putar"; last = performance.now(); });
+  const tick = (now) => {
+    // a slow machine drops frames rather than slowing the film: at most a quarter second a step
+    if (playing) { t = (t + Math.min(0.25, (now - last) / 1000)) % DUR; draw(); }
+    last = now; requestAnimationFrame(tick);
+  };
+  const wait = () => (window.__render ? (draw(), requestAnimationFrame(tick)) : setTimeout(wait, 50));
+  wait();
+</script>
+</body>
+</html>

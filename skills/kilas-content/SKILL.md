@@ -268,10 +268,13 @@ Reels:
 - [ ] A video the agent makes has a `## Racikan` table in `brief.md` before the script
       (`video-racikan.md`); every blank the skill filled says why.
 - [ ] Partner round done on the script and on-screen lines (both routes).
-- [ ] Video: the beat map of the whole film and the 10 s animatic approved before
+- [ ] Video: the beat map and the full-length animatic (stills every 2.5–5 s) approved before
       rendering; every critique score ≥8 and the measured checks passed (`motion-video.md`
       2c: scored by the approved partner, or by you marked "self-scored" when none is
       approved or installed); the MP4 passed step 6.
+- [ ] Video gates are on record, not remembered: `scripts/gate.py <item> require render` exits
+      0 before the render and `require post --platform <name>` before each post (it prints
+      the tools lessons and the Reels already published; read them, then `publishing.md`).
 
 Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 
@@ -301,7 +304,7 @@ Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
 | `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log, the project's `AGENTS.md` lessons block (`agents-lessons.md`); `html/` (slide kit and example); `preview/` (owner preview) |
-| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `vo_acronym_check.py`, `reel_qa.py`, `new_scene3d.sh`, `scene3d_video.py`, `scene_stills.sh`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `skill_check.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh`, `install-companions.sh` |
+| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `vo_acronym_check.py`, `reel_qa.py`, `gate.py`, `overlay_audit.py`, `sfx_synth.py`, `new_scene3d.sh`, `scene3d_video.py`, `scene_stills.sh`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `skill_check.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh`, `install-companions.sh` |
 
 ## When not to use this
 

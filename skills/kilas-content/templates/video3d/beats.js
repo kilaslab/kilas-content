@@ -17,9 +17,41 @@ export const MASCOT = {
   bodyTail: true,
 };
 
-// When each voice-over clip starts (vo0.mp3, vo1.mp3, ...): scripts/scene3d_video.py reads this.
+export const DUR = 60;
+
+// When each voice-over clip starts (vo0.mp3, vo1.mp3, ...), in film seconds:
+// scripts/scene3d_video.py reads this.
 // Set them after the clips exist, from their word timings (vo_elevenlabs.py --verify --words).
 export const VO_STARTS = [0.3, 4.5, 12.2, 25.8, 37.0, 48.8, 55.6];
+
+// Film time -> story time. Every time below (HEADS, T) is story time, the clock the scene was
+// animated on. When a recorded clip runs longer or shorter than its beat, do not move every
+// T: add a pair here (film second, story second) at each beat boundary, so the stretch of film
+// between two pairs plays that stretch of story faster or slower. Keep both lists rising and
+// the same length, first pair 0/0, last pair DUR/DUR. 1:1 (no change) is the two-pair default.
+// A stretch slower than ~0.7x or faster than ~1.4x shows: cut words or re-record instead.
+export const WARP = { film: [0, DUR], story: [0, DUR] };
+const warp = (x, from, to) => {
+  if (x <= from[0]) return to[0];
+  for (let i = 1; i < from.length; i++) {
+    if (x <= from[i]) return to[i - 1] + (to[i] - to[i - 1]) * (x - from[i - 1]) / (from[i] - from[i - 1]);
+  }
+  return to[to.length - 1];
+};
+export const storyTime = (film) => warp(film, WARP.film, WARP.story);
+export const filmTime = (story) => warp(story, WARP.story, WARP.film);
+
+// The voice-over, one line per clip, as approved: the dubbing brief (vo_elevenlabs.py reads the
+// vo: lines of copy.md; keep the two the same) and the third column of storyboard.html.
+export const VO = [
+  "Jam sebelas malam, pembeli chat. Kamu lagi tidur.",
+  "Kenalan dulu: ini asisten yang baca dan balas chat tokomu.",
+  "Pertanyaan pertama, dia jawab dari catatan tokomu sendiri.",
+  "Ongkir? Dia cek langsung ke kurir.",
+  "Mau bayar? Tagihan QRIS dibuat, dan langsung lunas.",
+  "Paginya kamu bangun, pesanan sudah lunas.",
+  "Cobain asistennya.",
+];
 
 // Headline band per part: pill, line 1, line 2 (the accent line).
 const HEADS = [
@@ -87,3 +119,30 @@ export const COPY = {
   // the end card: the brand's logo lockup (img/logo.svg) only fades in, never moves
   cta: '<div class="lockup"><img src="img/logo.svg" alt=""><span>Brand</span></div><div class="big">Cobain asistennya</div><div class="sub">Asisten chat AI untuk tokomu</div><div class="btn">Coba gratis di brand.id</div>',
 };
+
+// ---------- sound and sync (read by scripts/scene3d_video.py, never by scene.js) ----------
+// Short effects on actions the viewer sees. `at` is story time (a T name keeps it tied to the
+// picture); `sfx` is a name from scripts/sfx_synth.py (pop, tick, whoosh, thump, ding, buzz,
+// rise, paper) or a file in <item>/sfx/; `gain` 0..1 sits under the voice (0.25-0.5).
+// A film with a voice-over and no effects sounds unfinished: scene3d_video.py asks for
+// --no-sfx to build one.
+export const SFX = [
+  { at: T.send, sfx: "pop", gain: 0.4 }, { at: T.notif, sfx: "buzz", gain: 0.35 },
+  { at: T.mascotOut, sfx: "rise", gain: 0.4 }, { at: T.chatIn, sfx: "whoosh", gain: 0.3 },
+  { at: T.nbOpen, sfx: "paper", gain: 0.35 }, { at: T.fly1, sfx: "whoosh", gain: 0.3 }, { at: T.r1, sfx: "pop", gain: 0.4 },
+  { at: T.m2, sfx: "pop", gain: 0.35 }, { at: T.parcel + 0.45, sfx: "thump", gain: 0.4 }, { at: T.fly2, sfx: "whoosh", gain: 0.3 }, { at: T.r2, sfx: "pop", gain: 0.4 },
+  { at: T.m3, sfx: "pop", gain: 0.35 }, { at: T.press + 0.3, sfx: "tick", gain: 0.4 }, { at: T.fly3, sfx: "whoosh", gain: 0.3 }, { at: T.r3, sfx: "pop", gain: 0.4 },
+  { at: T.paid, sfx: "ding", gain: 0.4 }, { at: T.stamp, sfx: "thump", gain: 0.5 }, { at: T.dash, sfx: "pop", gain: 0.35 },
+];
+// A music bed under the whole film, ducked under the voice: { file: "music/bed.mp3", gain: 0.5,
+// duck: 10 } (duck = dB it drops while someone speaks). null = no bed (the owner may add one in
+// the app, far under the voice).
+export const MUSIC = null;
+// Whose mouth moves with each voice-over clip, by clip index: "mascot" when the mascot is the
+// one talking, null for a narrator nobody sees. scene.js opens the mouth by the clip's loudness.
+export const SPEAK = [null, null, null, null, null, null, null];
+// Pictures that must land on a word: { word, clip, at, tol? }. `word` is how the transcript
+// spells it (lower case), `clip` the vo index it is said in, `at` the story time of the picture.
+// reel_qa.py --sync fails when the picture is more than tol (0.35 s) from the word, or after it
+// by more than 0.1 s: a stamp that lands after "lunas" reads as late.
+export const SYNC = [];
