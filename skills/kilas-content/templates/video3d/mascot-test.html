@@ -8,7 +8,7 @@
 </head>
 <body>
 <!-- Eight poses in tiles (?view=front|3q|side): check the mascot against the brand's renders
-     before it goes into the scene; ?view=hands frames the right hand of each pose close up, at
+     before it goes into the scene; ?view=hands frames the posed hand of each pose close up, at
      the size a close shot shows it. scripts/scene_stills.sh with SIZE=1440,900 takes a still. -->
 <canvas id="gl" width="1440" height="900"></canvas>
 <script type="importmap">{ "imports": { "three": "./lib/three.module.js" } }</script>
@@ -32,7 +32,7 @@ const t = +(new URLSearchParams(location.search).get("t") || 0.6);
 const view = new URLSearchParams(location.search).get("view") || "front";
 const P = [
   ["rest", {}],
-  ["wave", { armR: { wave: 1 }, face: { joy: 1, open: 0.6 } }],
+  ["wave", { armL: { wave: 1 }, face: { joy: 1, open: 0.6 } }],
   ["thumbs", { armR: { thumbs: 1 }, armL: { thumbs: 1 }, face: { open: 0.8 }, checks: 1 }],
   ["think", { armR: { think: 1 }, face: { look: [-0.7, -0.6], frown: 0.4 }, tilt: 0.5 }],
   ["confused", { face: { frown: 1, look: [0.3, -0.2] }, question: 1, tilt: -0.4 }],
@@ -46,7 +46,7 @@ P.forEach(([name, s], i) => {
   poseMascot(m, t, s);
   m.root.rotation.y = view === "side" ? Math.PI / 2.3 : view === "3q" ? 0.6 : view === "hands" ? 0.25 : 0;
   if (view === "hands") {
-    m.root.updateMatrixWorld(true); m.armR.hand.getWorldPosition(hand);
+    m.root.updateMatrixWorld(true); (s.armL && !s.armR ? m.armL : m.armR).hand.getWorldPosition(hand);
     cam.position.set(hand.x, hand.y + 0.15, hand.z + 2.4); cam.lookAt(hand);
   } else { cam.position.set(0, 3.0, 10.5); cam.lookAt(0, 1.95, 0); }
   const x = (i % COLS) * TW, y = (1 - Math.floor(i / COLS)) * TH;
