@@ -53,8 +53,9 @@ const canvas = document.getElementById("gl");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
 // supersampling: the canvas draws SS times the pixels and the page scales it back to 1080 wide,
 // which smooths edges that MSAA leaves stepped (thin props, the mascot's outline). 2 costs about
-// four times the fill; ?ss=1 for a fast look, ?ss=3 only for a poster still.
-const SS = clamp(parseFloat(qs.get("ss") || "2"), 1, 3);
+// four times the fill, so the render (HyperFrames) uses 2 and the dev page and stills use 1;
+// ?ss=2 shows the render's edges on a still, ?ss=3 is for a poster frame.
+const SS = clamp(parseFloat(qs.get("ss") || (window.__sceneReady ? "2" : "1")), 1, 3);
 renderer.setPixelRatio(SS);
 renderer.setSize(W, H, false);
 renderer.shadowMap.enabled = true;
@@ -63,7 +64,7 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 // Neutral tone mapping rolls bright light off into white without shifting the brand's hues the
 // way ACES does (a brand teal stays the brand teal); it stops the lamp from clipping paper flat.
 renderer.toneMapping = THREE.NeutralToneMapping;
-renderer.toneMappingExposure = 1.0;
+renderer.toneMappingExposure = 1.15;
 
 const scene = new THREE.Scene();
 const cam = new THREE.PerspectiveCamera(30, W / H, 0.1, 200);
@@ -244,8 +245,8 @@ const SHOT = {
   work: [[NS[0] - 0.1, TOP + 3.6, NS[2] + 18], top3(-0.1, 2.5, 0)],
   workL: [[NS[0] - 0.7, TOP + 3.4, NS[2] + 17], top3(-0.3, 2.4, 0)],
   workR: [[NS[0] + 0.5, TOP + 3.8, NS[2] + 17.5], top3(0.1, 2.5, 0)],
-  morning: [[1.6, 10.2, 20.5], [-0.3, 3.5, -3.8]],
-  morning2: [[1.2, 9.0, 16.5], [-0.3, 3.6, -3.8]],
+  morning: [[1.6, 9.0, 20.5], [-0.3, 1.7, -3.8]],   // the actors sit above the summary card
+  morning2: [[1.2, 8.0, 16.5], [-0.3, 2.2, -3.8]],
   cta: [[NS[0] - 0.6, TOP + 2.0, NS[2] + 15], top3(-0.6, 3.0, 0)],
 };
 // closer shots for the mascot's reactions and for each tool; the target sits above it so it lands
@@ -370,7 +371,7 @@ function render(film) {
   hemi.intensity = lerp(1.0, 1.25, day);
   sun.color.copy(mixC(0x9DB3E6, 0xFFE9C8, day)); sun.intensity = lerp(0.9, 2.2, day);
   sun.position.set(lerp(-6, -12, day), lerp(14, 16, day), lerp(-2, 12, day));
-  lamp.intensity = lerp(32, 0, day); shadeMat.emissiveIntensity = lerp(0.7, 0.05, day);
+  lamp.intensity = lerp(44, 0, day); shadeMat.emissiveIntensity = lerp(0.7, 0.05, day);
   wallMat.color.copy(mixC(C.wallNight, C.wallDay, day)); floorMat.color.copy(mixC(C.floorNight, C.floorDay, day));
   skyMat.color.copy(mixC(0x1B2A48, 0xCFE8F7, day)); skyMat.emissive.copy(mixC(0x1B2A48, 0xCFE8F7, day));
   moon.material.opacity = 1 - day; moon.material.transparent = true;
@@ -389,7 +390,7 @@ function render(film) {
   cam.updateMatrixWorld(true);
   fill.position.copy(cam.position); fill.target.position.set(c[3], c[4], c[5]); fill.intensity = lerp(0.8, 0.35, day);
   rim.position.set(c[3] - (c[0] - c[3]) * 0.6 + 4, c[4] + 9, c[5] - (c[2] - c[5]) * 0.6);
-  rim.target.position.set(c[3], c[4], c[5]); rim.intensity = lerp(1.1, 0.7, day);
+  rim.target.position.set(c[3], c[4], c[5]); rim.intensity = lerp(1.8, 0.9, day);
   scene.environmentIntensity = ENVI * lerp(0.55, 1, day);
 
   // the phone wakes when the chat arrives
