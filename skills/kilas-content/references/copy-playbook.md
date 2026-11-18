@@ -91,6 +91,9 @@ anything a competitor could paste unchanged onto their own post.
   reach → follow; trust → read the long piece or subscribe; conversion → the product.
 - The promise describes what this piece just did ("Kabar teknologi seperti ini, lengkap
   dengan angka dan sumbernya."). Never promise a frequency or a format you cannot keep.
+- Say it in the words a reader uses for the action ("Model AI baru keluar, kami cek
+  angkanya."), never the pillar, series, or slogan name as the promise: "Berita AI tanpa
+  jargon" read as unclear to the owner (18 Nov 2026).
 - No stacked asks ("like, comment, share, save, follow").
 - A reused CTA slide or line is fine and builds recognition; keep it current.
 
