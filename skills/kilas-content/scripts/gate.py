@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""The gates of a video item, kept in <item>/gates.json so a step cannot be skipped unseen.
+"""The gates of an item, kept in <item>/gates.json so a step cannot be skipped unseen.
 
   gate.py <item> status
   gate.py <item> pass <gate> [--by NAME] [--quote "the owner's words"] [--evidence FILE]
@@ -19,9 +19,14 @@ Gates, in order:
   critique   every critique score is 8 or more                --scores "..." --by <partner> | --self-scored
   go-<platform>  the owner said to post there, for this post  --by owner --quote "..."
 
+A video item (copy.md says `format: reels`, or the item has storyboard.md or an MP4 in export/):
 `require render` wants racikan, partner, overlay, animatic, script. `require post` wants those
-plus transcript, reel_qa, critique and go-<platform>; it then prints the lessons of the tools
-area and the Reels already published in the plan, to read before touching the account.
+plus transcript, reel_qa, critique and go-<platform>.
+A still item (carousel, single, thread, ...): `require render` has nothing to check, and
+`require post` wants partner (carousel only: the partner round before building) and
+go-<platform>.
+`require post` then prints the lessons of the tools and process areas, and for a video the
+Reels already published in the plan, to read before touching the account.
 A gate with --evidence passes only if the file exists and, for overlay and reel_qa, holds no
 FAIL line; `require` reads the file again and refuses a reel_qa report older than the newest
 MP4 in <item>/export. An owner gate needs the owner's own words in --quote. `waive` records
@@ -37,6 +42,21 @@ POST = RENDER + ["transcript", "reel_qa", "critique"]
 OWNER = {"animatic", "script"}
 MACHINE = {"overlay", "reel_qa"}
 NEEDS_EVIDENCE = {"partner", "overlay", "transcript", "reel_qa"}
+
+
+def item_format(item):
+    """The format new_item.py wrote in copy.md's header comment, else '' (unknown)."""
+    f = Path(item) / "copy.md"
+    if f.exists():
+        m = re.search(r"<!--\s*format:\s*([a-z-]+)", f.read_text(errors="replace")[:600])
+        if m:
+            return m.group(1)
+    return ""
+
+
+def is_video(item):
+    return (item_format(item) == "reels" or (Path(item) / "storyboard.md").exists()
+            or bool(glob.glob(os.path.join(item, "export", "*.mp4"))))
 
 
 def load(item):
@@ -116,7 +136,8 @@ def main():
     data = load(a.item)
 
     if a.action == "status":
-        names = ORDER + sorted(g for g in data["gates"] if g.startswith("go-"))
+        base = ORDER if is_video(a.item) else ["partner"]
+        names = base + sorted(g for g in data["gates"] if g.startswith("go-"))
         for g in names:
             st, why = state(a.item, data, g)
             print(f"{st.upper():8} {g:11} {why}")
@@ -158,7 +179,15 @@ def main():
     stage = a.gate
     if stage not in ("render", "post"):
         print("require render | require post --platform <name>", file=sys.stderr); sys.exit(2)
-    need = list(RENDER if stage == "render" else POST)
+    video = is_video(a.item)
+    if not video:
+        fmt = item_format(a.item) or "still"
+        if stage == "render":
+            print(f"ok: render ({fmt} item: the video gates do not apply)")
+            return
+        need = ["partner"] if fmt == "carousel" else []
+    else:
+        need = list(RENDER if stage == "render" else POST)
     if stage == "post":
         if not a.platform:
             print("require post needs --platform (instagram, threads, tiktok, ...): the owner's go is per platform", file=sys.stderr); sys.exit(2)
@@ -177,9 +206,10 @@ def main():
         print("\nBefore touching the account, read these (lessons, area tools and process):")
         out = subprocess.run([sys.executable, str(here / "lessons.py"), "rules", a.workspace], capture_output=True, text=True).stdout
         print("\n".join(l for l in out.splitlines() if "[tools]" in l or "[process]" in l) or "  (no lessons file, or none in these areas)")
-        reels = published_reels(a.workspace)
-        print("\nReels already published in the plan (two in a row are never both about the product):")
-        print("\n".join(f"  {d}  {t}  [{s}]" for d, t, s in reels[-3:]) or "  (none marked published in the plan)")
+        if video:
+            reels = published_reels(a.workspace)
+            print("\nReels already published in the plan (two in a row are never both about the product):")
+            print("\n".join(f"  {d}  {t}  [{s}]" for d, t, s in reels[-3:]) or "  (none marked published in the plan)")
         print("\nThen follow references/publishing.md for this platform, step by step.")
     print(f"\nok: {stage}")
 

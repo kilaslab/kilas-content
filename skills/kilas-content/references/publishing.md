@@ -30,6 +30,11 @@ file and still broken once, because this page was not re-read before posting) an
 already published. A date moved forward changes the order: check that the Reel before this
 one is not the same kind, at posting time and not only in the plan.
 
+A still item (carousel, single post, thread) needs fewer gates: for a carousel, the partner
+round (`gate.py <item> pass partner --evidence partner/round1.md`); for every still item, the
+owner's go per platform (`pass go-instagram --by owner --quote "<their words>"`), recorded only
+after the owner says to post that piece there. Approving a preview is not that go.
+
 ## Instagram Reels from a video (tested 2026-11-16)
 
 1. Create → Post → set the MP4 on the hidden file input → "Video posts are now shared as
