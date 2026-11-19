@@ -278,7 +278,9 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
 - Centre the content block (headline, panels, any clock or counter) vertically and make the panels as
   wide as the safe area allows; split-screen stories stack two panels.
 - Spend empty space on the story, not on a giant watermark.
-- Every bubble sits whole inside its panel: check the top edge in each still.
+- Every bubble sits whole inside its panel: check the top edge in each still. A tall bubble (a
+  QR, a card) is laid out compact (picture beside the text) so it never pushes its own header out,
+  and a bubble pushed under the panel's top fades out in code instead of showing cut.
 - Every word in a bubble, chip, or badge is at least 34 px on the 1080 canvas, and the
   characters fill their panel; the first film used 26 px bubbles that were close to
   unreadable at 360 px wide. The phone sheet (section 2c) decides.
