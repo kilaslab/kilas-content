@@ -16,7 +16,11 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
    for this post; on the Facebook prompt choose "Don't share this post" (never change the
    owner's global setting). Threads gets its own text, posted separately.
 5. Accessibility → alt text per slide from `publish.md`. Fill each field by clicking it, then
-   read every field back; scripted fills can land in the wrong field.
+   read every field back; scripted fills can land in the wrong field. Address the fields by
+   `input[aria-label="Alt text"] >> nth=N`, never by placeholder: a field's placeholder empties
+   once it has text, so a placeholder selector skips a field after every fill (19 Nov 2026: texts
+   2 to 6 landed in fields 3, 5, 7, 9, 11). Select all and delete before each paste, so a refill
+   replaces the text, and check each thumbnail beside its field matches the slide.
 6. AI label: only for realistic AI photos or video; a 3D mascot does not need it.
 7. Screenshot the final screen. Share (or Schedule content) only as the owner chose.
 8. Open the profile, confirm the newest post and its caption, record the link in
