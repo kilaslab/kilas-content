@@ -18,7 +18,7 @@ Sound, from beats.js (read with node, so T names and filmTime() work):
          --no-sfx says the owner wants it bare.
   MUSIC  { file, gain, duck, dips }: the bed is trimmed to the film, ducked under the voice with
          a sidechain compressor keyed by the clips at their starts, faded out, one <audio>.
-         dips: [[from, to], ...] film seconds (T names work) where the bed goes muffled and a
+         dips: [[from, to], ...] film seconds (not warped like SFX: with a WARP, write filmTime(T.x)) where the bed goes muffled and a
          little quieter, then opens again over the last 1.5 s: the beat where the story turns
          quiet, so the next one lands. Make the bed with music_elevenlabs.py. A film with VO
          and SFX but no bed read as empty ("masih kerasa sepi"), so a film without MUSIC stops
