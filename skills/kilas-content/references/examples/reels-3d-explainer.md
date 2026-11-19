@@ -103,6 +103,9 @@ prints every clip with no overlap and none past 60 s, and counts the sound effec
 
 ## 5. Stills, motion, owner
 
+- Before any still: `python3 <skill>/scripts/scene3d_publish.py <item>/scene --check-only`. A
+  syntax error in one module (a duplicate `const`) leaves every still blank with nothing in the
+  console; the check names the file and the error.
 - Story stills at the moments that explain something:
   `bash <skill>/scripts/scene_stills.sh http://localhost:8792/index.html <item>/frames/f 1.5 8.9 9.6 13.2 17 20 24 27.8 31.6 34.6 41.3 47 51.2 57.8`
 - Text, measured at the same settled moments (never mid-fade):
@@ -111,7 +114,12 @@ prints every clip with no overlap and none past 60 s, and counts the sound effec
   inside y 168-1330, and readable against the pixels really behind it. Then
   `python3 <skill>/scripts/gate.py <item> pass overlay --evidence <item>/audit/report.md`.
 - The animatic page: set TITLE and STILLS in `scene/storyboard.html`, serve `<item>/`, open
-  `scene/storyboard.html` at phone width, publish it for the owner.
+  `scene/storyboard.html` at phone width. Then
+  `python3 <skill>/scripts/scene3d_publish.py <item>/scene <scratch>/pub --frames <stills folder>`
+  and publish the Artifact with `file_path` = `scene/storyboard.html`, `root` = the scene folder,
+  and `files` = the printed `files.json`. Artifacts do not serve `.bin`, so the script embeds each
+  glTF's buffers in a copy; the page loads three.js from jsDelivr. Done when it exits 0 and the
+  published page plays with the models in place.
 - Motion: stills every 0.1 s across the mascot's hop out of the phone and its first walk.
   Done when: no frame jumps and the silhouette stays two-legged.
 - Close-ups: the mascot is ~100 px tall on a phone in the working shot, so each reaction

@@ -283,6 +283,12 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
   characters fill their panel; the first film used 26 px bubbles that were close to
   unreadable at 360 px wide. The phone sheet (section 2c) decides.
 - Text and faces inside y 168–1330; below that, panel bottoms and props only.
+- 3D shots are composed by projection, not by eye: for each shot, project the points the beat
+  needs (each actor's head and feet, the prop the beat is about) through the shot's camera and
+  check they land inside the frame and the safe zone; a 9:16 frame is narrow, so a camera that
+  looks right on a landscape monitor often cuts the actor. Read each actor's world position
+  first (a rig whose root height is not passed stands in the floor), and keep pinned bubbles
+  and cards off the faces in every still.
 
 ## 5. Voice-over (ElevenLabs)
 
