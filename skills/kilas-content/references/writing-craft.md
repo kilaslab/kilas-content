@@ -243,6 +243,13 @@ body proves. Topic labels ("Data", "Penyebab") go in the eyebrow above it.
 If a headline could sit on any slide ("Ini faktanya", "Lihat datanya"), rewrite it with
 the fact in it.
 
+**Vary the shape, give a new reason.** Headlines change shape along the carousel: a
+question, an observation, an opinion, a consequence. Two headlines on the pattern "X
+makin/lebih Y" read as one sentence repeated, and a reviewer scored such a carousel 6/10
+on storytelling (18 Nov 2026). Each slide gives a reason to swipe that the slide before
+did not: a new number, a consequence, or a new question. A slide that repeats the
+previous slide's numbers in another chart is merged or cut.
+
 **The "lalu kenapa?" test.** A headline that only reports an event makes the reader
 ask "lalu kenapa?" (so what?). Put the answer in the headline: a consequence, a cause,
 or a comparison the reader can feel.
@@ -278,6 +285,10 @@ Headlines end with a period. They are statements.
   reader who notices stops trusting every other slide. Mark the old record with a dashed
   line so the one bar that crosses it is the story.
 - **Show the arithmetic** in a `>` note in `copy.md`: `19.671 − 16.267 = 3.404`.
+- **Label where each number comes from**: the vendor's claim, an independent test, or
+  the brand's own arithmetic (a currency conversion, a ratio). When two sources give two
+  numbers for the same thing (a vendor chart $60,05, an independent board $26,54), one
+  sentence on the slide says why they differ (different test, different tasks).
 
 ## 7. Quotes and hedges
 
@@ -339,6 +350,11 @@ When you can, prove the action is possible. The AI-cost carousel put a screensho
 the benchmark's README ("please open an issue or create a fork") above its tip.
 
 ## 9. The close
+
+Lead with the one thing the reader should keep from this piece, in a sentence they could
+repeat ("Jangan cuma lihat harga token. Hitung biaya per tugasnya."), then one CTA. A
+close that only describes the account ("Model AI baru keluar, kami cek angkanya.") read
+as generic to a reviewer (18 Nov 2026).
 
 CTA = verb + handle + what they get, and the promise must describe what this carousel
 just did:
