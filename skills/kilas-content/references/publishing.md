@@ -16,7 +16,11 @@ Publishing is the owner's step. When the owner explicitly says to post a specifi
    for this post; on the Facebook prompt choose "Don't share this post" (never change the
    owner's global setting). Threads gets its own text, posted separately.
 5. Accessibility → alt text per slide from `publish.md`. Fill each field by clicking it, then
-   read every field back; scripted fills can land in the wrong field.
+   read every field back; scripted fills can land in the wrong field. Address the fields by
+   `input[aria-label="Alt text"] >> nth=N`, never by placeholder: a field's placeholder empties
+   once it has text, so a placeholder selector skips a field after every fill (19 Nov 2026: texts
+   2 to 6 landed in fields 3, 5, 7, 9, 11). Select all and delete before each paste, so a refill
+   replaces the text, and check each thumbnail beside its field matches the slide.
 6. AI label: only for realistic AI photos or video; a 3D mascot does not need it.
 7. Screenshot the final screen. Share (or Schedule content) only as the owner chose.
 8. Open the profile, confirm the newest post and its caption, record the link in
@@ -29,6 +33,11 @@ read what it printed: the lessons of the tools and process areas (the Escape rul
 file and still broken once, because this page was not re-read before posting) and the Reels
 already published. A date moved forward changes the order: check that the Reel before this
 one is not the same kind, at posting time and not only in the plan.
+
+A still item (carousel, single post, thread) needs fewer gates: for a carousel, the partner
+round (`gate.py <item> pass partner --evidence partner/round1.md`); for every still item, the
+owner's go per platform (`pass go-instagram --by owner --quote "<their words>"`), recorded only
+after the owner says to post that piece there. Approving a preview is not that go.
 
 ## Instagram Reels from a video (tested 2026-11-16)
 
