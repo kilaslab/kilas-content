@@ -12,7 +12,8 @@ Checks, each PASS or FAIL, and exits 1 on any FAIL:
             resample their own way)
   sync      with --sync (written by scene3d_video.py from SYNC in beats.js) and --words (from
             vo_elevenlabs.py --verify <film> --words): each picture lands within its tolerance
-            before its word, and no more than 0.1 s after it
+            before its word, and no more than 0.1 s after it; a cue's word may list the spellings
+            the transcriber uses, split by | ("tiga|37")
   frozen    no run of >= 12 frames with almost no change, outside the --hold windows
             (an intended still: the hook frame, the end card); a hold needs a creeping push-in
   dead      no second mid-film whose motion is under --quiet (mean grey difference per frame
@@ -23,7 +24,8 @@ Writes to --out (default: <film>_qa/): contact.png (2 fps, 18 s a page; contact-
 rest), phone.png (1 fps at 360 px wide, 30 s a page; phone-2.png ...),
 motion.csv (second, motion), and report.md with the numbers. Look at both sheets after a PASS:
 the script measures, it does not judge taste.
---master OUT.mp4 first writes the film at the target loudness (video copied, audio at 48 kHz)
+--master OUT.mp4 first writes the film at the target loudness and under -1 dBTP (loudnorm, then a
+limiter; video copied, audio at 48 kHz)
 and checks that file instead: the one step between the render and the post.
 Needs ffmpeg/ffprobe and Pillow.
 """
@@ -68,7 +70,10 @@ def main():
         sys.exit("Pillow not found (pip install pillow)")
     film = Path(a.film)
     if a.master:
-        r = run(["ffmpeg", "-v", "error", "-y", "-i", str(film), "-c:v", "copy", "-af", f"loudnorm=I={a.lufs:.0f}:TP=-1.5:LRA=11",
+        r = run(["ffmpeg", "-v", "error", "-y", "-i", str(film), "-c:v", "copy", "-af", 
+                 # one loudnorm pass can still overshoot after AAC (-0.9 dBTP on a 48 s Reel): a limiter
+                 # at -2 dBFS (latency compensated, so the voice stays in sync) keeps the true peak under -1
+                 f"loudnorm=I={a.lufs:.0f}:TP=-1.5:LRA=11,alimiter=limit=0.79:level=false:latency=true",
                  "-ar", "48000", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", a.master])
         if r.returncode or not Path(a.master).exists():
             sys.exit(f"--master failed: {r.stderr.strip()[:300]}")
@@ -161,7 +166,9 @@ def main():
         norm = lambda w: re.sub(r"[^\w]", "", w.lower())
         off = []
         for c in cues:
-            hits = [w for w in words if norm(w["word"]) == norm(c["word"])]
+            # "tiga|37": the transcriber writes a number as digits on one run and as words on the next
+            alts = {norm(x) for x in c["word"].split("|")}
+            hits = [w for w in words if norm(w["word"]) in alts]
             if not hits:
                 off.append(f'"{c["word"]}" not in the transcript'); continue
             w = min(hits, key=lambda w: abs(w["start"] - c["film"]))
