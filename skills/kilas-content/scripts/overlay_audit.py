@@ -88,6 +88,13 @@ def main():
     tmp = tempfile.mkdtemp()
     with ThreadPoolExecutor(max_workers=max(1, a.jobs)) as ex:
         got = list(ex.map(lambda t: measure(ch, a.url, t, tmp, a.budget), times))
+    # a second Chrome left unanswered is retried on its own, one at a time: on a busy machine
+    # (load ~20) four parallel Chromes hung on a different handful of seconds every run, so a
+    # whole-run retry never came back clean (Nov 2026)
+    for _ in range(2):
+        miss = [i for i, (t, items, shot) in enumerate(got) if items is None or shot is None]
+        for i in miss:
+            got[i] = measure(ch, a.url, got[i][0], tmp, a.budget)
 
     fails, notes, rows, dead = [], [], [], []
     for t, items, shot in got:
