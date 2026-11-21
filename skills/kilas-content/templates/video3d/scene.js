@@ -458,11 +458,11 @@ function render(film) {
       reach: Math.max(H(T.nbOpen - 0.3, T.flip + 1.0), H(T.press2 - 0.3, T.press2 + 0.8), H(T.press - 1.3, T.press + 0.7)),
       point: H(T.faq + 0.2, T.fly1 - 0.1),
       thumbs: Math.max(H(T.r1, T.r1 + 1.6), H(T.r2, T.r2 + 1.6), H(T.stamp, T.morning)),
-      wave: Math.max(H(T.dash, T.nego, 0.4), H(T.cta + 0.8, 60, 0.4)),
     },
     armL: {
       reach: Math.max(H(T.nbOpen - 0.3, T.flip + 1.0), H(T.press2 - 0.3, T.press2 + 0.8), H(T.press - 0.3, T.press + 0.7)),
       thumbs: H(T.stamp, T.morning),
+      wave: Math.max(H(T.dash, T.nego, 0.4), H(T.cta + 0.8, 60, 0.4)), // her own right hand
     },
     face: {
       look,

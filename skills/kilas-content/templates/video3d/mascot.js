@@ -184,18 +184,18 @@ export function makeMascot(parent, opts = {}) {
   // arms: shoulder -> upper arm -> elbow -> forearm -> hand (palm, thumb, three fingers)
   const arm = (side) => {
     const sh = joint(body, [side * 0.9, -0.2, 0.04]);
-    part(new THREE.SphereGeometry(0.21, 20, 14), skin, sh);
-    part(new THREE.CapsuleGeometry(0.2, 0.2, 8, 16), skin, sh, [0, -0.17, 0]);
+    part(new THREE.SphereGeometry(0.21, 32, 24), skin, sh);
+    part(new THREE.CapsuleGeometry(0.2, 0.2, 12, 32), skin, sh, [0, -0.17, 0]);
     const el = joint(sh, [0, -0.33, 0]);
-    part(new THREE.SphereGeometry(0.19, 20, 14), skin, el);
-    part(new THREE.CapsuleGeometry(0.185, 0.16, 8, 16), skin, el, [0, -0.14, 0]);
+    part(new THREE.SphereGeometry(0.19, 32, 24), skin, el);
+    part(new THREE.CapsuleGeometry(0.185, 0.16, 12, 32), skin, el, [0, -0.14, 0]);
     const hand = joint(el, [0, -0.32, 0]);
-    part(new THREE.SphereGeometry(0.24, 24, 16), skin, hand, [0, -0.02, 0], [1.05, 1.0, 0.82]);
-    const thumb = joint(hand, [-side * 0.17, 0.0, 0.07]);
-    part(new THREE.CapsuleGeometry(0.085, 0.16, 6, 12), skin, thumb, [0, 0.12, 0]);
+    part(new THREE.SphereGeometry(0.24, 32, 24), skin, hand, [0, -0.02, 0], [1.05, 1.0, 0.82]);
+    const thumb = joint(hand, [-side * 0.17, -0.02, 0.0]);
+    part(new THREE.CapsuleGeometry(0.085, 0.16, 8, 20), skin, thumb, [0, 0.12, 0]);
     const fingers = [-0.11, 0, 0.11].map((x, i) => {
       const f = joint(hand, [x * side, -0.17, 0.02]);
-      part(new THREE.CapsuleGeometry(0.068, 0.11, 6, 12), skin, f, [0, -0.08, 0]);
+      part(new THREE.CapsuleGeometry(0.068, 0.11, 8, 20), skin, f, [0, -0.08, 0]);
       return f;
     });
     return { side, sh, el, hand, thumb, fingers };
@@ -205,8 +205,8 @@ export function makeMascot(parent, opts = {}) {
   // legs: hip pivots under the body, boot-like feet pointing forward
   const leg = (side) => {
     const hip = joint(root, [side * 0.4, 0.78, 0]);
-    part(new THREE.CapsuleGeometry(0.23, 0.3, 8, 16), skin, hip, [0, -0.32, 0]);
-    part(new THREE.SphereGeometry(0.28, 24, 16), deep, hip, [0, -0.66, 0.1], [1.04, 0.66, 1.3]);
+    part(new THREE.CapsuleGeometry(0.23, 0.3, 12, 32), skin, hip, [0, -0.32, 0]);
+    part(new THREE.SphereGeometry(0.28, 32, 24), deep, hip, [0, -0.66, 0.1], [1.04, 0.66, 1.3]);
     return hip;
   };
   const legL = leg(-1), legR = leg(1);
@@ -227,14 +227,17 @@ export function makeMascot(parent, opts = {}) {
 // ---------- poses ----------
 // Each arm gesture is a target for shoulder (x forward swing, z lift out), elbow (x bend
 // forward, z bend in the frontal plane) and hand (fingers 0 curled .. 1 open, index 0..1 out,
-// up 0..1 thumb pointing at the sky). Weights blend them on top of the rest pose.
-const REST = { shx: 0, shz: 0.22, elx: -0.15, elz: 0, fingers: 0.45, index: 0, up: 0 };
+// up 0..1 thumb pointing at the sky, twist 0..1 the forearm turning the palm from the back to
+// the viewer). Weights blend them on top of the rest pose.
+const REST = { shx: 0, shz: 0.22, elx: -0.15, elz: 0, fingers: 0.45, index: 0, up: 0, twist: 0 };
 const GEST = {
-  reach: { shx: -1.15, shz: 0.12, elx: -0.35, elz: 0, fingers: 0.9, index: 0, up: 0 },
-  wave: { shx: -0.15, shz: 2.35, elx: 0, elz: 0, fingers: 1, index: 0, up: 0 },
-  point: { shx: -0.55, shz: 1.2, elx: -0.1, elz: 0, fingers: 0, index: 1, up: 0 },
-  thumbs: { shx: -0.55, shz: 0.5, elx: -1.6, elz: 0, fingers: 0, index: 0, up: 1 },
-  think: { shx: -0.55, shz: 0.42, elx: -2.35, elz: 0.25, fingers: 0.1, index: 1, up: 0 },
+  reach: { shx: -1.15, shz: 0.12, elx: -0.35, elz: 0, fingers: 0.9, index: 0, up: 0, twist: 0 },
+  // a wave shows the palm, thumb toward the head; with the back of the hand to the viewer and
+  // the thumb on the outside it read as a hand put on the wrong way round (owner, Nov 2026)
+  wave: { shx: -0.15, shz: 2.35, elx: 0, elz: 0, fingers: 1, index: 0, up: 0, twist: 1 },
+  point: { shx: -0.55, shz: 1.2, elx: -0.1, elz: 0, fingers: 0, index: 1, up: 0, twist: 0 },
+  thumbs: { shx: -0.55, shz: 0.5, elx: -1.6, elz: 0, fingers: 0, index: 0, up: 1, twist: 0 },
+  think: { shx: -0.55, shz: 0.42, elx: -2.35, elz: 0.25, fingers: 0.1, index: 1, up: 0, twist: 0 },
 };
 const KEYS = Object.keys(REST);
 const qa = new THREE.Quaternion(), qb = new THREE.Quaternion(), qw = new THREE.Quaternion();
@@ -251,6 +254,7 @@ function poseArm(a, t, w, swing) {
   a.sh.rotation.set(p.shx + swing + pump, 0, a.side * (p.shz + 0.04 * Math.sin(t * 2.2 + a.side)));
   // waving swings the forearm in the frontal plane; thinking taps a little
   a.el.rotation.set(p.elx, 0, a.side * (p.elz + wv * 0.42 * Math.sin(t * 9)) + (w.think || 0) * 0.05 * Math.sin(t * 3));
+  a.hand.rotation.set(0, a.side * Math.PI * p.twist, 0);
   a.fingers.forEach((f, i) => {
     const isIndex = i === 0;                           // the finger nearest the thumb
     const open = isIndex ? Math.max(p.fingers, p.index) : p.fingers;
@@ -258,8 +262,11 @@ function poseArm(a, t, w, swing) {
     f.rotation.x = lerp(1.1, 0, open);                 // curled fingers fold toward the palm
     f.rotation.z = a.side * (i - 1) * 0.18 * p.fingers; // open fingers spread
   });
-  // thumb: rests along the palm; for a thumbs-up it points straight up in the world
-  qa.setFromEuler(new THREE.Euler(-0.35, 0, a.side * 0.9));
+  // thumb: points the way the fingers do, across the curled fingers of a fist and spread out
+  // from the palm as the hand opens (pointing back at the wrist it read as a broken thumb in a
+  // wave); for a thumbs-up it points straight up in the world
+  const spread = clamp((p.fingers - 0.3) / 0.7);
+  qa.setFromEuler(new THREE.Euler(lerp(0.55, 0.1, spread), 0, a.side * (Math.PI - lerp(-0.45, 0.95, spread))));
   if (p.up > 0.001) {
     a.thumb.parent.updateWorldMatrix(true, false);
     a.thumb.parent.getWorldQuaternion(qw); qw.invert();
@@ -271,7 +278,9 @@ function poseArm(a, t, w, swing) {
 
 // poseMascot(mascot, t, s): every field is an eased 0..1 weight unless noted.
 //   walk, phase       stepping (phase advances with time)
-//   armR / armL       { reach, wave, point, thumbs, think }
+//   armR / armL       the arm on the screen's right / left while the mascot faces the camera,
+//                     so its own left / right hand: { reach, wave, point, thumbs, think }.
+//                     It waves with its own right hand (armL), as a person greeting does.
 //   lean (-1..1)      lean forward (+) / back; tilt (-1..1) head tilt to its left/right
 //   hop (0..1)        one hop of joy across its own window
 //   face              { look:[dx,dy] -1..1, surprise, joy, open, frown, o }

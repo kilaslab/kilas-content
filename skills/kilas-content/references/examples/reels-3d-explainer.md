@@ -65,8 +65,13 @@ bash <skill>/scripts/new_scene3d.sh <item> content/brand/assets/logos/<logo>.svg
   at the top of `beats.js`. `scene.js`: the set and the three props, if the story needs others.
 - Mascot first: compare `mascot-test.html` with every mascot render the brand publishes.
   `SIZE=1440,900 bash <skill>/scripts/scene_stills.sh "http://localhost:8792/mascot-test.html" <item>/frames/pose 0.6`
-  (add `?view=3q` for a three-quarter view). Done when: face panel, tails, hands, boots, and
-  colour match the renders side by side, and the eight poses read at 360 px.
+  (add `?view=3q` for a three-quarter view, `?view=hands` for each pose's right hand close up).
+  Done when: face panel, tails, hands, boots, and colour match the renders side by side, the
+  eight poses read at 360 px, and in the hands view the thumb points the way the fingers do:
+  spread out in a wave or a reach, tucked in a point (a thumb pointing back at the wrist read
+  as broken to the owner in a close wave, Nov 2026). The mascot waves with its own right hand
+  (armL), palm to the viewer, thumb toward the head, clear of props in the shot (the back of
+  the hand with the thumb outside read as a hand on the wrong way round).
 - Props that open (the binder): stills at 4 moments of the opening. Done when: the cover lifts
   and falls to the hinge side, clear of the mascot.
 
