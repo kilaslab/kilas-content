@@ -272,6 +272,36 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
   publish it with the scene files and three.js. Page styles stay scoped (`.ctl`, `.tbl`): a
   page rule named `.bar` once restyled the chat's own header.
 
+## 2f. Remotion motion documentary / flat-design route
+
+Use Remotion instead of HyperFrames when the owner asks for Remotion, wants reusable React/TypeScript
+components across an episodic series (shared theme tokens, subtitles, audio stem slots), or wants
+2.5D layered flat-design SVG parallax and interactive Studio editing (`remotion-best-practices`).
+
+The same **preview-first gates** bind as HyperFrames — never jump straight to a full MP4 render
+before the owner has seen the full-length preview and approved the hook, pacing, and ending:
+
+1. **Racikan & Story** (`video-racikan.md` + `writing-craft.md`): pick preset `motion-doc` (or the
+   closest card), workshop the hook (paradox or stakes, never a passive textbook question), and close
+   the story's central loop inside the episode. Do **not** cut off on a hanging cliffhanger without
+   answering the episode's core question; tease Part 2 only *after* delivering the episode's payoff.
+2. **Frame 0 opens mid-action**: no empty fade-in from black. Frame 0 already shows the dramatic
+   focal visual, motion energy (e.g., a 6–8 frame camera impact tremor or crack/light strike), and
+   the hook headline legible at 360 px phone width.
+3. **Dramatic aniconic illustration** (for historical or religious topics where depicting people or
+   angels is inappropriate): avoid plain flat text cards; build theatrical depth using chiaroscuro
+   architectural perspective, monumental light shafts, counter-rotating sacred geometry, and
+   high-contrast dark/gold illumination.
+4. **HTML Animatic Preview BEFORE full MP4 render**: write a `beats.json` manifest for the episode
+   and run `scripts/remotion_preview.py --project . --composition <id> --manifest <beats.json> --out <item>/preview.html --embed`.
+   It renders only the sampled PNG stills (`npx remotion render --frames=...`) in seconds and builds
+   a portable interactive HTML preview (348 px phone-frame player, scrubber, beat table with 1-click
+   Copy VO button, and full-film contact grid) so the owner can inspect and revise early.
+5. **Gate & Full Render**: record owner approval with `scripts/gate.py <item> pass animatic --by owner --quote "..."`
+   and `pass script`, run `scripts/gate.py <item> require render`, then export the full MP4
+   (`npx remotion render <id> out/<slug>.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p`) and run
+   `scripts/reel_qa.py` on the resulting file.
+
 ## 3. Acting rules
 
 - Every mood change is a **take**: anticipation (a small squash), the new face, overshoot,

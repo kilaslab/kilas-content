@@ -1,6 +1,6 @@
 # Video presets
 
-Twelve cards. Pick one in `video-racikan.md`. A card sets defaults. The owner's
+Thirteen cards. Pick one in `video-racikan.md`. A card sets defaults. The owner's
 words and the brand pack's `design.md` "Video" section override a default.
 
 Each card names the production route. A flat character film uses `motion-video.md`
@@ -169,3 +169,19 @@ you copy. It is not one of these cards.
   in one minute") only when the film really is that task.
 - Captions: lower third, one step name at a time.
 - Route: a capture of the real UI. Check every control against the product.
+
+## motion-doc
+
+- When: a historical, editorial, or educational mini-documentary told through 2.5D layered
+  flat-design SVG illustrations, maps, manuscripts, and kinetic typography — especially across
+  multi-episode series built in Remotion.
+- Aspect / length: 9:16, 45–60 s. Past 30 s, plant a fresh visual shift or turn every 10–15 s.
+- First 3 s: frame 0 opens mid-action (no slow fade from black) with a paradox or high-stakes hook
+  headline and dramatic lighting/impact motion.
+- Visual / edit: 2.5D flat-design SVG parallax layers, chiaroscuro lighting, subtle camera push on
+  every hold; aniconic architectural/geometric visuals when human/angelic depiction is inappropriate.
+- Structure: three acts (paradox hook → historical escalation & climax → grounded complete payoff,
+  never an abrupt hanging cut).
+- Captions: high-contrast max-2-line lower third separated cleanly from editorial headlines.
+- Route: `motion-video.md` section 2f (Remotion + `scripts/remotion_preview.py` HTML preview gate
+  before any full MP4 render).

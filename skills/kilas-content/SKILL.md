@@ -59,7 +59,7 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    scroll), images (your own image tool, then `gen_image.py detect`: agy, paid keys), a
    second model (the partner the owner approved in `setup.md`: Codex, agy, Cursor agent,
    OpenCode, ...; `brainstorm.sh detect`, `brainstorm-partner.md` section 2), paid platform
-   data (Tapinall, `research-tools.md` 1b), and for a Reels video HyperFrames, ffmpeg,
+   data (Tapinall, `research-tools.md` 1b), and for a Reels video HyperFrames or Remotion, ffmpeg,
    and ElevenLabs (`motion-video.md`). A paid call needs a reason first. Done when the
    item's `brief.md` (or the plan's notes) names the tool per job and the gaps.
 
@@ -157,8 +157,9 @@ with the skill's path, for example `python3 <skill>/scripts/new_item.py content 
    `html-render.md` section 4 says). A Reels **video** the agent makes fills the racikan
    first (`references/video-racikan.md`, cards in `references/video-presets.md`): one
    table in `brief.md`, one question if the preset was not already named. Then
-   `references/motion-video.md`: character animatic, the owner's approval, voice-over,
-   HyperFrames render, then a check of the file itself.
+   `references/motion-video.md`: character animatic (or Remotion HTML preview via
+   `scripts/remotion_preview.py`), the owner's approval, voice-over,
+   HyperFrames or Remotion render, then a check of the file itself.
 8. **Verify cheaply**: the layout check first (`layoutCheck()` in Figma, the issues
    `render_slides.py` prints in HTML) and fix what it reports; then look at the cover,
    the data frame, and what changed (screenshots one at a time in Figma; the PNGs in
@@ -304,7 +305,7 @@ Plan: `check_plan.py` has no FAIL, kept warnings explained, Reels kinds rotate.
 | `references/patterns-from-data.md` | why the rules are what they are |
 | `references/prerequisites.md` | installing companions and optional tools |
 | `templates/` | workspace, setup, plan, brief, publish, review, ideas, design log, the project's `AGENTS.md` lessons block (`agents-lessons.md`); `html/` (slide kit and example); `preview/` (owner preview) |
-| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `vo_acronym_check.py`, `reel_qa.py`, `gate.py`, `overlay_audit.py`, `sfx_synth.py`, `new_scene3d.sh`, `scene3d_video.py`, `scene3d_publish.py`, `scene_stills.sh`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `skill_check.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh`, `install-companions.sh` |
+| `scripts/` | `lint_copy.py`, `brainstorm.sh`, `vo_elevenlabs.py`, `vo_acronym_check.py`, `reel_qa.py`, `gate.py`, `overlay_audit.py`, `sfx_synth.py`, `new_scene3d.sh`, `scene3d_video.py`, `scene3d_publish.py`, `scene_stills.sh`, `remotion_preview.py`, `check_plan.py`, `new_item.py`, `figma-helpers.js` (layouts, schemes), `figma_bundle.py`, `figma-gallery.js` + `figma-gallery-2.js`, `figma-gallery-schemes.js`, `brand_css.py`, `new_html.py`, `render_slides.py`, `crawl_site.py`, `capture_profile.sh`, `artefact_marks.py`, `ref_sheets.py`, `slides_to_pdf.py`, `capture_artefact.sh`, `x_post.py`, `scan_site_tokens.sh`, `unsplash_search.py`, `gen_image.py`, `agy_image.sh`, `ask_codex.sh`, `lessons.py`, `skill_check.py`, `make_preview.py`, `contact_sheet.py`, `export_oss.sh`, `install-companions.sh` |
 
 ## When not to use this
 
