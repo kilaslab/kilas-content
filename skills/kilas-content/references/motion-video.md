@@ -148,7 +148,11 @@ frames) is the rest.
   round 7, asked to drop a colour the brand pack prescribes. Put the brand rules that apply
   in every brief, give the previous scores, and ask for a re-score of what changed; after
   four rounds, or when a request contradicts the brand pack, stop and hand the owner the
-  scores and the open problems. Send every sheet page and name its seconds; give image
+  scores and the open problems. Send every sheet page and name its seconds, plus a strip at
+  6–8 fps of each move you ask the partner to score (a partner held motion at 7 because "the
+  in-betweens cannot be judged from 1 fps sheets", Nov 2026). Every second in the brief is a
+  film second (filmTime(T.x), `sync.json`, or the film's transcript), never a story T under a
+  WARP: a brief that said 3.7 s for a badge shown at 2.6 s had the partner judge the wrong beat. Give image
   briefs `PARTNER_TIMEOUT=1200` (two image critiques stopped at 600 s). Check each claim on
   the full-size frame before acting on it: on 360 px sheets a partner called a mascot
   "thumbless" and a headline "lost on a white window", and neither was true. Before the
