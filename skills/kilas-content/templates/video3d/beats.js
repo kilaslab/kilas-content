@@ -134,9 +134,11 @@ export const SFX = [
   { at: T.m3, sfx: "pop", gain: 0.35 }, { at: T.press + 0.3, sfx: "tick", gain: 0.4 }, { at: T.fly3, sfx: "whoosh", gain: 0.3 }, { at: T.r3, sfx: "pop", gain: 0.4 },
   { at: T.paid, sfx: "ding", gain: 0.4 }, { at: T.stamp, sfx: "thump", gain: 0.5 }, { at: T.dash, sfx: "pop", gain: 0.35 },
 ];
-// A music bed under the whole film, ducked under the voice: { file: "music/bed.mp3", gain: 0.5,
-// duck: 10 } (duck = dB it drops while someone speaks). null = no bed (the owner may add one in
-// the app, far under the voice).
+// The music bed under the whole film, ducked under the voice (make it with
+// scripts/music_elevenlabs.py, its sections cut at these beats): { file: "music/bed.mp3",
+// gain: 0.3, duck: 8, dips: [[T.a, T.b]] }. duck = dB it drops while someone speaks; dips = the
+// stretches where it goes muffled, then sweeps open into the next beat. null stops the build
+// unless the owner wants no music (scene3d_video.py --no-music).
 export const MUSIC = null;
 // Whose mouth moves with each voice-over clip, by clip index: "mascot" when the mascot is the
 // one talking, null for a narrator nobody sees. scene.js opens the mouth by the clip's loudness.

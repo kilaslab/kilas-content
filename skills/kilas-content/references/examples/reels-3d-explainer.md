@@ -100,8 +100,10 @@ A clip that runs longer than its beat: leave `T` alone and add a pair to `WARP` 
 (film second, story second) at that beat's borders, so the film plays that stretch of story
 slower; past about 0.7x it shows, so cut words instead. Name the pictures that must land on a
 word in `SYNC` ("lunas" on the stamp), the sounds in `SFX` (a pop per bubble, a whoosh per
-flying card, a thump on the stamp; `sfx_synth.py` lists the kit), `MUSIC` when the owner
-supplies a bed, and `SPEAK` when the mascot is the one talking.
+flying card, a thump on the stamp; `sfx_synth.py` lists the kit), `MUSIC` (a bed from
+`music_elevenlabs.py`, ducked under the voice, with `dips` where the story turns quiet; the
+build stops without one unless the owner said no music), and `SPEAK` when the mascot is the one
+talking.
 
 Done when: `python3 <skill>/scripts/scene3d_video.py <item>/scene <item>/video --vo <item>/vo`
 prints every clip with no overlap and none past 60 s, and counts the sound effects.
