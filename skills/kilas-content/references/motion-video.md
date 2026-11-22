@@ -148,7 +148,11 @@ frames) is the rest.
   round 7, asked to drop a colour the brand pack prescribes. Put the brand rules that apply
   in every brief, give the previous scores, and ask for a re-score of what changed; after
   four rounds, or when a request contradicts the brand pack, stop and hand the owner the
-  scores and the open problems. Send every sheet page and name its seconds; give image
+  scores and the open problems. Send every sheet page and name its seconds, plus a strip at
+  6–8 fps of each move you ask the partner to score (a partner held motion at 7 because "the
+  in-betweens cannot be judged from 1 fps sheets", Nov 2026). Every second in the brief is a
+  film second (filmTime(T.x), `sync.json`, or the film's transcript), never a story T under a
+  WARP: a brief that said 3.7 s for a badge shown at 2.6 s had the partner judge the wrong beat. Give image
   briefs `PARTNER_TIMEOUT=1200` (two image critiques stopped at 600 s). Check each claim on
   the full-size frame before acting on it: on 360 px sheets a partner called a mascot
   "thumbless" and a headline "lost on a white window", and neither was true. Before the
@@ -309,11 +313,19 @@ on a chat-assistant explainer whose first cut lost a lay viewer (Nov 2026):
 - Centre the content block (headline, panels, any clock or counter) vertically and make the panels as
   wide as the safe area allows; split-screen stories stack two panels.
 - Spend empty space on the story, not on a giant watermark.
-- Every bubble sits whole inside its panel: check the top edge in each still.
+- Every bubble sits whole inside its panel: check the top edge in each still. A tall bubble (a
+  QR, a card) is laid out compact (picture beside the text) so it never pushes its own header out,
+  and a bubble pushed under the panel's top fades out in code instead of showing cut.
 - Every word in a bubble, chip, or badge is at least 34 px on the 1080 canvas, and the
   characters fill their panel; the first film used 26 px bubbles that were close to
   unreadable at 360 px wide. The phone sheet (section 2c) decides.
 - Text and faces inside y 168–1330; below that, panel bottoms and props only.
+- 3D shots are composed by projection, not by eye: for each shot, project the points the beat
+  needs (each actor's head and feet, the prop the beat is about) through the shot's camera and
+  check they land inside the frame and the safe zone; a 9:16 frame is narrow, so a camera that
+  looks right on a landscape monitor often cuts the actor. Read each actor's world position
+  first (a rig whose root height is not passed stands in the floor), and keep pinned bubbles
+  and cards off the faces in every still.
 
 ## 5. Voice-over (ElevenLabs)
 

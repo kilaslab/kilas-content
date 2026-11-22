@@ -43,7 +43,7 @@ people story, report teaser). The default 8-slide news ladder:
 |---|---|
 | one metric for several items | `barChart`, sorted, from zero; `ref` for a threshold |
 | one metric over time or versions | `columnChart` with the old record as a dashed line |
-| three or more metrics for the same items | `table`: rank, name, a bar for the main metric, value columns, the highlighter on each column's best, one caveat as the note. This is the slide worth saving |
+| three or more metrics for the same items | `table`: rank, name, a bar for the main metric, value columns, the highlighter on each column's best, one caveat as the note. This is the slide worth saving. It must read on a phone without zoom: at most 3 value columns and 30 px cell text; with more, build 3–4 finding cards (one big number each) and move the full table to the caption and alt text |
 | one ratio or share | `bigStat`, or `dots` for a percentage |
 | two things on one metric | `versus` |
 
@@ -74,8 +74,9 @@ python3 scripts/lint_copy.py copy.md --format carousel --brand <brand pack>/bran
 Two jobs:
 
 1. **One CTA** from the brand pack's CTA list, matched to the pillar's goal (follow for
-   reach, newsletter or site for trust, product for conversion). Headline = the CTA
-   ("Ikuti @<handle>"), one line that describes what this piece just did, one button or
+   reach, newsletter or site for trust, product for conversion). Headline = the piece's
+   takeaway in one sentence the reader could repeat (`writing-craft.md` 9), then the CTA
+   ("Ikuti @<handle>") with one line that describes what this piece just did, one button or
    pill. Do not promise a frequency or format you cannot verify. Big media accounts
    reuse one standard CTA slide for months (Katadata's Databoks offer, Tirto's
    "Traktir Kopi"); a brand can keep one per CTA and reuse it.

@@ -46,7 +46,9 @@
   <h2>Still sepanjang film</h2>
   <div class="stills" id="stills"></div>
 </main>
-<script type="importmap">{ "imports": { "three": "./lib/three.module.js" } }</script>
+<!-- three.js r178 from jsDelivr (the same build as lib/, which the render keeps offline), so the
+     published page carries no library code; scripts/scene3d_publish.py checks this. -->
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.178.0/build/three.module.js", "./lib/addons/": "https://cdn.jsdelivr.net/npm/three@0.178.0/examples/jsm/" } }</script>
 <script type="module" src="scene.js"></script>
 <script type="module">
   import * as B from "./beats.js";
