@@ -180,6 +180,10 @@ shorts, Oct 2026; ideas paraphrased, no text or code copied).
   `camera()`, `creep()` (a push-in of 0.15–0.35 % a frame on every hold), `glide()` (ease in
   and out over 18–40 frames), `kick()` (an impact shake that flips every frame and fades in
   7). A static camera made the first film's dead beats.
+- **Frame 0 already shows the problem**: the first chat is in the inbox, the first card is up.
+  A container that waits a second to fill (an empty chat panel under the headline) scored 7
+  for the hook in a self-critique (Nov 2026); start the first item before 0 s and stack the
+  rest under the first VO line.
 - **Time reactions to words**: `vo_elevenlabs.py --verify film.mp4 --words words.json` gives
   every word's start; land each reaction 0–3 frames before its word. Blink every 0.5–2.3 s
   over 4 frames, plus one on each expression swap.
@@ -188,6 +192,24 @@ shorts, Oct 2026; ideas paraphrased, no text or code copied).
   "You see") into the mechanism through an everyday analogy; an ironic payoff; the film
   ends on the last word. Never narrate what the viewer already sees.
 - **Mix**: VO on top, music 5–10 dB under it, SFX under the VO; −14 LUFS.
+- **Every Reel gets a music bed**: VO and 36 SFX with no music still read as empty to the
+  owner ("masih kerasa sepi", Nov 2026). `scripts/music_elevenlabs.py`:
+  1. `plan` drafts a composition plan from the racikan's mood (free).
+  2. Set its sections to the film's beat borders, as below.
+  3. `compose` writes `music/bed.mp3` and uses credits, once.
+  4. `shape` prints its loudness against the cuts.
+
+  Set the sections:
+  - a start on the downbeat under the hook;
+  - the groove under the beats;
+  - a thinner bar where the story turns quiet;
+  - the final hit on the end-card cut.
+
+  Instrumental, with vocals, choir, and a busy lead in the negative styles. The model follows
+  the overall mood better than the section borders: in the first film the bass came in at
+  16 s instead of 4.8 s, and the quiet bar did not thin out. Measure, then shape it in the mix
+  with `MUSIC.dips` (scene3d_video.py) rather than composing again. A lyric bed fights the
+  VO.
 - **QA in one command**: `python3 <skill>/scripts/reel_qa.py out.mp4 --hold 0-1,29-33`
   (format, loudness, frozen runs ≥12 frames, dead seconds, flash frames, contact and phone
   sheets). It must exit 0 before the critique scores; on the first film it found the same
@@ -364,8 +386,8 @@ before the owner has seen the full-length preview and approved the hook, pacing,
   model reads unknown local acronyms in English; the transcript check caught "QRIS" heard
   as "queries". The transcript cannot hear an accent: the owner's ear is the last check.
 - Put each clip on the timeline as its own `<audio>` with its measured duration; a film
-  over 15 s with no sound fails HyperFrames' review, and Instagram music can be added at
-  low volume by the owner.
+  over 15 s with no sound fails HyperFrames' review. The film carries its own music bed
+  (2d); a film without one only ships on the owner's word (`scene3d_video.py --no-music`).
 
 ## 6. Technical traps (GSAP, SVG, HyperFrames)
 

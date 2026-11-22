@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Build the HyperFrames project that renders a 3D explainer scene with its voice-over.
 
-  scene3d_video.py <item>/scene <item>/video --vo <vo dir> [--duration 60] [--no-sfx]
+  scene3d_video.py <item>/scene <item>/video --vo <vo dir> [--duration 60] [--no-sfx] [--no-music]
 
 Reads VO_STARTS from <scene>/beats.js and the clips vo0.mp3, vo1.mp3, ... from --vo (the
 "final" names in vo-manifest.json when vo_elevenlabs.py wrote one). Copies every top-level .js
@@ -16,8 +16,13 @@ Sound, from beats.js (read with node, so T names and filmTime() work):
   SFX    one <audio> per cue at its film second; the sound is <item>/sfx/<name>.mp3 when that
          file exists, else the kit in sfx_synth.py. A film with no cue stops here unless
          --no-sfx says the owner wants it bare.
-  MUSIC  { file, gain, duck }: the bed is trimmed to the film, ducked under the voice with a
-         sidechain compressor keyed by the clips at their starts, faded out, one <audio>.
+  MUSIC  { file, gain, duck, dips }: the bed is trimmed to the film, ducked under the voice with
+         a sidechain compressor keyed by the clips at their starts, faded out, one <audio>.
+         dips: [[from, to], ...] film seconds (not warped like SFX: with a WARP, write filmTime(T.x)) where the bed goes muffled and a
+         little quieter, then opens again over the last 1.5 s: the beat where the story turns
+         quiet, so the next one lands. Make the bed with music_elevenlabs.py. A film with VO
+         and SFX but no bed read as empty ("masih kerasa sepi"), so a film without MUSIC stops
+         here unless --no-music says the owner wants none.
   SPEAK  writes vo-env.js (each clip's loudness, 30 values a second) into <scene> and <video>
          for mouths that move with the voice.
   SYNC   writes <video>/sync.json (word, film second) for reel_qa.py --sync.
@@ -91,6 +96,7 @@ def main():
     p.add_argument("--vo", required=True, help="folder with vo0.mp3, vo1.mp3, ...")
     p.add_argument("--duration", type=float, default=None, help="film length when beats.js has no DUR (default 60)")
     p.add_argument("--no-sfx", action="store_true", help="build without sound effects: the owner asked for a bare voice-over")
+    p.add_argument("--no-music", action="store_true", help="build without a music bed: the owner asked for none")
     a = p.parse_args()
     scene, video, vo = Path(a.scene), Path(a.video), Path(a.vo)
     for f in ("index.html", "scene.js", "beats.js", "style.css"):
@@ -115,6 +121,9 @@ def main():
     if not cues and not a.no_sfx:
         print("no sound effects: add cues to `export const SFX` in beats.js (templates/video3d/beats.js shows the shape),\n"
               "or pass --no-sfx when the owner wants the voice-over bare", file=sys.stderr); sys.exit(1)
+    if not B["MUSIC"] and not a.no_music:
+        print("no music bed: make one with music_elevenlabs.py and set `export const MUSIC` in beats.js,\n"
+              "or pass --no-music when the owner wants none", file=sys.stderr); sys.exit(1)
     files = clips(vo)
     if len(files) != len(starts):
         print(f"{len(files)} clips in {vo} but {len(starts)} VO_STARTS in beats.js", file=sys.stderr); sys.exit(1)
@@ -165,11 +174,19 @@ def main():
             print(f"MUSIC file not found: {src}", file=sys.stderr); sys.exit(1)
         bed = video / "assets" / "music_bed.mp3"
         ins, keys = ["-stream_loop", "-1", "-i", str(src)], []
+        # dips: a low-passed copy of the bed faded in over 0.4 s at each dip's start and out over
+        # the 1.5 s before its end (a filter sweep back up into the next beat)
+        dips = [(float(x), float(y)) for x, y in (mu.get("dips") or [])]
+        w = "+".join(f"clip((t-{x:.3f})/0.4,0,1)*clip(({y:.3f}-t)/1.5,0,1)" for x, y in dips)
+        mfilt = (f"[0:a]atrim=0:{a.duration},volume={float(mu.get('gain', 0.5))},asplit=2[mf][ml]",
+                 f"[mf]volume='1-min(1,{w})':eval=frame[mfw]",
+                 f"[ml]lowpass=f=700,lowpass=f=700,volume='0.8*min(1,{w})':eval=frame[mlw]",
+                 "[mfw][mlw]amix=inputs=2:normalize=0[m]") if dips else (f"[0:a]atrim=0:{a.duration},volume={float(mu.get('gain', 0.5))}[m]",)
         for k, (f, s, _) in enumerate(timeline):
             ins += ["-i", str(f)]; keys.append(f"[{k + 1}:a]adelay={int(s * 1000)}:all=1[k{k}]")
         ratio = max(2, min(20, round(10 ** (float(mu.get("duck", 10)) / 20) * 2)))
         graph = ";".join(keys + ["".join(f"[k{k}]" for k in range(len(timeline))) + f"amix=inputs={len(timeline)}:normalize=0[key]",
-                                 f"[0:a]atrim=0:{a.duration},volume={float(mu.get('gain', 0.5))}[m]",
+                                 *mfilt,
                                  f"[m][key]sidechaincompress=threshold=0.02:ratio={ratio}:attack=30:release=450[d]",
                                  f"[d]afade=t=in:d=0.4,afade=t=out:st={a.duration - 1.5}:d=1.5[out]"])
         r = subprocess.run(["ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", graph, "-map", "[out]", "-t", str(a.duration), "-ar", "48000",
